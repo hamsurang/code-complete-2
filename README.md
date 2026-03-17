@@ -8,7 +8,7 @@
 
 | [책 사러 가기](https://www.yes24.com/product/goods/44130507) |
 | ----------------------------------------------------------- |
-| [![book](./static/img/book-image.png)](https://www.yes24.com/product/goods/44130507) |
+| <a href="https://www.yes24.com/product/goods/44130507"><img src="./static/img/book-image.png" width="200" /></a> |
 
 [노션도 놀러와요!](https://hamsurang.notion.site/2f845f0c788b80f9899aee806838614d?source=copy_link)
 
