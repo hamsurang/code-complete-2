@@ -18,3 +18,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# 하네스 중간 산출물 (감사 추적은 필요하지만 원격 커밋 대상 아님)
+/_workspace
+# 로컬 감사 리포트
+/harness-report-*.md
