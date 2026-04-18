@@ -1,0 +1,40 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    name: Docusaurus Build + Broken Link Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint (agent-optimized output)
+        run: pnpm lint 2>&1 | head -50
+        continue-on-error: false
+
+      - name: Format check
+        run: pnpm format:check 2>&1 | head -30
+
+      - name: Build
+        # docusaurus.config.ts의 onBrokenLinks: 'throw'로 링크 깨짐 차단
+        # Why: 에이전트가 MDX 생성 시 상대경로·사이드바 ID 오타를 내면 사람이 발견하기 전에 CI에서 차단
+        run: pnpm build
