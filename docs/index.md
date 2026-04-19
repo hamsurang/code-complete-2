@@ -6,7 +6,7 @@ title: 소개
 
 ## Code Complete 2판 한글 스터디
 
-> Steve McConnell 저, *Code Complete: A Practical Handbook of Software Construction, 2nd Edition*
+> Steve McConnell 저, _Code Complete: A Practical Handbook of Software Construction, 2nd Edition_
 
 함수랑 동아리원들이 함께 읽고 정리하는 Code Complete 2판 스터디 노트입니다.
 

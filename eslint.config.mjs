@@ -8,6 +8,7 @@ import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
 import react from 'eslint-plugin-react';
 import * as mdx from 'eslint-plugin-mdx';
+import globals from 'globals';
 
 export default [
   {
@@ -20,6 +21,16 @@ export default [
     ],
   },
   js.configs.recommended,
+  {
+    // Node 스크립트: scripts/*.js, *.config.{js,mjs,ts}
+    // Why: verify-human-only-hash.js 등 Node 런타임 전제 파일에 process/console globals 공급.
+    files: ['scripts/**/*.{js,mjs,cjs}', '*.config.{js,mjs,cjs,ts}'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
