@@ -1,0 +1,552 @@
+---
+sidebar_position: 5
+title: "Week 5 — 24~26장: 리팩터링 · 코드 튜닝"
+description: "함수랑 산악회가 Code Complete 24~26장을 2026년 FE 관점으로 묶어 읽은 5주차. 리팩터링 원칙부터 코드 튜닝 전략, 저수준 튜닝 기법까지 한 흐름으로."
+authors:
+  - Alice
+  - Crong
+  - diego
+  - Leo
+ai_assisted:
+  - summary.lead
+  - summary.bullets
+  - verdict.rationale
+  - checklist.text
+source: notion-pull
+source_page_id: a08de71a-aa9f-82e1-9b8b-01bfd7e45852
+week: 5주차
+chapters_in_book: [24, 25, 26]
+extracted_at: 2026-04-19T00:00:00+09:00
+edited_at: 2026-04-19T17:40:00+09:00
+enhanced_at: 2026-04-19T18:20:00+09:00
+---
+
+import Verdict from '@site/src/components/Verdict';
+import MemberOpinion from '@site/src/components/MemberOpinion';
+import DevilsAdvocate from '@site/src/components/DevilsAdvocate';
+
+## 5주차 한눈에
+
+- 책 24~26장을 한 자리에서 다뤘어요
+- 챕터 네비:
+  - [Chapter 24. Refactoring](#chapter-24-refactoring)
+  - [Chapter 25. Code-Tuning Strategies](#chapter-25-code-tuning-strategies)
+  - [Chapter 26. Code-Tuning Techniques](#chapter-26-code-tuning-techniques)
+
+리팩터링과 코드 튜닝을 붙여 읽으면, "무엇을 언제 고칠지"라는 한 축이 드러나요.
+
+## 📝 묶음 요약
+
+24~26장은 "이미 있는 코드를 언제, 어떻게 고칠 것인가"를 세 각도에서 다루는 묶음이에요. 24장은 구조 개선(리팩터링), 25장은 성능 개선의 상위 전략, 26장은 성능 개선의 저수준 기법을 다루고, 이 순서대로 읽으면 "구조 → 측정 → 기법"의 사다리가 자연스럽게 보여요.
+
+- 24장 — 냄새 감지·안전망 확보·PR 분리 같은 리팩터링 원칙은 TypeScript와 자동화 도구가 받쳐 주는 2026년 FE에서 오히려 더 실행 가능해졌어요.
+- 25장 — "추측하지 말고 측정하라"는 전략은 살아 있지만, FE의 병목이 코드 연산에서 네트워크·렌더링·번들로 이동하면서 튜닝 대상이 달라졌어요.
+- 26장 — 루프 언롤링 같은 C/C++ 시대 기법은 V8 JIT 앞에서 무력하지만, "측정하고 나서 튜닝"이라는 메타 교훈은 useMemo 오남용 같은 FE 일상에 그대로 적용돼요.
+
+묶음 요약으로 방향을 잡았으니, 각 장의 판정·체크·코드를 차례로 열어 볼게요.
+
+## Chapter 24. Refactoring
+
+<Verdict
+  rating="🟢 생존"
+  rationale={`"코드 냄새를 감지하고, 동작을 보존하면서 구조를 개선한다"는 리팩터링의 핵심은 2026년에도 일상적인 FE 개발 활동이에요. 오히려 IDE 자동 리팩터링과 TypeScript의 타입 안전망 덕분에 더 안전하게 실행할 수 있게 됐어요.`}
+/>
+
+### ✅ 체크리스트
+
+- [ ] "냄새"를 감지하고 있나요? — 훅 하나에 useState가 5개 이상, 컴포넌트가 300줄 이상, props drilling 3단계 이상 같은 신호를 잡아내고 있나요?
+  - 관련 ESLint: [`max-lines-per-function`](https://eslint.org/docs/latest/rules/max-lines-per-function)
+- [ ] 리팩터링을 별도 PR로 분리하고 있나요? (기능 변경과 구조 변경을 한 PR에 섞지 않기)
+- [ ] 리팩터링 전에 기존 테스트가 통과하는 상태를 확보하고, 리팩터링 후 다시 돌리고 있나요?
+- [ ] "나중에 리팩터링하자"를 반복하며 기술 부채가 쌓이고 있지는 않나요? 건드리는 코드는 그 자리에서 개선하고 있나요?
+- [ ] 팀에서 두려워하는 "건드리면 안 되는 파일"이 있다면, 그것을 리팩터링 우선 대상으로 지정했나요?
+
+리팩터링 원칙을 실제 PR 단위로 풀면 어떤 모양인지, 세 미션과 단계 설계로 확인해 볼게요.
+
+### 💻 React/TS 코드 예제
+
+#### 기본 미션 1 — "작성 중 리팩터링" (getTotal)
+
+**미션 브리프:** 요구사항 예정: 포인트 할인, 배송비 정책, 무료 배송 조건. 기능은 추가하지 말고, "변경이 들어오기 쉬운 구조"로 만들 것.
+
+##### Before ❌
+
+```typescript
+interface Order {
+  items: { price: number; qty: number }[];
+  coupon?: number;
+  isVip?: boolean;
+}
+
+export function getTotal(order: Order) {
+  let total = 0;
+
+  for (const item of order.items) {
+    total += item.price * item.qty;
+  }
+
+  if (order.coupon) {
+    total = total * (1 - order.coupon);
+  }
+
+  if (order.isVip) {
+    total = total * 0.95;
+  }
+
+  return total;
+}
+```
+
+##### After ✅
+
+```typescript
+interface OrderItem {
+  price: number;
+  qty: number;
+}
+
+interface Order {
+  items: OrderItem[];
+  coupon?: number;
+  isVip?: boolean;
+}
+
+// ── 가격 정책: 각 단계가 독립적인 함수 ──
+
+function calcSubtotal(items: OrderItem[]): number {
+  let subtotal = 0;
+  for (const item of items) {
+    subtotal += item.price * item.qty;
+  }
+  return subtotal;
+}
+
+function applyCoupon(amount: number, couponRate?: number): number {
+  if (!couponRate) return amount;
+  return amount * (1 - couponRate);
+}
+
+const VIP_DISCOUNT_RATE = 0.95;
+
+function applyVipDiscount(amount: number, isVip?: boolean): number {
+  if (!isVip) return amount;
+  return amount * VIP_DISCOUNT_RATE;
+}
+
+// ── 조합: 할인 파이프라인 ──
+
+export function getTotal(order: Order): number {
+  const subtotal = calcSubtotal(order.items);
+  const afterCoupon = applyCoupon(subtotal, order.coupon);
+  const afterVip = applyVipDiscount(afterCoupon, order.isVip);
+  return afterVip;
+}
+```
+
+**After가 변경에 강한 이유**
+
+- 포인트 할인 추가: `applyPoints(amount, points)` 함수를 만들고 `getTotal`의 파이프라인에 한 줄 끼워 넣으면 끝. 기존 `applyCoupon`이나 `applyVipDiscount`를 건드릴 필요 없음.
+- 배송비 정책 추가: `calcShippingFee(subtotal, shippingPolicy)` 함수를 만들고 최종 합산 시 더하면 됨. 소계 계산이 이미 분리되어 있어서 "무료 배송 조건"도 `subtotal`을 기준으로 분기하면 됨.
+- 할인 순서 변경: 파이프라인의 줄 순서만 바꾸면 할인 적용 순서가 바뀜. Before에서는 if문 블록의 위치를 옮겨야 했고, 중간 상태가 `total` 하나에 누적되어 있어 순서 실수를 알아채기 어려움.
+
+**트레이드오프**
+
+- 함수가 4개로 늘어나 파일 길이가 증가. 할인 정책이 2~3개 수준이라면 오히려 과한 분리로 느껴질 수 있음.
+- 다만 "요구사항이 추가될 예정"이라는 전제가 있으므로, 지금의 분리가 미래 변경 비용을 낮추는 투자.
+
+#### 기본 미션 2 — "보이스카우트 규칙 적용" (formatUser)
+
+##### Before ❌
+
+```typescript
+export function formatUser(user) {
+  return user.firstName + " " + user.lastName;
+}
+```
+
+##### After ✅
+
+```typescript
+interface UserName {
+  firstName: string;
+  lastName: string;
+}
+
+export function formatFullName(name: UserName): string {
+  return `${name.firstName} ${name.lastName}`;
+}
+```
+
+**개선 포인트**
+
+- 이름 개선: `formatUser`는 "유저 객체 전체를 포맷한다"고 읽히지만 실제로는 이름만 다룬다. `formatFullName`으로 바꾸면 함수가 하는 일이 이름에서 바로 보인다.
+- 타입 추가: `UserName` 인터페이스가 "이 함수에 필요한 최소 데이터"를 명시한다. `user` 전체를 받지 않으므로, 다른 컨텍스트(주문자 이름, 배송 수신인 등)에서도 재사용 가능하다.
+- 테스트 가능 구조: `User` 엔티티 전체를 만들 필요 없이 `{ firstName, lastName }` 만 넘기면 테스트할 수 있다. 의존하는 데이터가 최소화되어 테스트 설정이 단순해진다.
+
+#### 심화 미션 — A vs A' 비교 (calculatePrice)
+
+**시나리오:** 1년 뒤 요구사항 변경 시나리오 — PM 요청: "기존 10% 고정 할인 외에 정액 할인(5000원)과 첫 구매 할인(15%)이 추가됩니다."
+
+##### A — 인라인 버전 ❌
+
+```typescript
+function calculatePrice(order) {
+  let total = 0;
+  for (const item of order.items) {
+    total += item.price * item.qty;
+  }
+  if (order.coupon) total *= 0.9;
+  return total;
+}
+```
+
+##### A' — 분리 버전 ✅
+
+```typescript
+function sumItems(items: { price: number; qty: number }[]): number {
+  let subtotal = 0;
+  for (const item of items) {
+    subtotal += item.price * item.qty;
+  }
+  return subtotal;
+}
+
+function applyCoupon(subtotal: number, coupon?: unknown): number {
+  if (!coupon) return subtotal;
+  return subtotal * 0.9;
+}
+
+function calculatePrice(order: {
+  items: { price: number; qty: number }[];
+  coupon?: unknown;
+}): number {
+  const subtotal = sumItems(order.items);
+  const discounted = applyCoupon(subtotal, order.coupon);
+  return discounted;
+}
+```
+
+**변경 시나리오에서의 차이**
+
+- A에서의 변경: `if (order.coupon) total *= 0.9` 한 줄을 3-way 분기로 바꿔야 한다. `total`에 누적하는 구조라 할인 적용 순서를 바꾸거나, 다른 할인과 조합할 때 실수 가능성이 높다.
+- A'에서의 변경: `applyCoupon` 함수 하나만 열어서 쿠폰 타입별 분기를 넣으면 끝. `calculatePrice`는 건드리지 않는다. `sumItems`도 영향 없음.
+
+**A가 더 좋은 선택이 되는 경우** — 할인 정책이 이 하나뿐이고 앞으로도 바뀔 가능성이 거의 없는 경우. 함수 분리는 점프 비용이 생기므로, 변경이 없을 코드를 미리 쪼개면 오히려 읽기만 불편해진다.
+
+#### 심화 미션 — 실제 리팩터링 설계 (안전망 + 단계 분리)
+
+**현재 상황:** 테스트 없음, 긴 함수, 중복 로직, 기능 추가 예정
+
+**1. 가장 먼저 할 작업 — "안전망 확보"**
+
+테스트 없이 구조를 바꾸면 기존 동작이 깨졌는지 알 수 없다. 현재 동작을 고정하는 **특성화 테스트(Characterization Test)** 를 먼저 작성한다. 입력→출력 쌍을 실제로 돌려보고 스냅샷으로 잡아두는 방식이며, "올바른 동작"이 아니라 "현재 동작"을 기록하는 것이 목적이다.
+
+**2. 절대 하면 안 되는 작업 — "한 번에 대규모 재작성"**
+
+긴 함수를 한 PR에서 완전히 분해하거나, 중복 로직을 한꺼번에 공통 모듈로 추출하는 것. 변경 범위가 클수록 리뷰가 어렵고, 문제가 생겼을 때 원인 추적이 불가능하다. "리팩터링 PR"과 "기능 PR"도 절대 섞지 않는다.
+
+**단계별 PR 설계**
+
+| 단계 | 작업 | PR 크기 |
+| --- | --- | --- |
+| ① | 특성화 테스트 추가 | 테스트 파일만 |
+| ② | 긴 함수에서 순수 함수 1~2개 추출 + 해당 단위 테스트 | 함수 추출 + 테스트 |
+| ③ | 중복 로직 중 가장 빈번한 것 1개를 공통 함수로 추출 | 한 파일 변경 |
+| ④ | 기능 추가 (새 구조 위에 작성) | 새 코드 + 테스트 |
+| ⑤ | 남은 중복/구조 문제 정리 | 마무리 |
+
+각 단계가 독립 PR이고, 각 PR 머지 후 기존 테스트가 전부 통과해야 다음으로 넘어간다.
+
+**품질 기준**
+
+- 매 PR마다 CI 통과 필수: 특성화 테스트 + 단위 테스트가 깨지면 머지 불가.
+- 동작 변경 금지 원칙: 리팩터링 PR의 테스트 파일에 `expect` 값이 바뀌는 게 있으면 동작이 변한 것이므로 되돌린다.
+- 리뷰어에게 "이 PR은 리팩터링만"을 명시: PR 제목에 `[refactor]` 태그를 달고, 리뷰어는 "기능 변경이 섞여 있지 않은가"만 집중 확인한다.
+
+### 😈 Devil's Advocate
+
+<DevilsAdvocate
+  author={`"리팩터링은 '끝'이 없다 — 멈출 기준이 없으면 생산성을 잡아먹는다"`}
+  argument={`McConnell은 "코드를 건드릴 때마다 개선하라", "냄새가 나면 리팩터링하라"고 권한다. 그 자체로 옳은 말이지만, 반대 관점도 있다. 리팩터링에는 자연스러운 종료 조건이 없다. 훅을 분리하면 분리한 훅 사이의 인터페이스가 새로운 냄새를 풍기고, 그걸 고치면 또 다른 냄새가 보인다. "건드리는 코드는 항상 개선하라"는 규칙을 문자 그대로 따르면, 원래 하려던 기능 개발보다 리팩터링에 더 많은 시간을 쓰게 될 수 있다. 실무에서는 "이 리팩터링이 지금 당장의 작업을 더 쉽게 만드는가?"라는 기준으로 스코프를 한정하지 않으면, 리팩터링 자체가 새로운 형태의 yak shaving이 된다.`}
+/>
+
+## Chapter 25. Code-Tuning Strategies
+
+<Verdict
+  rating="🟡 변형"
+  rationale={`"추측하지 말고 측정하라", "전체 시간의 대부분은 코드의 극소수에서 소비된다(파레토)"는 전략은 그대로 유효해요. 다만 FE 성능 병목이 "코드 레벨 연산 비용"에서 "네트워크·렌더링·번들 사이즈"로 이동해서, 튜닝 대상 자체가 달라졌어요.`}
+/>
+
+### ✅ 체크리스트
+
+- [ ] 성능 문제를 추측이 아니라 측정(Lighthouse, Chrome Performance 탭, Web Vitals)으로 확인하고 있나요?
+- [ ] 최적화 전에 "이 최적화가 사용자가 체감할 수 있는 차이를 만드는가?"를 먼저 묻고 있나요?
+- [ ] 코드 레벨 튜닝보다 더 효과적인 상위 전략(번들 스플리팅, 이미지 최적화, SSR/ISR, CDN)을 먼저 검토했나요?
+- [ ] 최적화한 뒤 반드시 다시 측정하여 효과를 검증하고 있나요?
+
+측정·병목·단일 변경·롤백까지, 다섯 단계를 한 장의 성능 문제 시나리오에 적용해 볼게요.
+
+### 💻 React/TS 코드 예제
+
+#### 심화 미션 — 성능 문제 접근 전략 설계 (재현 → 측정 → 병목 → 단일 변경 → 롤백)
+
+**상황:** 사용자 제보 "화면이 느리다" / 개발자 체감 "API도 렌더도 느린 것 같다" / 원인 불명
+
+**1. 가장 먼저 해야 할 행동 — "재현 후 숫자 수집"**
+
+체감이 아니라 숫자를 확보한다. "느리다"가 2초인지 10초인지에 따라 접근이 완전히 달라진다. 사용자가 느리다고 보고한 화면을 실제로 열어서, 브라우저 DevTools의 Performance 탭과 Network 탭을 동시에 녹화한다.
+
+**2. 측정 방법**
+
+| 구간 | 도구 | 확인 지표 |
+| --- | --- | --- |
+| 네트워크 | DevTools Network, WebPageTest | TTFB, 응답 크기, 요청 수 |
+| API 서버 | 서버 로그, APM (Datadog 등) | 응답 시간 p50/p95, 쿼리 시간 |
+| 렌더링 | DevTools Performance, React Profiler | 총 렌더 시간, 불필요한 리렌더 횟수 |
+| 사용자 체감 | Lighthouse, Core Web Vitals | LCP, FID/INP, CLS |
+
+**3. 병목 판정 기준**
+
+전체 소요 시간 중 **60% 이상을 차지하는 단일 구간**이 병목이다. 예를 들어 전체 3초 중 API가 2.5초면 프론트 최적화는 의미 없고 API부터 봐야 한다. 만약 여러 구간이 고르게 느리면, 가장 큰 구간부터 순서대로 공략한다.
+
+**4. 왜 "한 번에 하나만" 변경해야 하는가**
+
+두 가지를 동시에 바꾸면 "어떤 변경이 효과가 있었는지" 알 수 없다. 효과가 없는 변경이 섞여 들어가면 코드 복잡도만 올라가고 성능은 그대로인 최악의 결과가 생긴다. **변경 → 측정 → 기록**을 한 사이클로 반복한다.
+
+**5. 롤백 전략**
+
+- 모든 성능 개선은 **피처 플래그** 뒤에 넣는다. 배포 후 지표가 나빠지면 플래그만 끄면 원복.
+- 피처 플래그가 과하면, 최소한 **독립 PR + 독립 커밋**으로 분리하여 `git revert` 한 방에 되돌릴 수 있게 한다.
+- 개선 전/후 지표를 PR 설명에 기록해 두면, 나중에 되돌릴지 판단하는 근거가 된다.
+
+### 😈 Devil's Advocate
+
+<DevilsAdvocate
+  author={`"FE 성능 병목은 코드가 아니라 네트워크와 렌더링이다"`}
+  argument={`McConnell의 코드 튜닝 전략은 "프로그램 실행 시간의 대부분은 코드의 극소수에서 소비된다"는 파레토 원칙에 기반한다. 이 원칙 자체는 여전히 맞지만, FE에서 "극소수의 핫스팟"은 for 루프나 알고리즘이 아니다. 사용자가 체감하는 느림의 대부분은 네트워크 왕복(API 응답 대기), 과도한 리렌더링, 큰 번들 사이즈, 이미지 미최적화에서 온다. 이 문제들은 코드 레벨 튜닝이 아니라 아키텍처 결정(SSR, 코드 스플리팅, 캐싱 전략)으로 풀어야 한다. McConnell의 "측정하고 튜닝하라"는 맞지만, 튜닝 대상이 "코드"가 아니라 "인프라와 전달 방식"이라는 점을 인식해야 한다.`}
+/>
+
+## Chapter 26. Code-Tuning Techniques
+
+<Verdict
+  rating="🔴 사망"
+  rationale={`루프 언롤링, 센티넬 탐색, 정수 나눗셈 대체 같은 코드 레벨 최적화는 C/C++ 시대의 유산이에요. JS 엔진(V8)의 JIT 최적화와 브라우저 렌더링 파이프라인이 병목인 FE 환경에서는 이 기법들 자체는 거의 의미가 없어요.`}
+/>
+
+### ✅ 체크리스트
+
+- [ ] useMemo, useCallback, React.memo를 측정 없이 습관적으로 쓰고 있지는 않나요? (메모이제이션 자체에도 비용이 있어요)
+  - 관련 ESLint: [`react-hooks/preserve-manual-memoization`](https://react.dev/reference/eslint-plugin-react-hooks)
+- [ ] 리렌더링 병목을 React DevTools Profiler로 실제 측정한 뒤에 최적화하고 있나요?
+  - 관련 ESLint: [`react-hooks/exhaustive-deps`](https://react.dev/reference/eslint-plugin-react-hooks/lints/exhaustive-deps)
+- [ ] 대량 데이터 렌더링 시 가상화(virtualization)를 적용하고 있나요?
+- [ ] 번들 사이즈를 bundle-analyzer로 확인하고, 불필요한 의존성을 제거하고 있나요?
+
+루프 문법부터 자료구조 선택, 5000개 리스트 튜닝까지 세 가지 층위에서 "측정 없는 최적화"의 함정을 따라가요.
+
+### 💻 React/TS 코드 예제
+
+#### 기본 미션 1 — 잘못된 튜닝 판별하기 (for vs for-of)
+
+##### 코드 A
+
+```typescript
+for (let i = 0; i < list.length; i++) {
+  const item = list[i];
+  total += item.price * item.qty;
+}
+```
+
+##### 코드 B
+
+```typescript
+for (const item of list) {
+  total += item.price * item.qty;
+}
+```
+
+**가독성:** 코드 B가 더 읽기 쉽다. 인덱스 변수 `i`가 사라지고, "list의 각 item에 대해"라는 의도가 문법 자체로 전달된다. 협업 코드베이스에서도 `for...of`가 유지보수에 유리하다. 인덱스 실수(off-by-one)가 원천적으로 불가능하고, 코드 리뷰 시 "이 `i`가 어디서 쓰이는지" 추적할 필요가 없다.
+
+**성능 차이**
+
+| 리스트 크기 | 차이가 의미 있는가 |
+| --- | --- |
+| 100 | 전혀 없음. 두 코드 모두 마이크로초 단위. |
+| 10,000 | 사실상 없음. 루프 오버헤드보다 내부 연산 비용이 지배적. |
+| 1,000,000 | 측정 가능한 차이가 나올 수 있으나, 이 규모에서는 루프 문법이 아니라 데이터 구조와 알고리즘 선택이 병목. |
+
+실제 서비스에서 이 차이가 체감 성능에 영향을 주는 경우는 거의 없다. V8 같은 모던 JS 엔진은 `for...of`를 내부적으로 인덱스 기반 루프와 동등하게 최적화하므로, 엔진 수준에서 차이가 소멸할 가능성이 높다.
+
+**결론:** 이 두 코드 사이의 선택은 성능 문제가 아니라 가독성 문제다. 코드 B를 기본으로 쓰고, 프로파일러가 이 루프를 병목으로 지목할 때만 대안을 고려하는 것이 올바른 순서다.
+
+#### 기본 미션 2 — 알고리즘 vs 미세 최적화 (Array.includes vs Set.has)
+
+##### 코드 1
+
+```typescript
+const exists = list.includes(target);   // O(n)
+```
+
+##### 코드 2
+
+```typescript
+const exists = set.has(target);          // O(1) 평균
+```
+
+**복잡도**
+
+- `Array.includes`: O(n) — 배열을 처음부터 끝까지 순회.
+- `Set.has`: O(1) 평균 — 해시 기반 조회.
+
+**UX 관점에서의 영향:** 단일 조회 1번이면 배열 1만 개 정도까지는 체감 차이가 없다. 그러나 **반복 조회**(필터링, 중복 제거, 목록 내 존재 확인을 루프 안에서 수행)에서는 O(n²) vs O(n)이 되어 데이터 수천 건만 되어도 초 단위 차이가 발생한다.
+
+**트레이드오프**
+
+| 관점 | Array | Set |
+| --- | --- | --- |
+| 메모리 사용량 | 요소만 저장 | 해시 테이블 오버헤드 추가 |
+| 초기 생성 비용 | 이미 배열이면 비용 0 | `new Set(list)`에 O(n) 소요 |
+| 데이터 변경 빈도 | 변경이 잦으면 배열이 더 단순 | 삽입/삭제는 빠르지만, 배열↔Set 변환이 반복되면 오히려 느림 |
+| 코드 복잡도 | `.filter`, `.map` 등 배열 메서드와 자연스럽게 연결 | Set 결과를 다시 배열로 바꿔야 하는 경우 코드가 번잡해짐 |
+
+**판단 기준:** "이 데이터에 대해 존재 확인을 몇 번 하는가?"가 핵심이다. 1~2번이면 배열로 충분하고, 루프 안에서 반복 조회하면 Set으로 바꾸는 것이 O(n) 수준의 알고리즘 개선이다. 이것은 미세 최적화가 아니라 **자료구조 선택**이며, 코드 한 줄 바꾸는 것과는 차원이 다른 성능 개선이다.
+
+#### 심화 미션 — 실제 성능 튜닝 설계 (리스트 5000개 + 입력 버벅임)
+
+**현재 상황:** 리스트 5000개 렌더링, 필터링 자주 발생, 입력 시 버벅임
+
+**피해야 할 안티패턴**
+
+- `React.memo`를 모든 컴포넌트에 무차별 적용. 비교 비용이 렌더 비용보다 비싼 경우가 많고, 진짜 병목이 아닌 곳에 쓰면 코드만 복잡해진다.
+- `for...of`를 `for (let i)`로 바꾸는 식의 루프 문법 미세 최적화. 5000개 수준에서 루프 문법은 병목이 아니다.
+- 측정 없이 "느릴 것 같으니까" 가상화를 먼저 도입하는 것. 원인이 렌더링 개수가 아니라 필터링 연산이면 가상화는 효과 없음.
+
+**먼저 해야 할 구조적 개선**
+
+1. **React Profiler로 원인 확인:** "입력 시 버벅임"이 (a) 필터 연산 자체가 느린 건지 (b) 필터 결과로 5000개가 전부 리렌더되는 건지 구분한다.
+2. **(a)인 경우:** 입력에 `debounce(300ms)`를 적용하여 매 키 입력마다 필터를 돌리지 않게 한다. 이것만으로 체감 성능이 극적으로 개선되는 경우가 많다.
+3. **(b)인 경우:** 필터 결과를 `useMemo`로 메모이제이션하여 입력 외의 상태 변경 시 불필요한 재계산을 방지한다. 그 다음 리스트 아이템 컴포넌트에 `React.memo`를 적용하여 변경되지 않은 아이템의 리렌더를 방지한다.
+
+**구조 개선 후 고려할 미세 최적화**
+
+- **가상화(virtualization):** `react-window` 등을 도입하여 화면에 보이는 아이템만 DOM에 마운트.
+- **필터 로직을 Web Worker로 분리:** 5000개에 복잡한 필터 조건이 겹칠 때, 메인 스레드 블로킹을 방지.
+- **룩업 자료구조 변경:** 필터 조건이 "특정 ID 포함 여부"라면 `Array.includes` → `Set.has`로 변경.
+
+**측정 방식**
+
+| 단계 | 도구 | 측정 항목 |
+| --- | --- | --- |
+| 렌더 성능 | React Profiler | 커밋 당 렌더 시간, 렌더된 컴포넌트 수 |
+| 입력 반응성 | DevTools Performance | 키 입력 → 화면 갱신까지의 총 시간(INP) |
+| 필터 연산 | `console.time` / `performance.mark` | 필터 함수 실행 시간(ms) |
+
+**비교 기준**
+
+- **핵심 지표:** 입력 → 리스트 갱신까지의 시간. 개선 전 수치를 기록해두고, 각 변경 후 동일 조건에서 재측정.
+- **목표:** 입력 반응이 100ms 이내(사용자가 "즉각적"으로 느끼는 임계치).
+- **기록 방식:** 매 PR에 "변경 내용 / 측정 환경 / Before 수치 / After 수치"를 표로 남긴다. 효과가 없는 변경은 되돌린다.
+
+### 😈 Devil's Advocate
+
+<DevilsAdvocate
+  author={`"이 장은 역사적 가치만 남았다 — 하지만 '측정 없이 최적화하지 말라'는 교훈은 FE에도 그대로 적용된다"`}
+  argument={`루프 언롤링, 센티넬 탐색, 곱셈을 덧셈으로 바꾸기 — McConnell이 소개하는 기법들은 C/C++ 컴파일러가 이 정도 최적화를 자동으로 해주지 못하던 시절의 것이다. 2026년 V8 엔진은 이런 최적화를 JIT 레벨에서 알아서 한다. 그래서 기법 자체는 FE에 쓸모가 없다. 하지만 이 장이 반복적으로 보여주는 한 가지 — "이 최적화가 효과가 있을 거라고 확신했는데, 측정해보니 오히려 느려졌다" — 라는 패턴은 FE에서도 매일 반복된다. useMemo를 붙이면 빨라질 거라고 생각하지만 측정하면 차이가 없거나 오히려 메모리만 쓴다. 기법은 죽었지만, "추측이 아니라 측정"이라는 이 장의 메타 교훈만큼은 2026년에도 살아있다.`}
+/>
+
+원칙과 코드 뒤에는 결국 "언제 멈출까"라는 질문이 남아요. 7명의 목소리로 이어 볼게요.
+
+## 💬 토론 질문 & 멤버 의견
+
+### 질문 1. 보이스카우트 규칙은 현실적인 규칙인가? 지키기 어려웠던 경험과 그 이유는?
+
+<MemberOpinion
+  author="Crong"
+  emoji="🐧"
+  opinion={`코드는 점차 산발되기 마련이지만 그것을 최대한 부정하려는 것이 중요함. 현실적으론 어렵지만 "더럽히지는 않게끔 한다"는 조건만 추가하면 가능하지 않을까 싶음. 이미 짜여진 코드를 개선하는 데 귀찮음/기시감이 드는 게 당연한데, 이걸 깨려면 긍정적인 마인드와 용기가 필요함.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="Leo"
+  emoji="🦁"
+  opinion={`Crong과 같은 방향 — 조건 하나만 추가하면 현실적임. 더 깨끗하게는 아니어도 더럽히지 않고 가는 정도면 충분. "기존 코드가 원래 그렇게 되어있으니까"에 얽매이지 않고 더 좋은 구조로 과감히 변경할 용기가 있어야 함.
+
+현업 경험: 기존 코드를 개선하는 일은 "내가 이상하게 짠 것도 아닌데 왜 에너지를 더 써서 개선해야 해?" 같은 생각이 들어서 장인 정신이 필요하다고 느낌.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="diego"
+  emoji="🐸"
+  opinion={`좋은 원칙이지만 현실에서 지키기 어려운 순간이 분명히 있음. 일정 압박과 맥락을 모를 때가 대표적. 이해도가 높은 코드에, 여유가 있을 때 적용 가능. 항상 지켜야 한다는 당위보다 지킬 수 있는 환경을 만드는 게 더 중요함.
+
+현업 경험: 왜 이렇게 작성됐는지 이유를 모르는 상황에서 섣불리 바꿨다가 의도치 않은 사이드이펙트를 낸 적 있음. 그 이후로 "이해 없는 정리는 오히려 위험하다"는 생각을 갖게 됨.`}
+  experience=""
+/>
+
+### 질문 2. 리팩터링은 별도의 작업으로 잡아야 하나, 기능 개발 중에 자연스럽게 해야 하나? 둘 중 하나만 고르고 변호하기.
+
+<MemberOpinion
+  author="Alice"
+  emoji="🐻"
+  opinion={`리팩터링 범위에 따라 다름. 영향 범위가 큰 작업은 별도로 잡아야 함. 작은 작업이라면 현재 기능 흐름을 가장 잘 이해하는 단계에서 자연스럽게 하는 편이 리스크와 테스트 측면에서 유리.
+
+현업 경험: Next page router → app router 리팩토링을 준비 중인데, 영향 범위가 워낙 넓어서 별도의 작업으로 잡고 진행 중.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="Crong"
+  emoji="🐧"
+  opinion={`별도 작업으로 잡는다 쪽이지만, 빠른 사이클에서 따로 산정하는 건 쉽지 않으니 기능 개발 중에 진행하되 그 목적을 명확히 두고 리뷰어가 혼동 없이 잘 설명해야 함.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="Leo"
+  emoji="🦁"
+  opinion={`기능 개발 중에 자연스럽게. 좋은 구조는 한 번에 몰아서 만드는 게 아니고 꾸준히 해나가야 함. 리팩터링을 별도 작업으로 잡으면 팀원 설득이 매우 어려움.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="diego"
+  emoji="🐸"
+  opinion={`기능 개발 중에 자연스럽게. 별도 작업으로 분리하면 일정상 밀리고 "당장 사용자에게 가치 주는 작업이 아니다"라는 인식 때문에 우선순위에서 계속 밀림. 기능 개발 중에는 맥락이 살아있는 상태에서 가장 효율적으로 리팩터링됨. 단, 리팩터링과 기능 변경을 커밋 단위로 분리해서 PR 범위가 안 커지게 해야 함.
+
+현업 경험: 리팩터링 티켓이 백로그에 쌓인 채 실행되지 않는 경우를 여러 번 목격.`}
+  experience=""
+/>
+
+### 질문 3. 리팩터링의 ROI는 어떻게 판단할까? 가독성 / 변경 용이성 / 버그 감소 / 성능 중에 무엇을 측정 가능한 지표로 가져갈 수 있을까?
+
+<MemberOpinion
+  author="Crong"
+  emoji="🐧"
+  opinion={`본인만의 ROI 공식: 0.8 × 비즈니스 임팩트 + 0.2 × (가독성 + 변경 용이성) / 투자 시간.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="Leo"
+  emoji="🦁"
+  opinion={`정량적으로 평가하기 어렵지만 변경에 드는 비용이 얼마나 줄었는지 + 동료의 심리적 안정감으로 봄. 예를 들어 특정 계층에 코드 추가하는 데 4시간 걸리던 게 30분으로 줄었다면 매우 임팩트 높은 리팩터링.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="diego"
+  emoji="🐸"
+  opinion={`변경 용이성이 가장 중요함. 리팩터링의 본질은 미래의 변경 비용을 낮추는 것. 가독성은 변경 용이성의 선행 조건이고, 버그 감소는 좋은 구조의 부산물. ROI 판단의 핵심 질문은 "지금 이 리팩터링을 안 하면, 다음 유사한 기능을 붙일 때 얼마나 더 오래 걸릴까?"`}
+  experience=""
+/>
+
+의견은 저마다 다르지만, 세 장이 한 흐름으로 이어진다는 감각은 공유돼요.
+
+:::note 이번 주차에서 생략된 섹션
+
+- **VotingBar**: 스터디원 투표 미작성 (votes 전원 null)
+- **BestPickCallout**: 베스트 토론 미선정 (content·reason 모두 null)
+
+:::

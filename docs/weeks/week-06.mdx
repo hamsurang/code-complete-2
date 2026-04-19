@@ -1,0 +1,573 @@
+---
+sidebar_position: 6
+title: "Week 6 — 5~6장: 구현 설계 · 클래스 설계"
+description: "함수랑 산악회가 Code Complete 5~6장을 2026년 FE 관점으로 묶어 읽은 6주차. 구현 설계 원칙부터 클래스/훅/모듈 경계까지 한 흐름으로."
+authors:
+  - Alice
+  - Leo
+  - zinii
+ai_assisted:
+  - summary.lead
+  - summary.bullets
+  - verdict.rationale
+  - checklist.text
+source: notion-pull
+source_page_id: 561de71a-aa9f-8296-b752-8162200acdb6
+week: 6주차
+chapters_in_book: [5, 6]
+extracted_at: 2026-04-19T22:30:00+09:00
+edited_at: 2026-04-19T23:10:00+09:00
+enhanced_at: 2026-04-19T23:40:00+09:00
+---
+
+import Verdict from '@site/src/components/Verdict';
+import MemberOpinion from '@site/src/components/MemberOpinion';
+import DevilsAdvocate from '@site/src/components/DevilsAdvocate';
+
+## 6주차 한눈에
+
+- 책 5~6장을 한 자리에서 다뤘어요
+- 챕터 네비:
+  - [Chapter 5. Design in Construction](#chapter-5-design-in-construction)
+  - [Chapter 6. Working Classes](#chapter-6-working-classes)
+
+구현 설계와 클래스 설계를 붙여 읽으면, "무엇을 감추고 무엇을 드러낼 것인가"라는 한 질문이 보여요.
+
+## 📝 묶음 요약
+
+5~6장은 "코드의 경계를 어디에 그을 것인가"를 두 각도에서 다루는 묶음이에요. 5장은 설계 원칙(복잡도 관리·정보 은닉·반복 설계)을 제시하고, 6장은 그 원칙을 구체 단위 — 원서에서는 클래스, FE에서는 훅과 모듈 — 로 옮기는 방법을 보여줘요.
+
+- 5장 — "복잡도 관리가 소프트웨어의 최우선 기술적 과제"라는 전제는 컴포넌트·상태·빌드가 얽힌 2026년 FE에서 더 절실해요.
+- 5장 — 정보 은닉·반복 설계·변경 가능성 격리 같은 원칙은 프레임워크가 레일을 깐 뒤에도 "어떤 결정을 어디에 숨길지"를 고르는 판단으로 살아남아요.
+- 6장 — ADT·캡슐화·응집도·결합도는 그대로 유효하지만, 적용 단위가 class에서 hook/component로 번역되면서 의미가 달라져요.
+- 6장 — 훅은 클래스보다 경계가 느슨해서 원칙만으로는 지키기 어렵고, TypeScript 반환 타입 같은 강제 장치가 함께 가야 해요.
+
+큰 그림을 훑었으니, 각 장의 판정과 체크, 그리고 실제 코드로 들어가 볼게요.
+
+## Chapter 5. Design in Construction
+
+<Verdict
+  rating="🟢 생존"
+  rationale={`한 줄 근거: "복잡도 관리가 소프트웨어의 최우선 기술적 과제다"라는 대전제는 컴포넌트 트리·상태 관리·빌드 설정이 얽힌 2026년 FE에서 오히려 더 절실해요 — 도구만 바뀌었을 뿐 문제의 본질은 그대로예요.`}
+/>
+
+### ✅ 체크리스트
+
+- [ ] "이 훅/컴포넌트가 숨기는 비밀이 무엇인가?"라는 질문에 한 문장으로 답할 수 있나요? (정보 은닉)
+- [ ] API 응답 구조나 외부 라이브러리 인터페이스처럼 변경 가능성이 높은 결정이 한 곳에 격리되어 있나요?
+- [ ] 컴포넌트 간 순환 import가 없나요?
+  - 관련 ESLint: [`import/no-cycle`](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-cycle.md)
+- [ ] 컴포넌트/훅 구조를 최소 2가지 이상 시도하고, 첫 번째가 아닌 더 나은 안을 선택했나요?
+- [ ] 설계가 lean한가요? 모든 추상화 레이어에 존재 이유가 있는지, "나중에 필요할 것 같아서" 만든 레이어는 없는지 살펴봤나요?
+
+다섯 가지 질문을 한 화면에서 어떻게 풀어내는지, PaymentsPage 리팩터로 확인해 볼게요.
+
+### 💻 React/TS 코드 예제
+
+#### 심화 미션 — 설계가 아쉬운 코드 분석 + 개선 (PaymentsPage)
+
+##### Before ❌
+
+```tsx
+function PaymentsPage() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetch("/api/payments")
+      .then((r) => r.json())
+      .then((list) => {
+        const filtered = list.filter((p) => p.status === "paid");
+        const sorted = filtered.sort((a, b) => b.createdAt - a.createdAt);
+        setData(sorted);
+      });
+  }, []);
+
+  return (
+    <div>
+      {data.map((p) => (
+        <div key={p.id}>{p.amount}</div>
+      ))}
+    </div>
+  );
+}
+```
+
+**Before의 문제**
+
+- 관심사 혼재: 하나의 useEffect 안에 API 호출, 필터링, 정렬이 전부 섞여 있다. "어디서 데이터를 가져오는가"와 "어떤 조건으로 가공하는가"가 구분되지 않는다.
+- 타입 부재: useState([])는 any[]이며, .status, .createdAt, .id, .amount 중 어느 하나라도 오타가 나면 런타임에서야 발견된다.
+- 테스트 불가: fetch가 컴포넌트 안에 하드코딩되어 있어서, 필터/정렬 로직만 단독으로 테스트할 수 없다.
+- 변경 취약: "환불 내역도 보여달라"는 요구사항이 오면 useEffect 콜백 내부를 직접 수정해야 한다.
+
+##### After ✅
+
+```tsx
+// ━━ Types ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+type PaymentStatus = "paid" | "refunded" | "failed";
+
+interface Payment {
+  id: string;
+  amount: number;
+  status: PaymentStatus;
+  createdAt: number;
+}
+
+// ━━ API 레이어: 데이터 패칭만 담당 ━━━━━━━━━
+
+async function fetchPayments(): Promise<Payment[]> {
+  const res = await fetch("/api/payments");
+  return res.json();
+}
+
+// ━━ 도메인 로직: 필터·정렬은 순수 함수 ━━━━
+
+function filterByStatus(payments: Payment[], status: PaymentStatus): Payment[] {
+  return payments.filter((p) => p.status === status);
+}
+
+function sortByLatest(payments: Payment[]): Payment[] {
+  return [...payments].sort((a, b) => b.createdAt - a.createdAt);
+}
+
+// ━━ 데이터 훅: 패칭 + 가공 조합 ━━━━━━━━━━━
+
+function usePaidPayments() {
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchPayments()
+      .then((list) => {
+        const paid = filterByStatus(list, "paid");
+        const sorted = sortByLatest(paid);
+        setPayments(sorted);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  return { payments, loading };
+}
+
+// ━━ UI: 데이터를 받아서 그리기만 ━━━━━━━━━━━
+
+function PaymentsPage() {
+  const { payments, loading } = usePaidPayments();
+
+  if (loading) return <div>Loading...</div>;
+
+  return (
+    <div>
+      {payments.map((payment) => (
+        <div key={payment.id}>{payment.amount.toLocaleString()}원</div>
+      ))}
+    </div>
+  );
+}
+```
+
+**개선 포인트**
+
+- API(fetchPayments), 도메인 로직(filterByStatus, sortByLatest), 조합(usePaidPayments), UI(PaymentsPage)가 각각 독립적.
+- filterByStatus와 sortByLatest는 순수 함수라 mock 없이 바로 단위 테스트 가능.
+- "환불 내역도 보여달라" → filterByStatus(list, "refunded")를 추가하거나, 필터 조건을 파라미터로 바꾸면 됨. 기존 함수는 건드리지 않음.
+
+### 😈 Devil's Advocate
+
+<DevilsAdvocate
+  author={`"설계 자유도의 상당 부분은 이미 프레임워크가 먹었다"`}
+  argument={`McConnell은 "여러 대안을 시도하고, 반복하고, 기록하라"고 한다. 하지만 2026년 FE에서 Next.js App Router, Remix 같은 프레임워크는 라우팅·데이터 페칭·렌더링 전략·파일 구조를 상당 부분 강제한다. 개발자가 실제로 설계 결정을 내리는 영역은 생각보다 좁다 — 상태 관리 경계, API 레이어 추상화, 컴포넌트 분리 기준 정도. 이 좁은 영역에 집중하는 게 "모든 곳에서 설계를 반복하라"보다 현실적이라는 관점이 있다. 반대로, 프레임워크가 정해준 레일 위에서도 "왜 이 구조인가"를 이해하지 못하면 프레임워크가 예상하지 못한 상황에서 무너진다는 관점도 있다. 설계가 필요 없어진 게 아니라, 설계가 필요한 지점이 달라진 것이다.`}
+/>
+
+## Chapter 6. Working Classes
+
+<Verdict
+  rating="🟡 변형"
+  rationale={`한 줄 근거: ADT·추상화·캡슐화·응집도·결합도의 원칙은 전부 살아있지만, FE에서 "클래스"의 자리를 커스텀 훅과 컴포넌트가 대체했기 때문에 적용 단위가 class에서 hook/component로 번역되어야 유효해요.`}
+/>
+
+### ✅ 체크리스트
+
+- [ ] 훅/컴포넌트의 인터페이스(props, 반환값)가 하나의 일관된 추상화를 제공하나요? 도메인 수준과 UI 구현 수준이 섞여있지는 않나요?
+  - 관련 ESLint: [`@typescript-eslint/explicit-module-boundary-types`](https://typescript-eslint.io/rules/explicit-module-boundary-types/)
+- [ ] 훅의 반환값들 사이에 논리적 연결이 있나요? 연결이 없다면 여러 개의 ADT가 하나에 뒤섞인 건 아닌지 봤나요?
+- [ ] 컴포넌트가 다른 컴포넌트/훅의 내부 구현을 알아야만 동작하는 곳은 없나요? (의미적 결합)
+  - 관련 ESLint: [`no-param-reassign`](https://eslint.org/docs/latest/rules/no-param-reassign)
+- [ ] 훅/컴포넌트를 분리할 때 "코드 줄 수"가 아니라 "책임의 수"를 기준으로 판단하고 있나요?
+  - 관련 ESLint: [`max-lines-per-function`](https://eslint.org/docs/latest/rules/max-lines-per-function)
+- [ ] 상속(extends) 대신 합성(composition)을 기본 전략으로 쓰고 있나요?
+
+클래스를 훅과 모듈로 번역하면 어떤 모양이 나오는지, 네 개의 Before/After로 따라가 볼게요.
+
+### 💻 React/TS 코드 예제
+
+#### 기본 미션 1 — 책임이 섞인 서비스 코드 분리 (ImageUploadService)
+
+##### Before ❌
+
+```tsx
+class ImageUploadService {
+  async upload(file) {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    logger.log("upload success");
+
+    alert("이미지 업로드 완료");
+
+    return data.url;
+  }
+}
+```
+
+**Before의 책임 섞임**
+
+| 책임 | 코드 위치 | 레이어 |
+| --- | --- | --- |
+| HTTP 요청 (FormData 구성, fetch) | `upload` 메서드 내부 | API / 인프라 |
+| 로깅 | `logger.log(...)` | 인프라 |
+| 사용자 알림 | `alert(...)` | UI |
+| 에러 처리 | 없음 (실패 시 무시) | — |
+
+alert는 UI 레이어에 속한다. 서비스 코드가 UI를 직접 호출하면, 같은 업로드 로직을 토스트 알림으로 바꾸거나 서버 사이드에서 재사용할 때 alert가 터진다.
+
+##### After ✅
+
+```tsx
+// ━━ Types ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+interface UploadResult {
+  url: string;
+}
+
+interface Logger {
+  log(message: string): void;
+}
+
+interface Notifier {
+  success(message: string): void;
+}
+
+// ━━ API 레이어: 업로드 요청만 담당 ━━━━━━━━━
+
+async function uploadImage(file: File): Promise<UploadResult> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch("/api/upload", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
+
+  return res.json();
+}
+
+// ━━ 기본 의존성 구현 ━━━━━━━━━━━━━━━━━━━━━━━
+
+const consoleLogger: Logger = {
+  log: (message) => console.log(message),
+};
+
+const alertNotifier: Notifier = {
+  success: (message) => alert(message),
+};
+
+// ━━ 커스텀 훅: 상태 관리 + 조합 ━━━━━━━━━━━
+
+interface UseImageUploadOptions {
+  logger?: Logger;
+  notifier?: Notifier;
+}
+
+function useImageUpload(options?: UseImageUploadOptions) {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const logger = options?.logger ?? consoleLogger;
+  const notifier = options?.notifier ?? alertNotifier;
+
+  const upload = async (file: File): Promise<string | null> => {
+    setUploading(true);
+    setError(null);
+
+    try {
+      const result = await uploadImage(file);
+      logger.log("upload success");
+      notifier.success("이미지 업로드 완료");
+      return result.url;
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "알 수 없는 오류";
+      setError(message);
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return { upload, uploading, error };
+}
+```
+
+**개선 포인트**
+
+- API 호출(uploadImage), 로깅(Logger), 알림(Notifier)이 각각 독립. 알림을 alert → 토스트로 바꾸려면 Notifier 구현체만 교체.
+- 업로드 상태(uploading, error)가 훅에서 관리되어 UI가 로딩/에러 상태를 자연스럽게 표현 가능.
+- 테스트 시 logger와 notifier에 mock을 넘기면 alert 없이 동작 검증 가능.
+
+#### 심화 미션 1 — 정보 은닉 설계 (editorState)
+
+##### Before ❌
+
+```tsx
+const editorState = {
+  content: "",
+  lastSavedAt: null,
+};
+
+function updateContent(text) {
+  editorState.content = text;
+}
+
+function markSaved() {
+  editorState.lastSavedAt = new Date();
+}
+```
+
+**Before의 문제**
+
+- 직접 변이 가능: 어디서든 editorState.content = "해킹"처럼 함수를 거치지 않고 상태를 바꿀 수 있다. 변경 경로를 추적할 수 없으므로, "누가 상태를 바꿨는지" 디버깅이 불가능하다.
+- 파생 상태 누락: "수정되었는데 아직 저장 안 됨(dirty)" 같은 파생 상태를 외부에서 매번 직접 비교해야 한다.
+- 변경 알림 없음: 상태가 바뀌어도 UI가 알 수 없다. React와 연결하려면 결국 별도의 연결 코드가 필요.
+
+##### After ✅
+
+```tsx
+// ━━ Types ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+interface EditorSnapshot {
+  readonly content: string;
+  readonly lastSavedAt: Date | null;
+  readonly isDirty: boolean;
+}
+
+type EditorListener = (snapshot: EditorSnapshot) => void;
+
+// ━━ 캡슐화된 에디터 상태 ━━━━━━━━━━━━━━━━━━
+
+function createEditorStore() {
+  let content = "";
+  let lastSavedAt: Date | null = null;
+  let savedContent = "";
+  const listeners: Set<EditorListener> = new Set();
+
+  function getSnapshot(): EditorSnapshot {
+    return {
+      content,
+      lastSavedAt,
+      isDirty: content !== savedContent,
+    };
+  }
+
+  function notify() {
+    const snapshot = getSnapshot();
+    listeners.forEach((fn) => fn(snapshot));
+  }
+
+  return {
+    getSnapshot,
+
+    subscribe(listener: EditorListener) {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+
+    updateContent(text: string) {
+      content = text;
+      notify();
+    },
+
+    markSaved() {
+      lastSavedAt = new Date();
+      savedContent = content;
+      notify();
+    },
+  };
+}
+
+// 사용
+const editorStore = createEditorStore();
+```
+
+**개선 포인트**
+
+- 클로저로 캡슐화: content, lastSavedAt, savedContent는 클로저 안에 갇혀 있어 외부에서 직접 접근 불가. 반드시 updateContent(), markSaved()를 통해서만 변경 가능.
+- 읽기 전용 스냅샷: getSnapshot()이 readonly 프로퍼티 객체를 반환하여, 외부에서 반환값을 수정해도 내부 상태에 영향 없음.
+- 파생 상태 내장: isDirty가 스냅샷에 포함되어, 외부에서 "현재 내용 ≠ 저장된 내용"을 직접 비교할 필요 없음.
+- 구독 패턴: subscribe로 변경 알림을 받을 수 있어 React의 useSyncExternalStore와 바로 연결 가능.
+
+#### 심화 미션 2 — 클래스 응집도 판단 (EditorManager vs 분리 구조)
+
+##### Before ❌
+
+```tsx
+class EditorManager {
+  saveDocument() {}
+  autoSave() {}
+  sendAnalytics() {}
+  showNotification() {}
+}
+```
+
+##### After ✅
+
+```tsx
+// ━━ 문서 저장: 하나의 관심사 ━━━━━━━━━━━━━━
+
+class DocumentService {
+  saveDocument() { /* ... */ }
+  autoSave() { /* ... */ }
+}
+
+// ━━ 분석 이벤트: 하나의 관심사 ━━━━━━━━━━━━
+
+class AnalyticsService {
+  sendAnalytics() { /* ... */ }
+}
+
+// ━━ 사용자 알림: 하나의 관심사 ━━━━━━━━━━━━
+
+class NotificationService {
+  showNotification() { /* ... */ }
+}
+```
+
+**응집도 비교**
+
+| 관점 | EditorManager (Before) | 분리 구조 (After) |
+| --- | --- | --- |
+| 응집도 | 낮음 — 저장, 분석, 알림이 한 클래스에 혼재 | 높음 — 각 클래스가 하나의 관심사만 담당 |
+| 변경 영향 | 알림 로직을 바꾸면 저장 로직도 같은 파일에서 수정 위험 | 알림을 바꿔도 `DocumentService`는 영향 없음 |
+| 테스트 | 알림 테스트를 위해 `EditorManager` 전체를 인스턴스화 | `NotificationService`만 단독 테스트 가능 |
+| 의존성 | 클래스가 커질수록 내부 의존성이 보이지 않게 엉킴 | 클래스 간 의존이 명시적 (필요할 때만 주입) |
+
+#### 프론트엔드에서의 선택: 클래스 대신 훅/모듈
+
+실제 React 프로젝트에서는 위 분리를 클래스가 아닌 다음 구조로 구현하는 것이 자연스럽다.
+
+##### After ✅
+
+```tsx
+// ━━ 커스텀 훅: 상태 + 사이드이펙트 ━━━━━━━
+
+function useDocumentSave(docId: string) {
+  const [saving, setSaving] = useState(false);
+
+  const save = async (content: string) => {
+    setSaving(true);
+    await saveDocument(docId, content);
+    setSaving(false);
+  };
+
+  return { save, saving };
+}
+
+// ━━ 서비스 모듈: 상태 없는 로직 ━━━━━━━━━━━
+
+// analytics.ts
+export function trackEvent(name: string, data: Record<string, unknown>) {
+  /* ... */
+}
+
+// ━━ 유틸 함수: 순수 변환 ━━━━━━━━━━━━━━━━━━
+
+// format.ts
+export function formatDocTitle(title: string, maxLen: number): string {
+  return title.length > maxLen ? `${title.slice(0, maxLen)}…` : title;
+}
+```
+
+**구조 비교**
+
+| 구조 | 용도 | 장점 |
+| --- | --- | --- |
+| **커스텀 훅** | 상태 + 사이드이펙트가 함께 필요할 때 (`useDocumentSave`) | React 생명주기와 자연스럽게 연결, 상태를 컴포넌트에 바인딩 |
+| **서비스 모듈** | 상태 없이 외부 호출만 할 때 (`analytics.ts`) | 프레임워크 무관, 어디서든 import해서 사용 가능 |
+| **유틸 함수** | 순수 변환 로직 (`format.ts`) | 테스트가 가장 쉬움, 의존성 없음 |
+
+클래스가 유리한 경우는 장기 생명주기 + 내부 상태 + 복잡한 초기화/정리가 동시에 필요할 때다. 예를 들어 WebSocket 연결 관리, Canvas/WebGL 렌더러, 복잡한 상태 머신 등은 클래스의 constructor/destroy 패턴이 훅의 useEffect cleanup보다 명확할 수 있다.
+
+### 😈 Devil's Advocate
+
+<DevilsAdvocate
+  author={`"훅은 클래스보다 경계가 모호하다 — ADT 원칙만으로는 부족할 수 있다"`}
+  argument={`McConnell은 "클래스는 ADT를 기반으로 하나의 일관된 추상화를 제공해야 한다"고 말한다. 클래스에는 public/private 접근 제어, 명시적 인터페이스, 상속 계층이 있어서 경계가 비교적 뚜렷하다. 하지만 커스텀 훅에는 이런 강제 장치가 없다. 훅은 그냥 함수고, 아무 state든 반환할 수 있고, 내부에서 다른 훅을 자유롭게 호출할 수 있다. 이 자유도 때문에 "하나의 ADT = 하나의 훅"이라는 원칙을 세워도, 시간이 지나면 편의상 관련 없는 state가 하나둘 추가되며 경계가 흐려지기 쉽다. 그래서 훅의 ADT 경계를 유지하려면 McConnell의 원칙 + TypeScript 반환 타입을 명시적으로 선언하는 관행이 함께 필요하다는 의견이 있다. 원칙만으로는 부족하고, 타입 시스템이 원칙을 강제하는 장치 역할을 해야 한다는 이야기다.`}
+/>
+
+코드는 결론이 아니에요. 같은 주제를 7명이 어떻게 겪고 결정했는지 이어서 들어 볼게요.
+
+## 💬 토론 질문 & 멤버 의견
+
+### 질문 1. 구현 과정에서 설계를 바꾸게 되는 대표적인 상황은? 다시 나눌 때의 기준은 "감"이 아니라 무엇이어야 하나?
+
+<MemberOpinion
+  author="Alice"
+  emoji="🐻"
+  opinion={`초기에 특정 기능에 맞춰 구현했지만 기획이 바뀌면서 유사한 기능이 여러 곳에서 재사용되어야 할 때 공통 컴포넌트/공통 로직으로 분리하는 방향으로 설계 수정. 기준은 UI 역할 / 비즈니스 로직 / 데이터 관리로 책임을 명확히 나누는 것. 공통 컴포넌트나 유틸을 만들 때는 도메인 지식이 들어가지 않도록 설계함.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="zinii"
+  emoji="🐣"
+  opinion={`기획이 바뀌거나 UI가 크게 변경될 때. 데이터 기준으로 구조를 다시 나눔 — 주는 데이터와 받는 데이터에 따라 화면에 보여야 할/숨겨야 할 요소가 달라지기 때문.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="Leo"
+  emoji="🦁"
+  opinion={`세 가지 상황에서 다시 나눔. ① 한 번에 인지해야 하는 정보의 양이 많아졌다고 느낄 때 ② 요구사항 변경에 따라 관심사가 많아졌을 때 ③ 중복 코드가 많아졌을 때. 단, DRY를 지킬 때 가장 중요한 것은 섣부른 추상화를 피하는 것 — 거짓된 중복, 우발적 중복에 속지 않기. 구조를 다시 나눌 땐 역할과 책임 기준으로.`}
+  experience=""
+/>
+
+### 질문 2. 결제 내역 목록 화면(조회/검색/필터/정렬/페이지네이션)을 어떤 단위로 코드를 나눌 것인가? 각자 선호하는 분리 방식은?
+
+<MemberOpinion
+  author="Alice"
+  emoji="🐻"
+  opinion={`검색/필터/정렬/페이지네이션은 공통 목록 기능이라 특정 도메인에 결합되지 않도록 UI와 기능을 분리. 이 네 가지는 서로 영향을 주는 상태이기 때문에 하나의 상태 관리 훅으로 묶음. 도메인 지식이 포함된 로직은 상위 레벨에서 관리.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="zinii"
+  emoji="🐣"
+  opinion={`어렵게 느껴짐 — 연관 항목들이 서로 엮여있으니까. 데이터 단위로 분리하는 게 맞을 것 같음.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="Leo"
+  emoji="🦁"
+  opinion={`네 단위로 나눔. ① UI를 그리는 코드 ② UI 관련 로직(상태 필터, 정렬, 페이지네이션) ③ 유저 행위(검색) ④ 서버 API 호출(결제 목록 조회, 검색).`}
+  experience=""
+/>
+
+의견은 저마다 다르지만, 두 장이 한 흐름으로 이어진다는 감각은 공유돼요.
+
+:::note 이번 주차에서 생략된 섹션
+
+- **VotingBar**: 스터디원 투표 미작성 (votes 전원 null)
+- **BestPickCallout**: 베스트 토론 미선정 (content·reason 모두 null)
+
+:::

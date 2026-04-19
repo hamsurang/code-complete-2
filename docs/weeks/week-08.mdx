@@ -1,0 +1,230 @@
+---
+sidebar_position: 8
+title: "Week 8 — 1~4장: 소프트웨어 구현이란 · 비유 · 문제 정의 · 요구사항"
+description: "함수랑 산악회가 Code Complete 1~4장을 2026년 FE 관점으로 한 호흡에 묶어 읽은 8주차. construction의 정의부터 비유, 사전 준비, 핵심 결정까지."
+authors:
+  - Alice
+  - Amber
+  - Leo
+ai_assisted:
+  - summary.lead
+  - summary.bullets
+  - verdict.rationale
+source: notion-pull
+source_page_id: 16dde71a-aa9f-83d2-a989-014e17b8d7de
+week: 8주차
+chapters_in_book: [1, 2, 3, 4]
+extracted_at: 2026-04-19T15:00:38+09:00
+edited_at: 2026-04-19T16:30:00+09:00
+enhanced_at: 2026-04-19T17:10:00+09:00
+---
+
+import Verdict from '@site/src/components/Verdict';
+import MemberOpinion from '@site/src/components/MemberOpinion';
+import DevilsAdvocate from '@site/src/components/DevilsAdvocate';
+
+## 8주차 한눈에
+
+- 책 1~4장을 한 자리에서 다뤘어요
+- 챕터 네비:
+  - [Chapter 1. Welcome to Software Construction](#chapter-1-welcome-to-software-construction)
+  - [Chapter 2. Metaphors for a Richer Understanding of Software Development](#chapter-2-metaphors-for-a-richer-understanding-of-software-development)
+  - [Chapter 3. Measure Twice, Cut Once: Upstream Prerequisites](#chapter-3-measure-twice-cut-once-upstream-prerequisites)
+  - [Chapter 4. Key Construction Decisions](#chapter-4-key-construction-decisions)
+
+네 장을 한 호흡으로 묶어서 보면, 이번 주의 관통선이 보여요.
+
+## 📝 묶음 요약
+
+1~4장은 "코딩을 시작하기 전에 무엇을 결정해야 하는가"를 네 각도로 조명하는 묶음이에요. 구현의 정의부터 비유, 사전 준비, 핵심 결정까지 따라가면, 2026년 FE 환경에서 무엇이 살아남고 무엇이 변형됐는지가 자연스럽게 드러나요.
+
+- 1장 — "construction(구현)"은 AI가 코드를 대신 쓰는 시대에도 반드시 일어나는 활동이라 정의 자체는 유효해요.
+- 2장 — 소프트웨어를 다른 활동에 빗대는 사고법은 살아 있지만, McConnell의 건축·농사 비유는 FE의 반복 배포 환경과 잘 맞지 않아 새 비유가 필요해요.
+- 3장 — "코딩 전 요구사항·아키텍처 점검"은 여전히 중요하지만, "100% 확정 후 시작"이 아니라 "불확실성 큰 부분부터 검증"으로 변형됐어요.
+- 4장 — 언어·컨벤션·프레임워크를 의식적으로 고르라는 원칙은 TypeScript strict, 린터 룰, 프레임워크 선택이 프로젝트 운명을 가르는 FE에서 더 절실해요.
+
+묶음 요약으로 큰 그림을 훑었다면, 이제 각 장의 판정과 체크로 들어가요.
+
+## Chapter 1. Welcome to Software Construction
+
+<Verdict
+  rating="🟢 생존"
+  rationale={`한 줄 근거: "construction은 소프트웨어 개발에서 유일하게 반드시 수행되는 활동이다"라는 정의는 AI가 코드를 생성하는 2026년에도 변하지 않아요 — 누가 쓰든, construction은 일어나요.`}
+/>
+
+### ✅ 체크리스트
+
+- [ ] "construction"에 포함되는 활동(상세 설계, 코딩, 디버깅, 단위 테스트, 통합)이 팀 안에서 명확히 인식되고 있나요? "코딩만 construction"이라고 여기고 있지는 않나요?
+- [ ] construction 외 활동(요구사항, 아키텍처, 프로젝트 관리)과의 경계를 팀원이 이해하고 있나요?
+
+판정과 체크리스트가 정답은 아니에요. 같은 원칙을 뒤집어 보는 관점도 함께 담아둬요.
+
+### 😈 Devil's Advocate
+
+<DevilsAdvocate
+  author="unknown"
+  argument={`"Construction의 경계는 이미 흐려졌다" — McConnell은 construction을 "상세 설계 + 코딩 + 디버깅 + 단위 테스트"로 정의하고, 요구사항이나 아키텍처와 구분한다. 깔끔한 분류지만, 2026년 FE 현실에서 이 경계는 흐릿하다. 컴포넌트를 만들면서 동시에 디자이너와 요구사항을 조율하고, PR을 올리면서 아키텍처를 바꾸고, 배포하면서 A/B 테스트로 요구사항을 검증한다. 활동들이 순차가 아니라 동시에 일어나는 환경에서, "construction은 여기서 시작하고 여기서 끝난다"는 구분이 실용적인 의미를 가지는지 질문할 수 있다. 오히려 "모든 활동이 construction 안에 녹아 있다"는 관점이 애자일 현실에 더 가까울 수 있다.`}
+/>
+
+## Chapter 2. Metaphors for a Richer Understanding of Software Development
+
+<Verdict
+  rating="🟡 변형"
+  rationale={`한 줄 근거: "소프트웨어 개발을 다른 활동에 비유해서 이해하라"는 사고법 자체는 유효하지만, McConnell이 제시한 비유(건축, 농사, 편지 쓰기)는 2026년 FE의 현실(반복 배포, 피처 플래그, A/B 테스트)과 거리가 생겨서 새로운 비유가 필요해요.`}
+/>
+
+### ✅ 체크리스트
+
+- [ ] 팀에서 소프트웨어 개발을 설명할 때 무의식적으로 쓰는 비유가 있나요? 그 비유가 잘못된 기대를 만들고 있지는 않나요? (예: "건물을 짓는다" → 한 번 완성하면 끝이라는 인식)
+- [ ] "도구 상자(toolbox)" 비유를 실천하고 있나요? — 단 하나의 방법론이나 패턴을 모든 문제에 적용하지 않고, 상황에 맞는 도구를 고르고 있나요?
+
+판정과 체크리스트가 정답은 아니에요. 같은 원칙을 뒤집어 보는 관점도 함께 담아둬요.
+
+### 😈 Devil's Advocate
+
+<DevilsAdvocate
+  author="unknown"
+  argument={`"비유는 이해를 돕지만, 잘못된 비유는 잘못된 의사결정을 만든다" — McConnell은 "건축" 비유를 가장 유용하다고 권하면서, 사전 계획의 중요성을 강조한다. 그런데 이 비유를 FE에 가져오면 위험한 면이 있다. 건축은 한 번 지으면 구조를 바꾸기 극히 어렵지만, 소프트웨어는 리팩터링이 가능하고, 피처 플래그로 실험하고, 롤백이 된다. 건축 비유를 내면화하면 "처음부터 완벽하게 설계해야 한다"는 압박이 생기고, 빠른 실험과 반복을 꺼리게 될 수 있다. FE에 더 맞는 비유는 오히려 "정원 가꾸기"일 수 있다 — 심고, 가지치고, 계절마다 다시 배치하는 지속적인 과정. 비유의 선택이 곧 팀의 개발 문화를 형성한다는 점에서, McConnell의 건축 비유를 무비판적으로 받아들이는 건 주의가 필요하다.`}
+/>
+
+## Chapter 3. Measure Twice, Cut Once: Upstream Prerequisites
+
+<Verdict
+  rating="🟡 변형"
+  rationale={`한 줄 근거: "요구사항과 아키텍처를 코딩 전에 확인하라"는 원칙은 유효하지만, 2026년 애자일/반복 배포 환경에서는 "100% 확정 후 시작"이 아니라 "핵심 불확실성부터 검증하고, 나머지는 반복하며 발견"하는 형태로 변형됐어요.`}
+/>
+
+### ✅ 체크리스트
+
+- [ ] 코딩 시작 전에 "이 기능이 풀려는 문제가 무엇인가?"가 한 문장으로 정의되어 있나요? (problem definition)
+- [ ] 요구사항이 변경될 때 변경 비용을 인식하고 있나요? — "나중에 바꾸면 되지"로 넘기지 않고, 변경의 영향 범위를 먼저 파악하나요?
+- [ ] 프로젝트 성격(반복적 vs 순차적)에 맞는 수준의 사전 준비를 하고 있나요? — MVP에 과도한 설계 문서를 쓰거나, 핵심 시스템에 설계 없이 바로 코딩하고 있지는 않나요?
+- [ ] 아키텍처 결정(상태 관리 방식, API 레이어, 렌더링 전략)이 코딩 전에 합의되어 있나요?
+
+판정과 체크리스트가 정답은 아니에요. 같은 원칙을 뒤집어 보는 관점도 함께 담아둬요.
+
+### 😈 Devil's Advocate
+
+<DevilsAdvocate
+  author="unknown"
+  argument={`"'두 번 재고 한 번 자르라'는 맞지만, FE에서 '재는 비용'은 생각보다 비싸다" — McConnell은 요구사항 오류를 나중에 잡을수록 비용이 10~100배 증가한다는 데이터를 제시한다. 인상적인 수치지만, 이 데이터의 출처는 대부분 대규모 워터폴 프로젝트(1970~90년대)다. 2026년 FE에서는 상황이 다를 수 있다. 프로토타입을 하루 만에 만들어 사용자에게 보여주고, 피드백을 받아 다음 날 수정하는 비용이 매우 낮다. 이런 환경에서 "코딩 전에 요구사항을 완벽히 정의하라"는 조언을 문자 그대로 따르면, 문서를 쓰는 데 일주일을 쓰고 정작 프로토타입을 보여줬을 때 "이게 아닌데"가 되는 상황이 벌어진다. 핵심은 "사전 준비의 양"이 아니라 "불확실성이 큰 부분부터 먼저 검증하라"이고, 그 검증 수단이 문서일 수도 있고 프로토타입일 수도 있다.`}
+/>
+
+## Chapter 4. Key Construction Decisions
+
+<Verdict
+  rating="🟢 생존"
+  rationale={`한 줄 근거: "코딩 시작 전에 언어·컨벤션·주요 실천법을 의식적으로 선택하라", "언어 안에서가 아니라 언어 속으로 프로그래밍하라"는 원칙은 TypeScript strict 설정, 린터 룰, 프레임워크 선택이 프로젝트 운명을 좌우하는 FE에서 더 절실해요.`}
+/>
+
+### ✅ 체크리스트
+
+- [ ] TypeScript strict 모드 ON/OFF, 린터 룰셋, 포맷터 설정이 프로젝트 시작 시점에 결정·문서화되어 있나요?
+  - 관련 ESLint: [`@typescript-eslint/no-explicit-any`](https://typescript-eslint.io/rules/no-explicit-any/)
+  - 관련 tsconfig: [`strict`](https://www.typescriptlang.org/tsconfig/#strict)
+- [ ] 프레임워크(Next.js, Remix 등)를 의식적으로 선택했나요, 아니면 "다들 쓰니까"로 선택했나요?
+- [ ] "언어 속으로 프로그래밍"하고 있나요? — TypeScript의 타입 시스템, React의 선언적 모델을 적극 활용하나요, 아니면 JavaScript 습관을 TypeScript 위에 얹고 있나요?
+- [ ] 팀의 코딩 컨벤션(네이밍, 파일 구조, import 순서 등)이 합의되어 있고, 자동 검사되나요?
+  - 관련 ESLint: [`@typescript-eslint/naming-convention`](https://typescript-eslint.io/rules/naming-convention/)
+  - 보조 ESLint: [`import/order`](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/order.md)
+
+판정과 체크리스트가 정답은 아니에요. 같은 원칙을 뒤집어 보는 관점도 함께 담아둬요.
+
+### 😈 Devil's Advocate
+
+<DevilsAdvocate
+  author="unknown"
+  argument={`"'언어 속으로 프로그래밍하라'는 맞지만, 언어가 1년마다 바뀌는 게 FE다" — McConnell은 "언어에 갇히지 말고, 언어가 제공하는 것 이상을 활용하라"고 권한다. 좋은 조언이지만, FE 생태계에 적용하면 독특한 긴장이 생긴다. React는 클래스 컴포넌트 → 함수형 컴포넌트 → Server Components로 패러다임이 몇 년 단위로 바뀌었다. Next.js는 Pages Router → App Router로 전환 중이다. "언어 속으로 깊이 프로그래밍"하면 할수록 특정 패러다임에 강하게 결합되어, 전환 비용이 커질 수 있다. 그래서 반대 관점도 있다 — 프레임워크 특유의 패턴에 깊이 들어가기보다, 프레임워크에 비의존적인 핵심 로직(도메인 로직, 유틸리티)을 최대한 분리해두는 것이 장기적으로 더 안전하다는 관점. "언어 속으로"와 "언어로부터 독립" 사이의 균형은 FE에서 늘 열려 있는 질문이다.`}
+/>
+
+원칙은 이론이에요. 실무에서 이게 어떻게 체감되는지 7명의 목소리로 이어 볼게요.
+
+## 💬 토론 질문 & 멤버 의견
+
+### 질문 1. "구현을 잘한다"는 건 어떤 의미인가? 코드 작성 능력? 의사결정? 둘이 분리될 수 있는 것?
+
+<MemberOpinion
+  author="Alice"
+  emoji="🐻"
+  opinion={`지금 요구사항을 정확히 해결하면서도 다음 변경에 무너지지 않는 코드를 만드는 것. 미래에 변경사항이 생겼을 때 쉽게 확장할 수 있는 구조를 만들되, 단순히 "확장 가능하게"가 아니라 현재 필요한 만큼만 적절히 추상화하는 균형 감각이 중요함. 설계와 구현은 섞여 있는 활동.
+
+현업 경험: 어드민 MVP를 만들 때 기획자 없이 직접 기획·설계·구현을 모두 맡았는데, 코드 작성 시간보다 "이 기능이 사용자에게 어떤 흐름으로 보여야 하는가"를 정리하는 시간이 더 길었음.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="Amber"
+  emoji="🦊"
+  opinion={`구현 과정의 활동에는 API 스펙 논의, 컴포넌트 변경 계획/논의, 아키텍처 계획, 코드 리뷰, 팀 내 변경사항 공유가 포함됨. 구현을 잘한다는 건 불필요한 부분 없이 확장성 있고 가독성 좋은 코드를 작성하는 것. 설계와 구현은 섞여 있음 — 구현하면서 계획 단계에서 못 본 이슈가 발견되고, 그에 따라 설계를 다시 수정하게 됨.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="Leo"
+  emoji="🦁"
+  opinion={`문제를 정확하게 이해하고 코드로 그대로 옮겨낼 수 있는 개발자가 구현을 잘하는 것. 잘못된 설계나 고생했던 작업은 99%가 문제를 제대로 이해하지 못하고 코드를 작성했기 때문. 평가하는 사람에 따라 정의가 다르긴 함 — PO는 빠른 구현, PD는 디자인 정확한 구현, QA는 버그 없는 구현, 동료는 복잡한 문제 해결.`}
+  experience=""
+/>
+
+### 질문 2. 빠르게 구현하면서 문제를 이해하는 방식은 잘못된 접근일까? 시간 압박 속에서 "충분한 문제 정의"는 가능한가?
+
+<MemberOpinion
+  author="Alice"
+  emoji="🐻"
+  opinion={`잘못된 접근이라고 생각하지 않음. 가끔은 빠르게 만들어보면서 사용자 관점으로 문제를 바라보게 되고, 그 과정에서 해결 방향이 보이는 경우도 있음. 문제 정의는 "이 기능이 왜 필요한지"를 팀원 과반 이상이 문제라고 생각하고 개선안에 공감할 때 충분함.
+
+현업 경험: 화면이 느리다는 피드백을 받고 렌더링 최적화에 집중했는데, 실제 원인은 API 응답 자체가 느린 것이어서 프론트 최적화가 체감 개선으로 이어지지 않았던 경험. 문제 정의를 충분히 하지 않으면 잘못된 방향에 시간을 씀.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="Amber"
+  emoji="🦊"
+  opinion={`잘못된 접근이 아니라 특정 상황에서는 최선의 접근일 수 있음. 핵심은 '탐색적 프로토타이핑'과 '프로덕션 코드 작성'을 명확히 구분하는 것. 프로토타입을 만들어서 문제를 이해하고, 그 코드를 버리고 새로 설계하는 것이 좋은 전략.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="Leo"
+  emoji="🦁"
+  opinion={`빠르게 구현하면서 이해하는 방식도 괜찮긴 한데 최소한의 문제 이해는 선행되어야 함. 문제 정의는 요구사항을 제대로 이해하는 정도까지 — 코드를 작성할 때 TODO를 모두 작성할 수 있을 정도면 충분함.`}
+  experience=""
+/>
+
+### 질문 3. 유행하는 기술을 도입하는 것의 장단점. 각자 잘한 선택 / 아쉬운 선택 한 가지씩.
+
+<MemberOpinion
+  author="Alice"
+  emoji="🐻"
+  opinion={`장점은 그 시점의 문제들을 개선하고 생태계가 같은 방향으로 모이기 때문에 빠르게 따라잡을 수 있다는 것. 단점은 deprecated 되면 굉장히 난감 — 의존하던 기능을 대체해야 하는 비용이 큼.
+
+현업 경험: 잘한 선택 — react-hook-form + zod 도입. 이전에 context 기반으로 폼 관리를 하다가 상태가 복잡해지고 에러 관리가 어려워져서 전환했더니 깔끔해짐. 아쉬운 선택 — 입력 필드 2~3개짜리 단순 검색/필터 폼에도 RHF를 적용한 것. "폼이니까 폼 라이브러리 써야지"라는 관성으로 도입했는데 controlled/uncontrolled가 섞이면서 오히려 복잡해짐. 결국 제거하고 useState 기반으로 자체 구현. 같은 라이브러리라도 맥락에 따라 잘한 선택/아쉬운 선택이 될 수 있다는 걸 배움.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="Amber"
+  emoji="🦊"
+  opinion={`장점은 활발한 커뮤니티/학습자료/채용 시 장점. 단점은 베스트 프랙티스가 정립되지 않고 브레이킹 체인지가 잦을 수 있음.
+
+현업 경험: Next.js App Router를 도입했는데 module federation을 사용할 수 없게 된 케이스.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="Leo"
+  emoji="🦁"
+  opinion={`유행하는 기술 도입도 일반적인 기술 도입과 동일하게 판단하면 됨. 풀려는 문제를 해당 기술이 얼마나 효과적으로 해결해주는지가 중요. MSA처럼 팀 역량이 매우 중요한 기술도 있어서, 팀이 제대로 다룰 수 없는 기술을 섣불리 도입하는 건 경계해야 함.
+
+현업 경험: 회사 FE가 혼자였을 때 React Query 적극 도입은 좋았지만, "그냥 써보고 싶다"는 이유로 sass/emotion/tailwindcss를 프로젝트별로 다르게 가져갔던 게 두고두고 별로였음.`}
+  experience=""
+/>
+
+의견은 저마다 다르지만, 네 장이 한 흐름으로 이어진다는 감각은 공유돼요.
+
+:::note 이번 주차에서 생략된 섹션
+
+- **VotingBar**: 스터디원 투표 미작성 (votes 전원 null)
+- **BestPickCallout**: 베스트 토론 미선정 (content·reason 모두 null)
+
+:::
