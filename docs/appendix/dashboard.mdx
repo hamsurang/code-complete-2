@@ -1,0 +1,64 @@
+---
+sidebar_position: 99
+title: "📊 스터디 대시보드"
+description: "7명의 판정·투표·토론 집계. 현재 단일 챕터(ch05) 부분 실행 결과예요."
+generated_at: 2026-04-19T00:45:00+09:00
+partial_run: true
+---
+
+import VerdictDistribution from '@site/src/components/VerdictDistribution';
+import BestDiscussions from '@site/src/components/BestDiscussions';
+
+:::caution 부분 실행 결과
+단일 챕터(ch05) 부분 실행 결과예요. 분포·평균은 사실상 단일 포인트라 스터디 전체 추세를 대표하지 않아요. 후속 챕터 추가 후 재집계가 필요해요.
+:::
+
+## 📊 판정 분포
+
+<VerdictDistribution alive={1} evolved={0} dead={0} />
+
+## 🏆 베스트 토론
+
+<BestDiscussions items={[]} />
+
+> ch05에서는 베스트 픽이 선정되지 않았어요 (`content`·`reason` 모두 null).
+
+## 🗳️ 투표 요약
+
+- **전체 평균:** 집계 불가 — 모든 챕터의 모든 멤버 votes가 null이에요.
+- **챕터별:**
+  - ch05: 투표 전원 미응답 (이번 장에서는 스터디원 투표가 생략됐어요)
+- **멤버별:** 평균 계산 대상 없음 — 전 멤버 미응답.
+
+## 📚 포함된 챕터
+
+| 장 | 제목 | 주차 | 판정 | 평균 |
+|---|---|---|---|---|
+| 5 | 구현 과정에서의 설계 | 6주차 | 🟢 생존 | — (votes 전원 null) |
+
+## 😈 Devil's Advocate 모음
+
+- **ch05** (author: unknown) — 설계 자유도의 상당 부분은 이미 프레임워크가 먹었다. McConnell은 "여러 대안을 시도하고, 반복하고, 기록하라"고 한다. 하지만 2026년 FE에서 Next.js App Router, Remix 같은 프레임워크는 라우팅·데이터 페칭·렌더링 전략·파일 구조를 상당 부분 강제한다. 개발자가 실제로 설계 결정을 내리는 영역은 생각보다 좁다 — 상태 관리 경계, API 레이어 추상화, 컴포넌트 분리 기준 정도. 이 좁은 영역에 집중하는 게 "모든 곳에서 설계를 반복하라"보다 현실적이라는 관점이 있다. 반대로, 프레임워크가 정해준 레일 위에서도 "왜 이 구조인가"를 이해하지 못하면 프레임워크가 예상하지 못한 상황에서 무너진다는 관점도 있다. 설계가 필요 없어진 게 아니라, 설계가 필요한 지점이 달라진 것이다.
+
+## 👥 멤버별 활동
+
+| 멤버 | 의견 작성 | Devil's Advocate | 투표 제출 |
+|---|---|---|---|
+| Alice | 1 | 0 | 0 |
+| Amber | 0 | 0 | 0 |
+| Crong | 0 | 0 | 0 |
+| diego | 0 | 0 | 0 |
+| Jay | 0 | 0 | 0 |
+| Leo | 1 | 0 | 0 |
+| zinii | 1 | 0 | 0 |
+
+## ⚠️ 경고
+
+- `VOTES_ALL_NULL` — ch05 votes 전원 null. overall/per_chapter/per_member 평균 계산에서 모두 제외.
+- `BEST_PICK_NOT_SELECTED` — ch05 best_pick.content / reason 모두 null. best_discussions에서 제외.
+- `DEVILS_ADVOCATE_AUTHOR_UNKNOWN` — devils_advocate.author == 'unknown'. 멤버 활동 집계에서 제외.
+- `SINGLE_CHAPTER_DEGENERATE` — 1개 챕터만 집계됨. 분포·순위·평균은 통계적 의미 없음.
+
+---
+
+_aggregator v1.0 · human_only_hash_verified: `2e9fcdaa6c0febcc6d96d87cd88b404475767b9e4ff32a2f4b374166576970ab`_

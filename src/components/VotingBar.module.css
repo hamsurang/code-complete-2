@@ -1,0 +1,87 @@
+.voting {
+  margin: 1.25rem 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 8px;
+  background-color: var(--ifm-background-surface-color);
+}
+
+.summary {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.average {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--ifm-color-primary);
+}
+
+.max {
+  font-size: 0.9rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.track {
+  width: 100%;
+  height: 0.5rem;
+  border-radius: 999px;
+  background-color: var(--ifm-color-emphasis-200);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background-color: var(--ifm-color-primary);
+  border-radius: inherit;
+  transition: width 200ms ease;
+}
+
+.ticks {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0;
+  margin: 0.75rem 0 0;
+}
+
+.tick,
+.tickEmpty {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.tick {
+  background-color: var(--ifm-color-emphasis-100);
+  color: var(--ifm-font-color-base);
+}
+
+.tickEmpty {
+  background-color: transparent;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.tickMember {
+  font-weight: 500;
+}
+
+.tickScore {
+  font-variant-numeric: tabular-nums;
+}
+
+.fallback {
+  display: inline-block;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  background-color: var(--ifm-color-emphasis-100);
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.9rem;
+}
