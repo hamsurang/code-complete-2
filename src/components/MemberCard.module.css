@@ -1,0 +1,56 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 12px;
+  background: var(--ifm-background-surface-color);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: var(--ifm-color-primary);
+}
+
+.emoji {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.name {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.realName {
+  font-weight: 400;
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.95rem;
+}
+
+.role {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ifm-color-emphasis-800);
+  flex: 1;
+}
+
+.links {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.links a {
+  text-decoration: none;
+}
+
+.placeholder {
+  color: var(--ifm-color-emphasis-500);
+  cursor: not-allowed;
+}

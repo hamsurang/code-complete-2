@@ -60,6 +60,10 @@ export default [
     ...mdx.flat,
     rules: {
       ...mdx.flat.rules,
+      // MDX의 `import Foo from ...`은 본문 JSX(<Foo />)에서 쓰이지만
+      // ESLint가 그 사용을 추적하지 못해 false-positive `no-unused-vars`가 발생한다.
+      // MDX 파일에 한해 룰을 비활성화한다.
+      'no-unused-vars': 'off',
     },
   },
 ];
