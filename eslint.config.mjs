@@ -8,6 +8,7 @@ import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
 import react from 'eslint-plugin-react';
 import * as mdx from 'eslint-plugin-mdx';
+import globals from 'globals';
 
 export default [
   {
@@ -20,6 +21,16 @@ export default [
     ],
   },
   js.configs.recommended,
+  {
+    // Node 스크립트: scripts/*.js, *.config.{js,mjs,ts}
+    // Why: verify-human-only-hash.js 등 Node 런타임 전제 파일에 process/console globals 공급.
+    files: ['scripts/**/*.{js,mjs,cjs}', '*.config.{js,mjs,cjs,ts}'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
@@ -49,6 +60,10 @@ export default [
     ...mdx.flat,
     rules: {
       ...mdx.flat.rules,
+      // MDX의 `import Foo from ...`은 본문 JSX(<Foo />)에서 쓰이지만
+      // ESLint가 그 사용을 추적하지 못해 false-positive `no-unused-vars`가 발생한다.
+      // MDX 파일에 한해 룰을 비활성화한다.
+      'no-unused-vars': 'off',
     },
   },
 ];

@@ -23,7 +23,9 @@ if (!inputPath || !outputPath) {
 }
 
 if (!existsSync(inputPath) || !existsSync(outputPath)) {
-  console.error(`ERROR [missing-file] input=${existsSync(inputPath)} output=${existsSync(outputPath)}`);
+  console.error(
+    `ERROR [missing-file] input=${existsSync(inputPath)} output=${existsSync(outputPath)}`,
+  );
   process.exit(3);
 }
 

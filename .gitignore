@@ -23,3 +23,5 @@ yarn-error.log*
 /_workspace
 # 로컬 감사 리포트
 /harness-report-*.md
+# 로컬 실행 플랜 (실행 안내서, PR 본문에 녹임)
+/docs/plans/

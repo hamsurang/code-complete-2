@@ -1,0 +1,1242 @@
+---
+sidebar_position: 2
+title: "Week 2 — 31~34장: 레이아웃 · 자기 설명 코드 · 개발자 성격 · 장인정신"
+description: "함수랑 산악회가 Code Complete 31~34장을 2026년 FE 관점으로 한 호흡에 묶어 읽은 2주차. 레이아웃과 자기 설명 코드에서 개발자 성격과 장인정신까지."
+authors:
+  - Alice
+  - Amber
+  - Crong
+  - diego
+  - Leo
+ai_assisted:
+  - summary.lead
+  - summary.bullets
+  - verdict.rationale
+  - checklist.text
+source: notion-pull
+source_page_id: cd0de71a-aa9f-82bf-bce9-813c189c3181
+week: 2주차
+chapters_in_book: [31, 32, 33, 34]
+extracted_at: 2026-04-19T15:44:00+09:00
+edited_at: 2026-04-19T17:10:00+09:00
+enhanced_at: 2026-04-19T17:40:00+09:00
+---
+
+import Verdict from '@site/src/components/Verdict';
+import MemberOpinion from '@site/src/components/MemberOpinion';
+import DevilsAdvocate from '@site/src/components/DevilsAdvocate';
+
+## 2주차 한눈에
+
+- 책 31~34장을 한 자리에서 다뤘어요
+- 챕터 네비:
+  - [Chapter 31. Layout and Style](#chapter-31-layout-and-style)
+  - [Chapter 32. Self-Documenting Code](#chapter-32-self-documenting-code)
+  - [Chapter 33. Personal Character](#chapter-33-personal-character)
+  - [Chapter 34. Themes in Software Craftsmanship](#chapter-34-themes-in-software-craftsmanship)
+
+네 장을 한 호흡으로 읽으면 "코드를 쓰는 사람"이라는 한 주제가 각도를 바꿔가며 되풀이돼요.
+
+## 📝 묶음 요약
+
+31~34장은 "코드를 쓰는 사람"이라는 한 주제를 네 각도 — 레이아웃, 자기 설명 코드, 개발자의 성격, 장인정신 — 로 되풀이하는 묶음이에요. Prettier와 TypeScript가 기계적 품질을 대신 잡아주는 2026년 FE에서도, 무엇이 여전히 개발자의 몫으로 남아 있는지가 이 네 장의 진짜 주제예요.
+
+- 31장 — "레이아웃은 코드의 논리 구조를 드러낸다"는 원칙은 살아 있지만, 개발자의 역할은 직접 정렬에서 도구 설정 합의로 이동했어요.
+- 32장 — "좋은 코드가 최고의 문서다"는 TypeScript 덕분에 더 강해졌고, 주석은 "왜(why)"만 남기는 방향으로 좁혀졌어요.
+- 33장 — 겸손·호기심·지적 정직성은 AI가 "어떻게"를 대신할수록 "무엇이 맞는지" 판단하는 인간의 병목이 되면서 오히려 중요해졌어요.
+- 34장 — 복잡도 정복, 사람 먼저 컴퓨터 나중, 언어 속으로 프로그래밍하기 — 세 테마는 프레임워크가 바뀌어도 변하지 않는 구현의 불변 원칙이에요.
+
+묶음 요약으로 뼈대를 잡았으니 각 장의 판정과 체크, 그리고 실제 코드로 내려가 볼게요.
+
+## Chapter 31. Layout and Style
+
+<Verdict
+  rating="🟡 변형"
+  rationale={`"좋은 레이아웃은 코드의 논리 구조를 드러낸다"는 여전히 유효하지만, Prettier와 ESLint가 이 판단을 사람 대신 해주면서 개발자의 역할이 "직접 정렬"에서 "도구 설정 합의"로 이동했어요.`}
+/>
+
+### ✅ 체크리스트
+
+- [ ] 코드 포맷터가 프로젝트에 설정되어 있고, 포맷팅되지 않은 코드가 머지되지 않는 구조인가요? (pre-commit hook, CI 등)
+- [ ] 팀 컨벤션이 포맷터 설정 파일로 문서화되어 있고, 리뷰 때 스타일 논쟁이 일어나지 않나요?
+- [ ] 린터와 포맷터 사이에 규칙 충돌이 없나요?
+
+레이아웃만 다듬어도 계산식 하나가 얼마나 또렷해지는지 주문 합계 함수로 비교해 볼게요.
+
+### 💻 React/TS 코드 예제
+
+#### 기본 미션 1 — 레이아웃만으로 논리 구조 드러내기
+
+##### Before ❌
+
+```typescript
+type Item = { id: string; name: string; qty: number; stock: number; price: number };
+type Order = { id: string; items: Item[]; coupon?: { type: "rate" | "flat"; value: number }; isPaid: boolean };
+
+function calcTotal(order?: Order) {
+  if (!order) return 0;
+  let total = 0;
+  if (order.isPaid) {
+    for (const item of order.items) {
+      if (item.qty > 0) {
+        if (item.stock >= item.qty) {
+          total += item.price * item.qty;
+        } else {
+          total += item.price * item.stock;
+        }
+      }
+    }
+    if (order.coupon) {
+      if (order.coupon.type === "rate") total = total * (1 - order.coupon.value);
+      else total = total - order.coupon.value;
+      if (total < 0) total = 0;
+    }
+  }
+  return total;
+}
+```
+
+##### After ✅
+
+```typescript
+type Item = {
+  id: string;
+  name: string;
+  qty: number;
+  stock: number;
+  price: number;
+};
+
+type Coupon = { type: "rate" | "flat"; value: number };
+
+type Order = {
+  id: string;
+  items: Item[];
+  coupon?: Coupon;
+  isPaid: boolean;
+};
+
+function calcTotal(order?: Order): number {
+  if (!order) return 0;
+  if (!order.isPaid) return 0;
+
+  // — 1) 구매 가능 수량 기준 소계 —
+  let subtotal = 0;
+
+  for (const item of order.items) {
+    if (item.qty <= 0) continue;
+
+    const availableQty = Math.min(item.qty, item.stock);
+    subtotal += item.price * availableQty;
+  }
+
+  // — 2) 쿠폰 할인 적용 —
+  if (!order.coupon) return subtotal;
+
+  const discounted =
+    order.coupon.type === "rate"
+      ? subtotal * (1 - order.coupon.value)
+      : subtotal - order.coupon.value;
+
+  return Math.max(discounted, 0);
+}
+```
+
+**개선 포인트**
+
+- Guard clause: `!order`와 `!order.isPaid`를 최상단에서 즉시 반환하여 전체 함수를 감싸던 `if (order.isPaid)` 블록 한 단계를 제거했다.
+- `continue`로 중첩 제거: `item.qty > 0` 조건을 뒤집어 `item.qty <= 0`이면 `continue`하도록 바꿔서 루프 내부의 중첩을 1단계 줄였다.
+- 의미 있는 지역 변수: `total` → `subtotal`(할인 전 소계), `Math.min(item.qty, item.stock)` → `availableQty`(실제 구매 가능 수량)로 이름만 보고도 의도를 알 수 있다.
+- 빈 줄로 논리 단위 구분: "소계 계산 → 쿠폰 할인 적용"이라는 두 단계를 빈 줄과 간결한 구간 주석으로 시각적으로 분리했다.
+- `Math.max`로 의도 명시: `if (total < 0) total = 0` 대신 `Math.max(discounted, 0)`으로 "음수 방지"라는 정책을 한 표현식에 담았다.
+
+### 😈 Devil's Advocate
+
+<DevilsAdvocate
+  author={`"레이아웃 논쟁에 쓸 시간이 있으면 코드를 한 줄이라도 더 써라"`}
+  argument={`2026년 FE 팀에서 이 논의가 실제로 필요한가? Prettier를 켜면 끝이다. 중괄호 위치도, 들여쓰기도, 연속된 할당문의 정렬도 전부 도구가 결정한다. 남는 건 "Prettier를 쓸 것인가 말 것인가"라는 단 하나의 의사결정뿐이고, 그 답은 이미 "쓴다"로 합의된 상태다.`}
+/>
+
+## Chapter 32. Self-Documenting Code
+
+<Verdict
+  rating="🟢 생존"
+  rationale={`"좋은 코드가 최고의 문서다"는 TypeScript의 타입 시스템이 자기 문서화를 언어 레벨에서 강제하면서 더 단단해졌고, 주석의 역할은 "왜(why)"에 집중하는 방향으로 좁혀졌어요.`}
+/>
+
+### ✅ 체크리스트
+
+- [ ] 컴포넌트·훅·함수 이름만 보고 "이게 무엇을 하는지" 바로 알 수 있나요?
+  - 관련 ESLint: [`id-length`](https://eslint.org/docs/latest/rules/id-length)
+- [ ] Props 타입이 interface로 명시되어 있고, 각 prop의 역할이 이름에서 드러나나요?
+  - 관련 ESLint: [`@typescript-eslint/consistent-type-definitions`](https://typescript-eslint.io/rules/consistent-type-definitions/)
+- [ ] 매직 넘버나 문자열 대신 named constant 또는 enum을 쓰고 있나요?
+  - 관련 ESLint: [`no-magic-numbers`](https://eslint.org/docs/latest/rules/no-magic-numbers)
+- [ ] 복잡한 비즈니스 로직을 이름이 명확한 함수로 추출해서 코드가 의도를 스스로 설명하나요?
+
+주석과 변수 이름을 걷어내는 것에서 시작해, 나쁜 추상화와 좋은 추상화의 차이, 마지막엔 위젯 하나의 구조 분리까지 세 단계로 따라가요.
+
+### 💻 React/TS 코드 예제
+
+#### 기본 미션 2 — "나쁜 주석"을 지우고 "좋은 이름/구조"로 바꾸기
+
+##### Before ❌
+
+```typescript
+// 이 함수는 유저가 성인인지 확인함
+// age가 20 이상이면 true임
+export function checkUser(user: { age?: number; isVerified?: boolean }) {
+  // age가 없으면 false
+  if (user.age == null) return false;
+
+  // 본인 인증이 안됐으면 false
+  if (!user.isVerified) return false;
+
+  // 성인인지 확인
+  if (user.age >= 20) return true;
+  return false;
+}
+```
+
+##### After ✅
+
+```typescript
+const ADULT_AGE_THRESHOLD = 20;
+
+interface VerifiableUser {
+  age?: number;
+  isVerified?: boolean;
+}
+
+export function isVerifiedAdult(user: VerifiableUser): boolean {
+  if (user.age == null) return false;
+  if (!user.isVerified) return false;
+
+  return user.age >= ADULT_AGE_THRESHOLD;
+}
+```
+
+**개선 포인트**
+
+- 모든 주석을 삭제했다. 함수 이름 `isVerifiedAdult`가 "본인인증 완료 + 성인 여부 확인"이라는 의도를 직접 전달한다.
+- 매직 넘버 20을 `ADULT_AGE_THRESHOLD` 상수로 추출해 "왜 20인가"를 이름으로 설명한다.
+- `if (age >= 20) return true; return false;` 패턴을 `return user.age >= ADULT_AGE_THRESHOLD`로 단순화했다.
+- 인라인 타입 리터럴 대신 `VerifiableUser` 인터페이스를 분리해 타입 이름 자체가 "인증 가능한 유저"임을 드러낸다.
+
+#### 심화 미션 1 — "잘못된 추상화"를 만들고, 다시 고치기
+
+##### Original (출발점)
+
+```typescript
+type CartItem = { id: string; price: number; qty: number };
+type Shipping = { baseFee: number; freeOver: number };
+type Coupon = { type: "rate" | "flat"; value: number };
+
+export function checkoutTotal(
+  items: CartItem[],
+  shipping: Shipping,
+  coupon?: Coupon
+) {
+  let subtotal = 0;
+  for (const item of items) subtotal += item.price * item.qty;
+
+  let shippingFee = shipping.baseFee;
+  if (subtotal >= shipping.freeOver) shippingFee = 0;
+
+  let discounted = subtotal;
+  if (coupon) {
+    if (coupon.type === "rate") discounted = subtotal * (1 - coupon.value);
+    else discounted = subtotal - coupon.value;
+    if (discounted < 0) discounted = 0;
+  }
+
+  return discounted + shippingFee;
+}
+```
+
+##### Before ❌ — 나쁜 추상화 (코드 형태 기준 분해)
+
+```typescript
+type CartItem = { id: string; price: number; qty: number };
+type Shipping = { baseFee: number; freeOver: number };
+type Coupon = { type: "rate" | "flat"; value: number };
+
+function sum(arr: number[]): number {
+  return arr.reduce((a, b) => a + b, 0);
+}
+
+function mapToLinePrice(items: CartItem[]): number[] {
+  return items.map((i) => i.price * i.qty);
+}
+
+function calcSubtotal(items: CartItem[]): number {
+  return sum(mapToLinePrice(items));
+}
+
+function resolveShipping(subtotal: number, shipping: Shipping): number {
+  return subtotal >= shipping.freeOver ? 0 : shipping.baseFee;
+}
+
+function resolveDiscount(subtotal: number, coupon?: Coupon): number {
+  if (!coupon) return subtotal;
+  const d = coupon.type === "rate"
+    ? subtotal * (1 - coupon.value)
+    : subtotal - coupon.value;
+  return d < 0 ? 0 : d;
+}
+
+function merge(discounted: number, shippingFee: number): number {
+  return discounted + shippingFee;
+}
+
+export function checkoutTotal(
+  items: CartItem[],
+  shipping: Shipping,
+  coupon?: Coupon
+): number {
+  const subtotal = calcSubtotal(items);
+  const shippingFee = resolveShipping(subtotal, shipping);
+  const discounted = resolveDiscount(subtotal, coupon);
+  return merge(discounted, shippingFee);
+}
+```
+
+##### After ✅ — 좋은 추상화 (비즈니스 정책 기준 분해)
+
+```typescript
+type CartItem = { id: string; price: number; qty: number };
+type Shipping = { baseFee: number; freeOver: number };
+type Coupon = { type: "rate" | "flat"; value: number };
+
+// ── 가격 정책: 각 아이템의 소계 합산 ──
+function itemSubtotal(items: CartItem[]): number {
+  let subtotal = 0;
+  for (const item of items) subtotal += item.price * item.qty;
+  return subtotal;
+}
+
+// ── 배송 정책: 일정 금액 이상이면 무료 ──
+function shippingFee(subtotal: number, shipping: Shipping): number {
+  return subtotal >= shipping.freeOver ? 0 : shipping.baseFee;
+}
+
+// ── 할인 정책: 정률 or 정액, 음수 방지 ──
+function applyDiscount(subtotal: number, coupon?: Coupon): number {
+  if (!coupon) return subtotal;
+
+  const discounted =
+    coupon.type === "rate"
+      ? subtotal * (1 - coupon.value)
+      : subtotal - coupon.value;
+
+  return Math.max(discounted, 0);
+}
+
+// ── 결제 총액: 정책을 조합하는 유일한 지점 ──
+export function checkoutTotal(
+  items: CartItem[],
+  shipping: Shipping,
+  coupon?: Coupon
+): number {
+  const subtotal = itemSubtotal(items);
+  return applyDiscount(subtotal, coupon) + shippingFee(subtotal, shipping);
+}
+```
+
+**나쁜 추상화 vs 좋은 추상화**
+
+| 관점 | 나쁜 추상화 (Before) | 좋은 추상화 (After) |
+| --- | --- | --- |
+| 분리 기준 | 코드 형태(배열 변환·합산·병합 등 연산 종류) | 비즈니스 정책(가격·배송·할인) |
+| 함수 수 | 6개 (`sum`, `mapToLinePrice`, `calcSubtotal`, `resolveShipping`, `resolveDiscount`, `merge`) | 3개 (`itemSubtotal`, `shippingFee`, `applyDiscount`) |
+| 이해 방식 | 전체 흐름을 알려면 모든 함수를 점프해야 함 | `checkoutTotal` 한 곳에서 "소계 → 할인 → 배송비" 정책 순서가 바로 읽힘 |
+| `merge` 같은 함수 | 덧셈 하나를 포장해 읽는 사람을 헷갈리게 함 | 불필요한 래퍼 없이 인라인으로 둠 |
+| 변경 시나리오 | "할인 정책을 바꿔야 해" → 어디를 고쳐야 하는지 함수 이름만으로는 모름 | `applyDiscount` 하나만 열면 됨 |
+
+#### 심화 미션 2 — "스스로를 설명하는 React 컴포넌트" 만들기
+
+##### Before ❌
+
+```typescript
+import React, { useEffect, useMemo, useState } from "react";
+
+type Status = "paid" | "refunded" | "failed";
+type Payment = { id: string; at: string; amount: number; status: Status; customer?: string; memo?: string };
+
+export function PaymentsWidget({ storeId }: { storeId: string }) {
+  const [q, setQ] = useState("");
+  const [status, setStatus] = useState<Status | "all">("all");
+  const [page, setPage] = useState(1);
+  const [data, setData] = useState<any[]>([]);
+  const [sel, setSel] = useState<string | null>(null);
+  const [memo, setMemo] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`/api/payments?storeId=${storeId}&q=${q}&status=${status}&page=${page}`)
+      .then((r) => r.json())
+      .then((j) => setData(j.items ?? []))
+      .finally(() => setLoading(false));
+  }, [storeId, q, status, page]);
+
+  const selected = useMemo(() => data.find((p) => p.id === sel) ?? null, [data, sel]);
+
+  useEffect(() => setMemo(selected?.memo ?? ""), [selected?.id]);
+
+  async function saveMemo() {
+    if (!selected) return;
+    await fetch(`/api/payments/${selected.id}/memo`, { method: "PUT", body: JSON.stringify({ memo }) });
+    setData((prev) => prev.map((p) => (p.id === selected.id ? { ...p, memo } : p)));
+  }
+
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: 10 }}>
+      <div style={{ border: "1px solid #ddd", padding: 10 }}>
+        <div style={{ display: "flex", gap: 6 }}>
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="검색" />
+          <select value={status} onChange={(e) => setStatus(e.target.value as any)}>
+            <option value="all">전체</option><option value="paid">결제</option><option value="refunded">환불</option><option value="failed">실패</option>
+          </select>
+          <button onClick={() => setPage(1)}>조회</button>
+        </div>
+
+        {loading ? <div style={{ marginTop: 8 }}>Loading...</div> : null}
+
+        <div style={{ marginTop: 10 }}>
+          {data.map((p: any) => (
+            <div key={p.id} onClick={() => setSel(p.id)}
+              style={{ padding: 8, borderBottom: "1px solid #eee", background: sel === p.id ? "#f5f7ff" : "transparent", cursor: "pointer" }}>
+              <div style={{ fontWeight: 600 }}>{p.customer ?? "—"} · {p.status}</div>
+              <div style={{ fontSize: 12, opacity: 0.7 }}>{p.at} · {Number(p.amount).toLocaleString()}원</div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 10 }}>
+          <button disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>이전</button>
+          <div style={{ fontSize: 12, opacity: 0.7 }}>page {page}</div>
+          <button onClick={() => setPage((p) => p + 1)}>다음</button>
+        </div>
+      </div>
+
+      <div style={{ border: "1px solid #ddd", padding: 10 }}>
+        <div style={{ fontWeight: 700 }}>상세</div>
+        {!selected ? (
+          <div style={{ marginTop: 10, fontSize: 12, opacity: 0.7 }}>항목을 선택하세요</div>
+        ) : (
+          <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
+            <div style={{ fontSize: 12, opacity: 0.75 }}>
+              <div>ID: {selected.id}</div>
+              <div>시간: {selected.at}</div>
+              <div>금액: {Number(selected.amount).toLocaleString()}원</div>
+            </div>
+            <textarea value={memo} onChange={(e) => setMemo(e.target.value)} rows={5} style={{ width: "100%" }} />
+            <button onClick={saveMemo}>메모 저장</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+```
+
+##### After ✅
+
+```typescript
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+
+// ━━ Types ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+type PaymentStatus = "paid" | "refunded" | "failed";
+type StatusFilter = PaymentStatus | "all";
+
+interface Payment {
+  id: string;
+  at: string;
+  amount: number;
+  status: PaymentStatus;
+  customer?: string;
+  memo?: string;
+}
+
+interface PaymentsResponse {
+  items: Payment[];
+}
+
+// ━━ Data Fetching ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+interface PaymentFilters {
+  storeId: string;
+  query: string;
+  status: StatusFilter;
+  page: number;
+}
+
+function usePayments(filters: PaymentFilters) {
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    const params = new URLSearchParams({
+      storeId: filters.storeId,
+      q: filters.query,
+      status: filters.status,
+      page: String(filters.page),
+    });
+    fetch(`/api/payments?${params}`)
+      .then((res) => res.json())
+      .then((json: PaymentsResponse) => setPayments(json.items ?? []))
+      .finally(() => setLoading(false));
+  }, [filters.storeId, filters.query, filters.status, filters.page]);
+
+  const updatePayment = useCallback(
+    (id: string, patch: Partial<Payment>) =>
+      setPayments((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, ...patch } : p))
+      ),
+    []
+  );
+
+  return { payments, loading, updatePayment };
+}
+
+async function savePaymentMemo(paymentId: string, memo: string): Promise<void> {
+  await fetch(`/api/payments/${paymentId}/memo`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ memo }),
+  });
+}
+
+// ━━ Sub-Components ━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+function PaymentFiltersBar({
+  query,
+  status,
+  onQueryChange,
+  onStatusChange,
+  onSearch,
+}: {
+  query: string;
+  status: StatusFilter;
+  onQueryChange: (v: string) => void;
+  onStatusChange: (v: StatusFilter) => void;
+  onSearch: () => void;
+}) {
+  return (
+    <div style={{ display: "flex", gap: 6 }}>
+      <input
+        value={query}
+        onChange={(e) => onQueryChange(e.target.value)}
+        placeholder="검색"
+      />
+      <select
+        value={status}
+        onChange={(e) => onStatusChange(e.target.value as StatusFilter)}
+      >
+        <option value="all">전체</option>
+        <option value="paid">결제</option>
+        <option value="refunded">환불</option>
+        <option value="failed">실패</option>
+      </select>
+      <button onClick={onSearch}>조회</button>
+    </div>
+  );
+}
+
+function PaymentList({
+  payments,
+  selectedId,
+  onSelect,
+}: {
+  payments: Payment[];
+  selectedId: string | null;
+  onSelect: (id: string) => void;
+}) {
+  return (
+    <div style={{ marginTop: 10 }}>
+      {payments.map((payment) => (
+        <div
+          key={payment.id}
+          onClick={() => onSelect(payment.id)}
+          style={{
+            padding: 8,
+            borderBottom: "1px solid #eee",
+            background: selectedId === payment.id ? "#f5f7ff" : "transparent",
+            cursor: "pointer",
+          }}
+        >
+          <div style={{ fontWeight: 600 }}>
+            {payment.customer ?? "—"} · {payment.status}
+          </div>
+          <div style={{ fontSize: 12, opacity: 0.7 }}>
+            {payment.at} · {payment.amount.toLocaleString()}원
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Pagination({
+  page,
+  onPageChange,
+}: {
+  page: number;
+  onPageChange: (next: number) => void;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        marginTop: 10,
+      }}
+    >
+      <button
+        disabled={page <= 1}
+        onClick={() => onPageChange(Math.max(1, page - 1))}
+      >
+        이전
+      </button>
+      <span style={{ fontSize: 12, opacity: 0.7 }}>page {page}</span>
+      <button onClick={() => onPageChange(page + 1)}>다음</button>
+    </div>
+  );
+}
+
+function PaymentDetail({
+  payment,
+  onMemoSaved,
+}: {
+  payment: Payment | null;
+  onMemoSaved: (id: string, memo: string) => void;
+}) {
+  const [memo, setMemo] = useState("");
+
+  useEffect(() => {
+    setMemo(payment?.memo ?? "");
+  }, [payment?.id]);
+
+  const handleSave = async () => {
+    if (!payment) return;
+    await savePaymentMemo(payment.id, memo);
+    onMemoSaved(payment.id, memo);
+  };
+
+  return (
+    <div style={{ border: "1px solid #ddd", padding: 10 }}>
+      <div style={{ fontWeight: 700 }}>상세</div>
+
+      {!payment ? (
+        <div style={{ marginTop: 10, fontSize: 12, opacity: 0.7 }}>
+          항목을 선택하세요
+        </div>
+      ) : (
+        <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
+          <dl style={{ fontSize: 12, opacity: 0.75, margin: 0 }}>
+            <div>ID: {payment.id}</div>
+            <div>시간: {payment.at}</div>
+            <div>금액: {payment.amount.toLocaleString()}원</div>
+          </dl>
+
+          <textarea
+            value={memo}
+            onChange={(e) => setMemo(e.target.value)}
+            rows={5}
+            style={{ width: "100%" }}
+          />
+          <button onClick={handleSave}>메모 저장</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ━━ Main Widget ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+export function PaymentsWidget({ storeId }: { storeId: string }) {
+  const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [page, setPage] = useState(1);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const { payments, loading, updatePayment } = usePayments({
+    storeId,
+    query,
+    status: statusFilter,
+    page,
+  });
+
+  const selectedPayment = useMemo(
+    () => payments.find((p) => p.id === selectedId) ?? null,
+    [payments, selectedId]
+  );
+
+  return (
+    <div
+      style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: 10 }}
+    >
+      {/* ── 좌측: 목록 ── */}
+      <div style={{ border: "1px solid #ddd", padding: 10 }}>
+        <PaymentFiltersBar
+          query={query}
+          status={statusFilter}
+          onQueryChange={setQuery}
+          onStatusChange={setStatusFilter}
+          onSearch={() => setPage(1)}
+        />
+
+        {loading && <div style={{ marginTop: 8 }}>Loading...</div>}
+
+        <PaymentList
+          payments={payments}
+          selectedId={selectedId}
+          onSelect={setSelectedId}
+        />
+
+        <Pagination page={page} onPageChange={setPage} />
+      </div>
+
+      {/* ── 우측: 상세 ── */}
+      <PaymentDetail
+        payment={selectedPayment}
+        onMemoSaved={(id, memo) => updatePayment(id, { memo })}
+      />
+    </div>
+  );
+}
+```
+
+**개선 포인트**
+
+- `any` 전면 제거: `Payment`, `PaymentsResponse`, `StatusFilter` 등 모든 데이터에 명시적 타입을 부여했다.
+- 섹션별 구조 분리: `PaymentFiltersBar` / `PaymentList` / `Pagination` / `PaymentDetail` 4개의 하위 컴포넌트로 나눠서, 메인 `PaymentsWidget`의 JSX만 읽으면 화면 전체 구성이 보인다.
+- 데이터 패칭 분리: `usePayments` 커스텀 훅 하나로 "목록 조회 + 낙관적 업데이트"를 캡슐화했다. 훅 이름과 반환값(`payments`, `loading`, `updatePayment`)이 곧 설명이다.
+- 약어 제거: `q` → `query`, `sel` → `selectedId`, `data` → `payments`, `j` → `json` 등 축약어를 모두 풀어서 코드가 스스로를 설명한다.
+
+### 😈 Devil's Advocate
+
+<DevilsAdvocate
+  author={`"TypeScript가 있으면 주석은 코드 냄새다"`}
+  argument={`TypeScript의 타입, 제네릭, discriminated union은 데이터의 형태·범위·조건부 분기를 코드 자체에 인코딩한다. 잘 설계된 타입 하나가 주석 10줄을 대체한다. 주석을 쓰는 시간에 타입을 더 정교하게 다듬거나 테스트를 하나 더 쓰는 게 문서화 효과가 더 크다. 주석은 유지보수되지 않는 순간 거짓말이 되지만, 타입은 컴파일러가 진실을 강제한다. "주석을 써야 할 것 같다"는 느낌은 타입이나 네이밍이 부족하다는 신호로 읽어야 한다.`}
+/>
+
+## Chapter 33. Personal Character
+
+<Verdict
+  rating="🟢 생존"
+  rationale={`겸손·호기심·지적 정직성이 좋은 프로그래머의 핵심 자질이라는 주장은 AI 코딩 도구 시대에 오히려 더 중요해졌어요 — AI가 "어떻게"를 대신할수록, "무엇이 맞는지" 판단하는 인간의 성격과 판단력이 병목이 되니까요.`}
+/>
+
+### ✅ 체크리스트
+
+- [ ] PR에서 "확신이 안 서는 부분"을 솔직하게 코멘트로 남기고 있나요?
+- [ ] 내가 쓴 코드가 6개월 뒤에도 이해되는지 스스로 점검해 본 적이 있나요?
+- [ ] "돌아가니까 됐어"에서 멈추지 않고 "이게 최선인가?"를 한 번 더 묻는 습관이 있나요?
+
+### 😈 Devil's Advocate
+
+<DevilsAdvocate
+  author={`"개인의 성격보다 시스템과 도구가 품질을 결정한다"`}
+  argument={`개인의 겸손과 호기심이 코드 품질에 미치는 영향보다 CI/CD 파이프라인, 타입 시스템, 자동화된 리뷰 봇, 팀의 코드 리뷰 문화가 미치는 영향이 훨씬 크다. "좋은 습관"이 중요한 건 맞지만, 그 습관을 강제하는 건 시스템이지 성격이 아니다.`}
+/>
+
+## Chapter 34. Themes in Software Craftsmanship
+
+<Verdict
+  rating="🟢 생존"
+  rationale={`"복잡도 정복", "사람을 위해 먼저 쓰고 컴퓨터를 위해서는 두 번째로", "언어 안에서가 아니라 언어 속으로 프로그래밍하라" — 이 세 테마는 프레임워크와 도구가 아무리 바뀌어도 소프트웨어 구현의 불변 원칙이에요.`}
+/>
+
+### ✅ 체크리스트
+
+- [ ] 추상화 레이어를 추가할 때 "복잡도를 줄이는가, 간접층만 늘리는가?"를 먼저 자문했나요?
+- [ ] 변수명과 함수명이 문제 도메인의 용어를 그대로 반영하고 있나요?
+  - 관련 ESLint: [`@typescript-eslint/no-unused-vars`](https://typescript-eslint.io/rules/no-unused-vars/)
+- [ ] 프레임워크가 강제하는 구조를 이해하고 의도적으로 따르고 있나요, 아니면 이유를 모른 채 따르고 있나요?
+- [ ] 리팩터링을 "나중에"로 미루지 않고 PR 단위로 조금씩 진행하고 있나요?
+  - 관련 ESLint: [`max-lines-per-function`](https://eslint.org/docs/latest/rules/max-lines-per-function)
+
+팀 컨벤션이 실제 코드에 어떻게 얹히는지 주문 액션 핸들러 리팩터 한 건으로 확인해요.
+
+### 💻 React/TS 코드 예제
+
+#### 심화 미션 3 — 팀 컨벤션 + 리팩터링 (executeOrderAction)
+
+##### Before ❌
+
+```typescript
+type Role = "owner" | "staff";
+type OrderStatus = "created" | "paid" | "canceled" | "refunded";
+type Order = { id: string; storeId: string; status: OrderStatus; total: number; paid?: number; memo?: string; customerPhone?: string };
+type User = { id: string; role: Role; storeIds: string[] };
+
+type Deps = {
+  getOrder(id: string): Promise<any>;
+  saveOrder(o: any): Promise<void>;
+  audit(row: any): Promise<void>;
+  refund(paymentId: string, amount: number): Promise<{ ok: boolean; code?: string }>;
+  sms(to: string, text: string): Promise<void>;
+};
+
+export async function act(deps: Deps, input: {
+  user: User; orderId: string;
+  action: "cancel" | "refund" | "memo" | "forcePaid";
+  memo?: string; paymentId?: string; amount?: number; notify?: boolean;
+}) {
+  const o: Order = await deps.getOrder(input.orderId);
+  if (!o) return { ok: false, reason: "not_found" };
+  if (!input.user.storeIds.includes(o.storeId)) return { ok: false, reason: "forbidden" };
+
+  if (input.action === "memo") {
+    if (input.memo == null) return { ok: false, reason: "memo_required" };
+    o.memo = input.memo; await deps.saveOrder(o);
+    await deps.audit({ t: "memo", orderId: o.id, userId: input.user.id, memo: input.memo });
+    return { ok: true, order: o };
+  }
+
+  if (input.action === "forcePaid") {
+    if (input.user.role !== "owner") return { ok: false, reason: "owner_only" };
+    o.status = "paid"; o.paid = o.total; await deps.saveOrder(o);
+    await deps.audit({ t: "forcePaid", orderId: o.id, userId: input.user.id });
+    return { ok: true, order: o };
+  }
+
+  if (input.action === "cancel") {
+    if (o.status === "paid") return { ok: false, reason: "already_paid" };
+    o.status = "canceled"; await deps.saveOrder(o);
+    if (input.notify && o.customerPhone) await deps.sms(o.customerPhone, `취소됨:${o.id}`);
+    await deps.audit({ t: "cancel", orderId: o.id, userId: input.user.id });
+    return { ok: true, order: o };
+  }
+
+  if (input.action === "refund") {
+    if (o.status !== "paid") return { ok: false, reason: "not_paid" };
+    if (!input.paymentId) return { ok: false, reason: "payment_required" };
+    const amt = input.amount ?? o.paid ?? o.total;
+    const pg = await deps.refund(input.paymentId, amt);
+    if (!pg.ok) { await deps.audit({ t: "refund_fail", orderId: o.id, code: pg.code }); return { ok: false, reason: "pg_fail", code: pg.code }; }
+    o.status = "refunded"; await deps.saveOrder(o);
+    if (input.notify && o.customerPhone) await deps.sms(o.customerPhone, `환불:${o.id}:${amt}`);
+    await deps.audit({ t: "refund", orderId: o.id, userId: input.user.id, amount: amt });
+    return { ok: true, order: o, refunded: amt };
+  }
+
+  return { ok: false, reason: "unknown_action" };
+}
+```
+
+##### After ✅
+
+```typescript
+// ━━ Domain Types ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+type Role = "owner" | "staff";
+type OrderStatus = "created" | "paid" | "canceled" | "refunded";
+
+interface Order {
+  id: string;
+  storeId: string;
+  status: OrderStatus;
+  total: number;
+  paid?: number;
+  memo?: string;
+  customerPhone?: string;
+}
+
+interface User {
+  id: string;
+  role: Role;
+  storeIds: string[];
+}
+
+// ━━ Audit Event (유니온으로 고정) ━━━━━━━━━━━
+
+type AuditEvent =
+  | { type: "memo"; orderId: string; userId: string; memo: string }
+  | { type: "forcePaid"; orderId: string; userId: string }
+  | { type: "cancel"; orderId: string; userId: string }
+  | { type: "refund"; orderId: string; userId: string; amount: number }
+  | { type: "refund_fail"; orderId: string; code?: string };
+
+// ━━ External Dependencies (경계) ━━━━━━━━━━━━
+
+interface OrderRepository {
+  getOrder(id: string): Promise<Order | null>;
+  saveOrder(order: Order): Promise<void>;
+}
+
+interface PaymentGateway {
+  refund(paymentId: string, amount: number): Promise<{ ok: boolean; code?: string }>;
+}
+
+interface NotificationService {
+  sms(to: string, text: string): Promise<void>;
+}
+
+interface AuditLogger {
+  log(event: AuditEvent): Promise<void>;
+}
+
+interface Deps {
+  repo: OrderRepository;
+  pg: PaymentGateway;
+  notify: NotificationService;
+  audit: AuditLogger;
+}
+
+// ━━ Result Model (유니온으로 분기 용이) ━━━━━
+
+type FailReason =
+  | "not_found"
+  | "forbidden"
+  | "memo_required"
+  | "owner_only"
+  | "already_paid"
+  | "not_paid"
+  | "payment_required"
+  | "pg_fail"
+  | "unknown_action";
+
+type ActionResult =
+  | { ok: true; order: Order; refunded?: number }
+  | { ok: false; reason: FailReason; code?: string };
+
+// ━━ 권한 정책 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+function assertStoreAccess(user: User, order: Order): void {
+  if (!user.storeIds.includes(order.storeId)) {
+    throw new OrderActionError("forbidden");
+  }
+}
+
+function assertOwner(user: User): void {
+  if (user.role !== "owner") {
+    throw new OrderActionError("owner_only");
+  }
+}
+
+// ━━ 상태 전이 정책 ━━━━━━━━━━━━━━━━━━━━━━━━━
+
+function assertCancelable(order: Order): void {
+  if (order.status === "paid") {
+    throw new OrderActionError("already_paid");
+  }
+}
+
+function assertRefundable(order: Order): void {
+  if (order.status !== "paid") {
+    throw new OrderActionError("not_paid");
+  }
+}
+
+// ━━ 내부 에러 (제어 흐름용) ━━━━━━━━━━━━━━━━
+
+class OrderActionError extends Error {
+  constructor(public readonly reason: FailReason, public readonly code?: string) {
+    super(reason);
+  }
+}
+
+// ━━ 알림 헬퍼 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+async function notifyCustomerIfRequested(
+  deps: Deps,
+  order: Order,
+  shouldNotify: boolean,
+  message: string
+): Promise<void> {
+  if (shouldNotify && order.customerPhone) {
+    await deps.notify.sms(order.customerPhone, message);
+  }
+}
+
+// ━━ Action Handlers ━━━━━━━━━━━━━━━━━━━━━━━━━
+
+type ActionInput =
+  | { action: "memo"; memo: string }
+  | { action: "forcePaid" }
+  | { action: "cancel"; notify?: boolean }
+  | { action: "refund"; paymentId: string; amount?: number; notify?: boolean };
+
+async function handleMemo(
+  deps: Deps, user: User, order: Order, memo: string
+): Promise<Order> {
+  order.memo = memo;
+  await deps.repo.saveOrder(order);
+  await deps.audit.log({ type: "memo", orderId: order.id, userId: user.id, memo });
+  return order;
+}
+
+async function handleForcePaid(
+  deps: Deps, user: User, order: Order
+): Promise<Order> {
+  assertOwner(user);
+
+  order.status = "paid";
+  order.paid = order.total;
+  await deps.repo.saveOrder(order);
+  await deps.audit.log({ type: "forcePaid", orderId: order.id, userId: user.id });
+  return order;
+}
+
+async function handleCancel(
+  deps: Deps, user: User, order: Order, notify: boolean
+): Promise<Order> {
+  assertCancelable(order);
+
+  order.status = "canceled";
+  await deps.repo.saveOrder(order);
+  await notifyCustomerIfRequested(deps, order, notify, `취소됨:${order.id}`);
+  await deps.audit.log({ type: "cancel", orderId: order.id, userId: user.id });
+  return order;
+}
+
+async function handleRefund(
+  deps: Deps, user: User, order: Order,
+  paymentId: string, amount?: number, notify?: boolean
+): Promise<{ order: Order; refunded: number }> {
+  assertRefundable(order);
+
+  const refundAmount = amount ?? order.paid ?? order.total;
+
+  const result = await deps.pg.refund(paymentId, refundAmount);
+  if (!result.ok) {
+    await deps.audit.log({ type: "refund_fail", orderId: order.id, code: result.code });
+    throw new OrderActionError("pg_fail", result.code);
+  }
+
+  order.status = "refunded";
+  await deps.repo.saveOrder(order);
+  await notifyCustomerIfRequested(deps, order, notify ?? false, `환불:${order.id}:${refundAmount}`);
+  await deps.audit.log({ type: "refund", orderId: order.id, userId: user.id, amount: refundAmount });
+
+  return { order, refunded: refundAmount };
+}
+
+// ━━ Public Entry Point ━━━━━━━━━━━━━━━━━━━━━━
+
+export async function executeOrderAction(
+  deps: Deps,
+  user: User,
+  orderId: string,
+  input: ActionInput
+): Promise<ActionResult> {
+  try {
+    const order = await deps.repo.getOrder(orderId);
+    if (!order) return { ok: false, reason: "not_found" };
+
+    assertStoreAccess(user, order);
+
+    switch (input.action) {
+      case "memo":
+        return { ok: true, order: await handleMemo(deps, user, order, input.memo) };
+
+      case "forcePaid":
+        return { ok: true, order: await handleForcePaid(deps, user, order) };
+
+      case "cancel":
+        return { ok: true, order: await handleCancel(deps, user, order, input.notify ?? false) };
+
+      case "refund": {
+        const { order: updated, refunded } = await handleRefund(
+          deps, user, order, input.paymentId, input.amount, input.notify
+        );
+        return { ok: true, order: updated, refunded };
+      }
+
+      default:
+        return { ok: false, reason: "unknown_action" };
+    }
+  } catch (e) {
+    if (e instanceof OrderActionError) {
+      return { ok: false, reason: e.reason, code: e.code };
+    }
+    throw e;
+  }
+}
+```
+
+**정책 분리 테이블**
+
+| 축 | 담당 함수 | 역할 |
+| --- | --- | --- |
+| 권한 정책 | `assertStoreAccess`, `assertOwner` | "누가 할 수 있는가" |
+| 상태 전이 정책 | `assertCancelable`, `assertRefundable` | "지금 이 주문에 가능한 동작인가" |
+| 외부 호출 | `handleRefund` 내 PG 호출, `notifyCustomerIfRequested` | "어떤 외부 시스템을 언제 부르는가" |
+
+팀 컨벤션 6축 — 네이밍 · 레이아웃(가드와 중첩) · 주석(Why-Only) · 에러 모델 · 외부 의존성 경계 · 정책 분리 — 이 이 리팩터 한 건에 동시에 얹혀 있어요.
+
+### 😈 Devil's Advocate
+
+<DevilsAdvocate
+  author={`"장인정신은 사치다 — 출시 속도가 생존을 결정한다"`}
+  argument={`장인정신의 핵심은 "완벽을 추구하라"가 아니라 "제약 조건 안에서 최선을 찾아라"인데, 이 장은 제약 조건(시간, 팀 규모, 비즈니스 압박)을 거의 다루지 않는다. 기술적 탁월함과 비즈니스 생존 사이의 트레이드오프를 인정하지 않는 장인정신 담론은, 듣기엔 좋지만 현실에서는 위험할 수 있다.`}
+/>
+
+방금 본 리팩터가 우리 팀에서 만장일치에 가까운 규약으로 굳으면 어떤 모습일지, 6축으로 정리해 뒀어요.
+
+## 🛠️ 팀 컨벤션 (6축)
+
+### 1. 네이밍
+
+- 함수: 동사 + 목적어 (`executeOrderAction`, `handleRefund`, `assertOwner`). 순수 검증은 `assert-`로 시작하여 실패 시 예외를 던짐을 암시한다.
+- 타입: 명사 (`Order`, `AuditEvent`). 유니온 타입은 판별자 필드(`type`, `action`, `ok`)를 반드시 포함한다.
+- 상수/매직값: 인라인 문자열 대신 유니온 리터럴(`FailReason`)로 열거해 오타를 컴파일 타임에 잡는다.
+
+### 2. 레이아웃 · 가드 · 중첩
+
+- 함수 시작부에 guard clause(early return / throw)를 모아서 "정상 흐름"의 들여쓰기를 최소화한다.
+- 한 함수 안의 들여쓰기가 3단계를 넘으면 함수 분리 또는 조건 반전을 검토한다.
+- 빈 줄 하나로 "검증 → 실행 → 후처리" 세 단계를 시각적으로 구분한다.
+
+### 3. 주석 (Why-Only)
+
+- What/How 주석 금지: 코드가 설명하는 내용을 반복하는 주석은 작성하지 않는다.
+- Why 주석만 허용: 비즈니스 규칙의 배경, 예외적 결정의 이유, 외부 시스템 제약 등 코드만으로 전달할 수 없는 맥락에만 주석을 남긴다.
+- 구간 표시: 파일 내 논리 영역은 `// ━━ 섹션명 ━━` 스타일의 구분선으로 표시한다 (코드의 "What"이 아니라 "지도"를 제공).
+
+### 4. 에러 모델
+
+- 실패 사유(`FailReason`)를 유니온 리터럴로 고정한다. 문자열 자유형을 쓰지 않는다.
+- 결과 타입: `{ ok: true; ... } | { ok: false; reason: FailReason }` 패턴으로 통일하여, 호출부에서 `if (!result.ok)` → `result.reason`으로 분기한다.
+- 내부 제어 흐름용 에러 클래스: 도메인 에러(`OrderActionError`)는 전용 클래스를 두어 알 수 없는 예외와 분리한다. `catch`에서 `instanceof`로 구분 후, 알 수 없는 예외는 재 throw한다.
+
+### 5. 외부 의존성 경계
+
+- 외부 I/O(DB, PG, SMS, 감사로그)는 인터페이스 하나씩 분리한다 (`OrderRepository`, `PaymentGateway`, `NotificationService`, `AuditLogger`).
+- 비즈니스 로직 함수는 이 인터페이스만 바라보고, 구체 구현은 조립 시점에 주입한다.
+- `any`는 의존성 경계에서 절대 사용하지 않는다. 외부 응답이 불확실하면 런타임 파싱 계층을 따로 둔다.
+
+### 6. 정책 분리
+
+비즈니스 로직을 세 축으로 분리한다.
+
+| 축 | 담당 함수 | 역할 |
+| --- | --- | --- |
+| 권한 정책 | `assertStoreAccess`, `assertOwner` | "누가 할 수 있는가" |
+| 상태 전이 정책 | `assertCancelable`, `assertRefundable` | "지금 이 주문에 가능한 동작인가" |
+| 외부 호출 | `handleRefund` 내 PG 호출, `notifyCustomerIfRequested` | "어떤 외부 시스템을 언제 부르는가" |
+
+정책 변경 시 해당 함수 하나만 수정하면 되며, 다른 핸들러에 영향을 주지 않는다.
+
+규약은 합의된 답이지만 그 아래엔 각자의 경험이 있어요. 7명이 포맷팅·주석·성격에 대해 어떻게 말하는지 이어 볼게요.
+
+## 💬 토론 질문 & 멤버 의견
+
+### 질문 1. 포맷팅 컨벤션, 어디까지 맞춰야 할까? 사소한 것까지 일관성을 가져갈 것인가, 어느 정도의 자유도를 허락할 것인가?
+
+<MemberOpinion
+  author="Alice"
+  emoji="🐻"
+  opinion={`큰 가독성과 일관성을 깨뜨리지 않는 선에서는 자유도를 가져도 된다고 생각함. 컨벤션을 쓰는 이유는 가독성과 유지보수인데, 사소한 것에 포커싱돼서 커뮤니케이션 비용이 늘어나면 그것 또한 경계해야 함. 정말 중요한 규칙은 ESLint로 규격화해서 강제하고, 나머지는 합리적 선택으로 유연하게 가는 게 맞음.
+
+현업 경험: type vs interface 접두사 컨벤션을 codestyle.md에 둬봤는데, AI 사용 중에 자주 놓치게 되고 변경 시 여러 파일 diff가 추가됨. "이게 꼭 필요한가?" 회의감이 든 적 있음.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="Crong"
+  emoji="🐧"
+  opinion={`IDE랑 prettier가 존재하는 이유 자체가 이 문제에 대한 답이라고 봄. 사람마다 코드 스타일이 다르고 그건 주석에서도 마찬가지인데, 자동화 도구로 통일할 수 있는 건 통일하고 사람이 의사결정에 쓰는 에너지는 더 중요한 데에 써야 함.
+
+현업 경험: diego가 추천해준 NaverPay code-style 룰셋을 살펴봄.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="Leo"
+  emoji="🦁"
+  opinion={`포맷팅에 매우 예민한 편. ESLint/Prettier 같은 도구로 자동으로 맞춰지게 하되, 사소한 것까지 강제하면 낭만이 없음. 적절한 자유도가 있어야 더 좋은 코드나 구조가 나올 수 있다고 생각함. 과도한 제약은 개발자 성장을 제한할 수도 있고.
+
+현업 경험: return문 직전 개행 정도만 리뷰에서 제안하고, 상대가 안 하는 게 좋다고 하면 그냥 동의하고 넘어가는 편.`}
+  experience=""
+/>
+
+### 질문 2. 주석은 코드를 읽기 쉽게 만들까, 어렵게 만들까? "무엇을 하는지 설명하는 주석"을 제외하고, 좋은 주석이란?
+
+<MemberOpinion
+  author="Amber"
+  emoji="🦊"
+  opinion={`'코드 자체로는 표현할 수 없는 정보'를 주는 주석(특히 써드파티/라이브러리 관련 외부 정보)은 대부분 가치 있음. 반면 '코드의 의도를 설명'하는 주석은 케이스 바이 케이스 — 비즈니스 로직이 복잡하고 히스토리를 모르는 사람이 봤을 때 의도 파악이 어려운 경우에만 의미가 있음. "여기서 이걸 왜 하지?" 라는 의문이 드는 지점에만 작성하는 편.
+
+현업 경험: // max Suggest라는 주석을 보고 제한 비즈니스 로직인 줄 알았는데, 알고 보니 무한 스크롤로 결과를 다 불러왔을 때 '더보기' 버튼을 숨기는 로직이었음. 주석을 믿고 잘못 이해한 적 있음.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="Crong"
+  emoji="🐧"
+  opinion={`정책이 복잡하면 우선 코드로 풀고, 그래도 부족하면 주석으로 설명함. "주석 없어도 읽히는 코드를 짜야 해서 주석을 안 썼어"라고 말하는 사람과는 솔직히 같이 일하고 싶지 않음. 좋은 주석은 좋은 코드를 보완하되 대체하지 않는 것. 개발자는 "어떻게"를 고민하고, 코드는 "무엇을" 나타내고, 주석은 "왜"를 나타낸다는 말이 핵심임.
+
+현업 경험: 책에서 jsDoc(javaDoc)이 자주 언급돼서 찾아봤는데, 단순 관행이 아니라 IDE에서 param/링크 등을 함수 자체를 설명하는 API임을 알게 됨.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="Leo"
+  emoji="🦁"
+  opinion={`꼭 필요한 주석이라면 코드를 읽기 쉽게 만들고, 불필요한 주석은 어렵게 만듦. 작성 기준은 "지금 내가 아니라 처음 보는 사람이라면 이해하기 어렵겠다"고 느껴지면서, 그 어려운 맥락을 코드로 드러내기 어려울 때. 가장 좋은 주석은 비즈니스적 의사결정을 표현하는 것이라고 봄 — 회사에서 다양한 이유로 이상한 코드를 작성해야 할 때 그게 최선이었다는 히스토리를 남겨야 미래의 누군가가 변경할 수 있음.
+
+현업 경험: 유지보수가 안 된 주석이 실제 코드 스펙과 다른 내용으로 남아있어서 헷갈렸던 경험.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="diego"
+  emoji="🐸"
+  opinion={`좋은 주석은 세 가지 중 하나를 설명함. ① 의도(왜 이 결정을 했는지), ② 위험 경고("이 함수는 싱글톤 의존, 테스트 시 모킹 필수"), ③ 임시 조치의 수명("React 19 업그레이드 후 Suspense로 대체"). 결국 좋은 주석은 "6개월 후의 나"가 결정을 빠르게 내리도록 돕는 메모임.
+
+현업 경험: Toast UI Editor 통합 작업에서 주석은 "모든 HTML 태그 제거"였는데 실제로는 script/iframe/img만 제거하는 함수였음. 주석을 믿고 추가 검증 로직을 작성했다가 낭패. 함수명을 sanitize에서 removeDangerousHtmlTags로 바꾸고 허용 태그 목록도 명시함.`}
+  experience=""
+/>
+
+### 질문 3. 닮고 싶은 개발자 성격 / 경계해야 할 성격.
+
+<MemberOpinion
+  author="Alice"
+  emoji="🐻"
+  opinion={`닮고 싶은 건 실수를 기꺼이 인정하고 경고를 깊게 이해하는 태도, 항상 겸손하고 경청할 준비가 된 자세. 경계할 건 "중요하지 않은 것에 창의력 낭비하지 말자"는 말 — 위험할 수 있다고 생각함. 현재 중요하지 않다고 이후에도 중요하지 않을지는 모름. 단순히 "안된다, 리소스가 없다"가 아닌 대안 제시와 우선순위 조정으로 설득하는 개발자가 되고 싶음.
+
+현업 경험: 동료가 "이건 책임이 많으니 분리해야 해요"라고 단정 지을 때, "현재 정책이 변경 가능성이 높아 지금은 응집도 높여두고 이후에 유연하게 대응하는 구조로 가져가자"라고 설득해보기로 정함.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="Amber"
+  emoji="🦊"
+  opinion={`닮고 싶은 건 세 가지 — 호기심(궁금하면 직접 실험), 생산적 게으름(게으를 때 자동화로 해결), 정직하고 명확한 의사소통(현실적 보고, 실수 인정). 경계할 건 지적 깊이가 없을 때 "일단 컴파일해서 봅시다"라고 말하는 것. 그리고 오래된 사고 습관에 집착하는 것 — 시간 흐름에 못 따라가면 경험은 도움이 아니라 장애가 됨.
+
+현업 경험: 본인의 안 좋은 습관 — 중첩 객체에서 옵셔널 체이닝(?.)을 너무 많이 쓰는 것. 어느 단계에서 false인지 명확하지 않고, boolean의 경우 ||로 명시적 false와 undefined가 구분 안 됨. 타입 가드 + 유틸리티 함수로 개선함.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="Crong"
+  emoji="🐧"
+  opinion={`닮고 싶은 건 끝을 보는 개발자, 묵묵한 개발자, 소통 잘하는 개발자. 경계할 건 연차가 쌓이면 자연스럽게 생기는 "내려다보는 시선" — "당신이 누군가를 내려다보기 시작하면 그 사람의 시선으로 볼 수 없다"는 말이 떠오름. 0년차 신입의 열정 과다는 죽기 전까지 갖고 싶음.
+
+현업 경험: 이번 달 안에 야근을 더 해서 'Custom-PR-Reviewer' 봇을 만들기로 정함.`}
+  experience=""
+/>
+
+<MemberOpinion
+  author="Leo"
+  emoji="🦁"
+  opinion={`긍정적 의미의 게으른 개발자 — 일을 잘하는 모습이 딱 그것. 꾸준히 겸손하게 학습하는 자세는 평생 가져가고 싶음. 경계할 건 너무 자아가 강한 것. 주장은 강하게 하되, 객관적으로 다른 의견이 더 좋다 싶으면 수긍할 수 있어야 함.
+
+현업 경험: 회사에서 소그룹 리딩 역할을 맡아서 "동료의 성장을 생각하는 것"을 열심히 해보는 중. 매주 미팅 + 점심 같이 먹으며 개발 영상 보기 + pre-commit 리뷰에서 본인 얘기를 먼저 꺼내고 적극적으로 직접 질문하는 습관.`}
+  experience=""
+/>
+
+의견은 저마다 다르지만, 네 장이 한 흐름으로 이어진다는 감각은 공유돼요.
+
+:::note 이번 주차에서 생략된 섹션
+
+- **VotingBar**: 스터디원 투표 미작성 (votes 전원 null)
+- **BestPickCallout**: 베스트 토론 미선정 (content·reason 모두 null)
+
+:::

@@ -31,11 +31,13 @@
     "@docusaurus/module-type-aliases": "3.9.2",
     "@docusaurus/tsconfig": "^3.9.2",
     "@docusaurus/types": "3.9.2",
+    "@eslint/js": "^9.39.4",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^9.0.0",
     "eslint-plugin-mdx": "^3.0.0",
     "eslint-plugin-react": "^7.35.0",
+    "globals": "^14.0.0",
     "prettier": "^3.3.0",
     "typescript": "^5.9.3",
     "yaml": "^2.5.0"
