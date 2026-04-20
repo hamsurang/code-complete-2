@@ -1,0 +1,261 @@
+meta:
+  page_id: 9e8de71a-aa9f-8363-b8b3-01ebd395678c
+  week: 3~4주차
+  title: Chapter 3~4주차 [20~23장 (품질 · 협력 구현 · 개발자 테스트 · 디버깅)]
+  chapters_in_book:
+  - 20
+  - 21
+  - 22
+  - 23
+  members:
+  - Alice
+  - Amber
+  - Crong
+  - diego
+  - Jay
+  - Leo
+  - zinii
+  source: notion-pull
+  extracted_at: '2026-04-19T15:45:32+09:00'
+edit_meta:
+  edited_at: '2026-04-19T17:05:00+09:00'
+  reorder_applied: "custom: page-unit with per-chapter code (intro → summary → per_chapter loop[verdict → checklist → code_examples → devils_advocate] → common_discussion)"
+  reorder_reason: "20~23장을 한 페이지에 묶되, 4개 챕터 각각에 코드/프로세스 미션이 1건씩 배정되어 있어 chapter_section 안에 코드를 함께 포함. 21장 미션은 timeline_diagram + prose 형태라 일반 코드블록과 다른 형식이지만 데이터 그대로 보존. 공통 토론은 페이지 하단."
+  bridges_added: 6
+  zones_respected: true
+  human_only_hash_prefix: 82fc2845
+  ai_assisted_fields:
+  - summary.lead
+  - summary.bullets
+  - per_chapter[*].checklist[*].text (어미만 해요체로 다듬음)
+  ai_assist_placeholder_fields:
+  - ai_assist.per_chapter[20].verdict (Notion 미작성 — placeholder 유지)
+  - ai_assist.per_chapter[21].verdict (Notion 미작성 — placeholder 유지)
+  - ai_assist.per_chapter[22].verdict (Notion 미작성 — placeholder 유지)
+  - ai_assist.per_chapter[23].verdict (Notion 미작성 — placeholder 유지)
+  dropped_sections:
+  - section: voting_bar
+    reason: "votes 전원 null — 집계할 점수 없음"
+  - section: best_pick
+    reason: "content·reason 모두 placeholder('[내용 요약]', '[선정 이유]') — 렌더할 실내용 없음"
+render_order:
+- intro             # 페이지 인트로 + 4개 챕터 한 줄 카드 네비
+- summary           # 페이지 전체 묶음 요약 (lead + bullets)
+- chapter_section   # per_chapter 4개 순회 (verdict → checklist → code_examples → devils_advocate)
+- common_discussion # discussion_questions + member_opinions
+bridges:
+  intro_to_summary: "품질·협력·테스트·디버깅을 한 호흡으로 묶으면, '결함을 어느 시점에 잡을 것인가'라는 한 축이 드러나요."
+  summary_to_chapters: "큰 그림을 훑었으니, 각 장의 판정과 체크, 그리고 미션 산출물로 들어가 볼게요."
+  ch20_checklist_to_code: "결제 흐름을 결과 모델로 다시 그려보면, 같은 함수가 얼마나 다른 디버깅 난이도를 갖게 되는지 보여요."
+  ch21_checklist_to_code: "리뷰·CI·QA를 한 줄에 세워두면, 어느 단계에서 결함을 가장 싸게 잡을 수 있는지 정리돼요."
+  ch22_checklist_to_code: "주문 등록 함수를 순수 함수와 의존성 경계로 풀어내면, 테스트 코드가 자연스럽게 따라와요."
+  ch23_checklist_to_code: "변수명과 조건 분리만 손봐도, 같은 로직이 디버거 위에서 얼마나 친절해지는지 보여줘요."
+  chapters_to_discussion: "원칙과 미션은 출발점일 뿐이에요. 같은 주제를 7명이 어떻게 겪었는지 이어 들어 볼게요."
+ai_editable:
+  summary:
+    lead: 20~23장은 "결함을 언제, 어디서, 어떻게 잡을 것인가"를 네 각도에서 다루는 묶음이에요. 품질의 큰 그림(20장)에서 출발해 협력 프로세스(21장), 개발자 테스트(22장), 디버깅(23장)으로 점점 손에 잡히는 단위로 좁혀 들어가요.
+    bullets:
+    - 20장 — 단일 기법으로 결함의 60%도 못 잡는다는 전제는 타입·린터·테스트·리뷰가 일상이 된 2026년 FE에서 오히려 더 잘 들어맞아요.
+    - 21장 — 코드 리뷰·페어·CI·QA를 한 파이프라인으로 보면 "결함 발견 시점을 얼마나 앞당기느냐"가 팀 비용을 가르는 축이 돼요.
+    - 22장 — 단위 테스트는 여전히 기본기지만, 컴포넌트와 Playwright가 섞인 FE에서는 "테스트 피라미드 vs 트로피"의 선택이 함께 따라와요.
+    - 23장 — 디버깅은 가설 수립과 이분 탐색 같은 개인 사고력 + Sentry/Session Replay 같은 팀 인프라가 양쪽 다 필요한 영역이에요.
+  code_examples:
+    note: 3~4주차는 4개 챕터에 미션이 1건씩 배정. ch22 기본 미션 1(테스트 가능 리팩터), ch23 기본 미션 2(디버깅하기 쉬운 코드), ch20 심화 미션 1(버그가 생기기 어려운 구조), ch21 심화 미션 2(팀 품질 프로세스 — timeline + prose). 챕터 순서대로 chapter_section 내부에 배치.
+    examples:
+    - chapter_no: 20
+      title: 심화 미션 1 — 버그가 생기기 어려운 구조로 리팩터링하기
+      before: "export async function pay(order, user) {\n  if (!user) return;\n  if (order.status === \"paid\") return;\n\n  const res = await fetch(\"/pay\", { method: \"POST\" });\n  if (res.ok) {\n    order.status = \"paid\";\n  }\n}"
+      after: "// ━━ Types ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\ntype OrderStatus = \"pending\" | \"paid\" | \"failed\";\n\ninterface Order {\n  id: string;\n  status: OrderStatus;\n  amount: number;\n}\n\ninterface User {\n  id: string;\n}\n\n// ━━ Result Model ━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\ntype PayResult =\n  | { ok: true; order: Order }\n  | { ok: false; reason: \"no_user\" | \"already_paid\" | \"payment_failed\"; statusCode?: number };\n\n// ━━ 상태 전이 정책 ━━━━━━━━━━━━━━━━━━━━━━━━━\n\nfunction canPay(order: Order): order is Order & { status: \"pending\" } {\n  return order.status !== \"paid\";\n}\n\nfunction markAsPaid(order: Order): Order {\n  return { ...order, status: \"paid\" };\n}\n\n// ━━ 외부 호출 경계 ━━━━━━━━━━━━━━━━━━━━━━━━━\n\ninterface PaymentGateway {\n  charge(orderId: string, amount: number): Promise<{ ok: boolean; statusCode: number }>;\n}\n\nexport const defaultGateway: PaymentGateway = {\n  async charge(orderId, amount) {\n    const res = await fetch(\"/pay\", {\n      method: \"POST\",\n      body: JSON.stringify({ orderId, amount }),\n    });\n    return { ok: res.ok, statusCode: res.status };\n  },\n};\n\n// ━━ 핵심 로직 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nexport async function pay(\n  order: Order,\n  user: User | null,\n  gateway: PaymentGateway = defaultGateway\n): Promise<PayResult> {\n  if (!user) {\n    return { ok: false, reason: \"no_user\" };\n  }\n\n  if (!canPay(order)) {\n    return { ok: false, reason: \"already_paid\" };\n  }\n\n  const result = await gateway.charge(order.id, order.amount);\n\n  if (!result.ok) {\n    return { ok: false, reason: \"payment_failed\", statusCode: result.statusCode };\n  }\n\n  const paidOrder = markAsPaid(order);\n  return { ok: true, order: paidOrder };\n}"
+      language: typescript
+      test_code: "import { describe, it, expect, vi } from \"vitest\";\nimport { pay } from \"./pay\";\n\nconst baseOrder = { id: \"o1\", status: \"pending\" as const, amount: 10000 };\nconst user = { id: \"u1\" };\n\ndescribe(\"pay\", () => {\n  it(\"유저 없으면 no_user를 반환한다\", async () => {\n    const result = await pay(baseOrder, null);\n    expect(result).toEqual({ ok: false, reason: \"no_user\" });\n  });\n\n  it(\"이미 결제된 주문이면 already_paid를 반환한다\", async () => {\n    const result = await pay({ ...baseOrder, status: \"paid\" }, user);\n    expect(result).toEqual({ ok: false, reason: \"already_paid\" });\n  });\n\n  it(\"PG 실패 시 payment_failed와 statusCode를 반환한다\", async () => {\n    const gateway = { charge: vi.fn().mockResolvedValue({ ok: false, statusCode: 502 }) };\n    const result = await pay(baseOrder, user, gateway);\n\n    expect(result).toEqual({ ok: false, reason: \"payment_failed\", statusCode: 502 });\n  });\n\n  it(\"성공 시 불변의 paid 주문을 반환한다\", async () => {\n    const gateway = { charge: vi.fn().mockResolvedValue({ ok: true, statusCode: 200 }) };\n    const result = await pay(baseOrder, user, gateway);\n\n    expect(result).toEqual({ ok: true, order: { ...baseOrder, status: \"paid\" } });\n    // 원본 주문은 변하지 않음\n    expect(baseOrder.status).toBe(\"pending\");\n  });\n});"
+      summary_bullets:
+      - 'Before: pay가 undefined를 반환하면 "유저 문제? 이미 결제? PG 에러?" 중 뭔지 알 수 없다. 브레이크포인트를 걸어 한 줄씩 따라가야 한다.'
+      - 'After: 반환값의 reason 필드 하나만 보면 실패 원인이 확정된다. 로그에 reason을 찍으면 프로덕션에서도 원인 파악이 즉시 가능하다. 각 정책 함수(canPay, markAsPaid)에 브레이크포인트를 걸면 상태 전이 단계별 관찰도 쉽다.'
+      extra_prose:
+      - 어떤 종류의 버그를 예방할 수 있게 되었는가
+      - 디버깅 난이도가 어떻게 달라졌는가
+    - chapter_no: 21
+      title: 심화 미션 2 — 팀의 품질 프로세스 설계하기
+      before: null
+      after: null
+      language: plain text
+      timeline_diagram: "코딩 ──→ 셀프 체크 ──→ 코드 리뷰 ──→ CI ──→ QA ──→ 릴리스\n ①          ②            ③         ④       ⑤"
+      prose:
+      - 핵심 문제는 결함 발견 시점이 너무 늦다는 것이다. QA에서 버그를 잡으면 수정 비용이 개발 단계 대비 5~10배 높아진다. 아래 프로세스는 결함 발견 시점을 가능한 한 앞당기는 것을 목표로 한다.
+      - '목표: ①~④에서 결함의 80% 이상을 제거하여 QA는 "확인"이지 "발견"이 아닌 단계로 만든다.'
+      - 스타일은 자동화한다. ESLint + Prettier로 포맷·네이밍·import 순서를 CI에서 강제하면, 리뷰어가 스타일에 시간을 쓸 이유가 사라진다.
+      - '리뷰어는 설계를 본다. 리뷰 체크리스트:'
+      - 리뷰 코멘트에 [설계], [nit] 접두어를 붙여 무게를 구분한다. [설계] 코멘트는 반드시 해소해야 머지 가능.
+      - 모든 코드에 100% 커버리지를 요구하면 팀이 지친다. 대신 테스트 필수 영역을 정한다.
+      - 'CI 게이트 규칙:'
+      - '순수 함수 + 비즈니스 로직 폴더: 커버리지 80% 미만이면 머지 차단'
+      - '나머지: 커버리지 리포트만 표시, 차단 없음'
+      - 새로 추가된 함수에 테스트가 없으면 CI 경고 (점진적으로 차단으로 전환)
+      summary_bullets: []
+    - chapter_no: 22
+      title: 기본 미션 1 — 테스트 가능하도록 리팩터링하기
+      before: "export async function registerOrder(order) {\n  if (!order.user) throw new Error(\"no user\");\n\n  const price = order.items.reduce((sum, i) => sum + i.price, 0);\n\n  await fetch(\"/api/orders\", {\n    method: \"POST\",\n    body: JSON.stringify({ ...order, price }),\n  });\n\n  console.log(\"order saved\");\n}"
+      after: "// ━━ Types ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\ninterface OrderItem {\n  id: string;\n  price: number;\n}\n\ninterface Order {\n  user: string;\n  items: OrderItem[];\n}\n\ninterface OrderApi {\n  save(payload: Order & { price: number }): Promise<void>;\n}\n\ninterface Logger {\n  info(message: string): void;\n}\n\n// ━━ 순수 함수: 테스트 가능한 핵심 로직 ━━━━━\n\nexport function validateOrder(order: Order): void {\n  if (!order.user) throw new Error(\"no user\");\n}\n\nexport function calcTotalPrice(items: OrderItem[]): number {\n  return items.reduce((sum, item) => sum + item.price, 0);\n}\n\n// ━━ 외부 의존성: 기본 구현 ━━━━━━━━━━━━━━━━━\n\nexport const defaultOrderApi: OrderApi = {\n  async save(payload) {\n    await fetch(\"/api/orders\", {\n      method: \"POST\",\n      body: JSON.stringify(payload),\n    });\n  },\n};\n\nexport const defaultLogger: Logger = {\n  info(message) {\n    console.log(message);\n  },\n};\n\n// ━━ 조합: 의존성 주입 가능한 진입점 ━━━━━━━━\n\nexport async function registerOrder(\n  order: Order,\n  api: OrderApi = defaultOrderApi,\n  logger: Logger = defaultLogger\n): Promise<void> {\n  validateOrder(order);\n\n  const price = calcTotalPrice(order.items);\n\n  await api.save({ ...order, price });\n\n  logger.info(\"order saved\");\n}"
+      language: typescript
+      test_code: "import { describe, it, expect, vi } from \"vitest\";\nimport { validateOrder, calcTotalPrice, registerOrder } from \"./registerOrder\";\n\n// 1) 순수 함수 — 외부 의존 없이 바로 테스트\ndescribe(\"validateOrder\", () => {\n  it(\"user가 없으면 에러를 던진다\", () => {\n    expect(() => validateOrder({ user: \"\", items: [] })).toThrow(\"no user\");\n  });\n\n  it(\"user가 있으면 통과한다\", () => {\n    expect(() => validateOrder({ user: \"u1\", items: [] })).not.toThrow();\n  });\n});\n\ndescribe(\"calcTotalPrice\", () => {\n  it(\"아이템 가격의 합을 반환한다\", () => {\n    const items = [{ id: \"a\", price: 1000 }, { id: \"b\", price: 2000 }];\n    expect(calcTotalPrice(items)).toBe(3000);\n  });\n\n  it(\"빈 배열이면 0을 반환한다\", () => {\n    expect(calcTotalPrice([])).toBe(0);\n  });\n});\n\n// 2) 통합 — 가짜 의존성을 주입해서 fetch/console 없이 테스트\ndescribe(\"registerOrder\", () => {\n  it(\"계산된 price와 함께 API를 호출한다\", async () => {\n    const fakeApi = { save: vi.fn() };\n    const fakeLogger = { info: vi.fn() };\n\n    await registerOrder(\n      { user: \"u1\", items: [{ id: \"a\", price: 500 }] },\n      fakeApi,\n      fakeLogger\n    );\n\n    expect(fakeApi.save).toHaveBeenCalledWith({\n      user: \"u1\",\n      items: [{ id: \"a\", price: 500 }],\n      price: 500,\n    });\n    expect(fakeLogger.info).toHaveBeenCalledWith(\"order saved\");\n  });\n});"
+      summary_bullets:
+      - '순수 함수 추출: validateOrder와 calcTotalPrice는 외부 I/O가 없어서 mock 없이 즉시 단위 테스트가 가능하다.'
+      - '외부 의존성 분리: fetch와 console.log를 OrderApi/Logger 인터페이스 뒤로 숨겼다. 테스트에서는 vi.fn()으로 대체하면 된다.'
+      - '기본값으로 기존 동작 유지: 호출부가 의존성을 넘기지 않으면 defaultOrderApi/defaultLogger가 사용되어 기존 동작이 그대로 보존된다.'
+    - chapter_no: 23
+      title: 기본 미션 2 — 디버깅하기 쉬운 코드로 만들기
+      before: "export function process(items) {\n  let result = 0;\n  for (const i of items) {\n    if (i.a) {\n      if (i.b) {\n        result += i.v * 0.9;\n      } else {\n        result += i.v;\n      }\n    }\n  }\n  return result;\n}"
+      after: "interface PricedItem {\n  active: boolean;\n  discountEligible: boolean;\n  value: number;\n}\n\nconst DISCOUNT_RATE = 0.9;\n\nfunction itemAmount(item: PricedItem): number {\n  if (!item.active) return 0;\n\n  return item.discountEligible\n    ? item.value * DISCOUNT_RATE\n    : item.value;\n}\n\nexport function calcActiveTotal(items: PricedItem[]): number {\n  let total = 0;\n\n  for (const item of items) {\n    const amount = itemAmount(item);\n    // 디버깅 포인트: 각 아이템이 얼마를 기여하는지 여기서 관찰 가능\n    total += amount;\n  }\n\n  return total;\n}"
+      language: typescript
+      test_code: null
+      summary_bullets:
+      - '의미 있는 변수명: i.a → item.active, i.b → item.discountEligible, i.v → item.value, result → total. 브레이크포인트를 걸었을 때 변수 패널만 봐도 상태가 읽힌다.'
+      - '중간 상태 관찰 가능: itemAmount를 별도 함수로 분리해 amount 변수에 담았다. 루프 안에서 amount 하나만 watch하면 "이 아이템이 얼마를 기여하는지"를 바로 볼 수 있다. Before 코드는 result += 안에 계산이 인라인되어 있어 중간값을 관찰할 수 없었다.'
+      - '조건 분리: 중첩 if (i.a) { if (i.b) ... } 를 itemAmount 안의 가드 절 + 삼항으로 풀어서, 조건 하나하나에 브레이크포인트를 걸기 쉬워졌다.'
+      - '매직 넘버 제거: 0.9를 DISCOUNT_RATE 상수로 추출해 "왜 0.9인가"가 이름에 드러난다.'
+      - '타입 도입: PricedItem 인터페이스가 "이 함수가 어떤 모양의 데이터를 기대하는지"를 명시하여, 잘못된 데이터가 들어왔을 때 타입 레벨에서 미리 잡힌다.'
+  per_chapter:
+  - chapter_no: 20
+    title: The Software-Quality Landscape
+    checklist:
+    - text: 타입 체커·린터·테스트·코드 리뷰 중 최소 3가지를 조합하고 있나요? (단일 기법으로는 결함의 60%도 못 잡아요)
+      eslint_rule: null
+    - text: 프로젝트의 품질 우선순위(정확성 vs 속도 vs 유지보수성)가 팀 안에서 합의되어 있나요?
+      eslint_rule: null
+    - text: 코딩 전에 불확실한 부분을 먼저 검증(스파이크, 프로토타입, 디자인 리뷰)하고 있나요?
+      eslint_rule: null
+    - text: 결함이 발견됐을 때 "어느 단계에서 잡혔어야 하는가?"를 회고하는 습관이 있나요?
+      eslint_rule: null
+  - chapter_no: 21
+    title: Collaborative Construction
+    checklist:
+    - text: 모든 코드가 머지 전에 최소 1명의 리뷰를 거치나요?
+      eslint_rule: null
+    - text: 리뷰어가 스타일이 아니라 결함·설계·의도에 집중하고 있나요? (스타일은 도구에 위임)
+      eslint_rule: null
+    - text: 리뷰 코멘트에 severity 구분이 있나요? (must-fix / suggestion / nit)
+      eslint_rule: null
+    - text: 특정 모듈을 한 사람만 이해하는 "버스 팩터 1" 상황이 없나요?
+      eslint_rule: null
+  - chapter_no: 22
+    title: Developer Testing
+    checklist:
+    - text: 테스트가 경계값·에러 케이스·비정상 입력도 커버하나요? "happy path만"이지는 않나요?
+      eslint_rule: null
+    - text: CI에서 매 PR마다 테스트가 자동 실행되고, 실패 시 머지가 차단되나요?
+      eslint_rule: null
+    - text: 결함이 집중되는 모듈(error-prone)에 테스트를 더 두텁게 작성하고 있나요?
+      eslint_rule: null
+    - text: 테스트 이름이 "무엇을 검증하는지" 설명하나요? (test1이 아니라 should show error when email is invalid)
+      eslint_rule: null
+    - text: 커버리지 숫자를 목표로 삼지 않고, "이 테스트가 실제로 무엇을 보호하는가?"를 묻고 있나요?
+      eslint_rule: null
+  - chapter_no: 23
+    title: Debugging
+    checklist:
+    - text: 버그를 만나면 바로 코드를 수정하지 않고, 먼저 가설을 세우고 재현 조건을 최소화하나요?
+      eslint_rule: null
+    - text: console.log에만 의존하지 않고 breakpoint·DevTools·Network 탭을 활용하나요?
+      eslint_rule: null
+    - text: 에러 트래킹(Sentry 등)으로 프로덕션 에러를 자동 수집·분류하고 있나요?
+      eslint_rule: null
+    - text: 수정 후 "이 수정이 다른 곳을 깨뜨리지 않는가?"를 확인하나요?
+      eslint_rule: null
+    - text: 반복되는 버그 패턴이 있다면 린트 룰이나 테스트로 자동화했나요?
+      eslint_rule: null
+ai_assist:
+  per_chapter:
+  - chapter_no: 20
+    verdict:
+      rating: ❓ 미작성
+      rationale: 스터디 판정 미작성
+  - chapter_no: 21
+    verdict:
+      rating: ❓ 미작성
+      rationale: 스터디 판정 미작성
+  - chapter_no: 22
+    verdict:
+      rating: ❓ 미작성
+      rationale: 스터디 판정 미작성
+  - chapter_no: 23
+    verdict:
+      rating: ❓ 미작성
+      rationale: 스터디 판정 미작성
+human_only:
+  discussion_questions:
+  - '1. 토론 질문 1: 두 문장 중 어디에 더 공감해? (a) 우리는 테스트를 열심히 해서 품질을 만든다 vs (b) 우리는 결함이 생기지 않는 구조를 만들어서 품질을 만든다'
+  - '2. 토론 질문 2: "초기에 결함을 제거하는 것이 가장 싸다"는 주장, 실제 경험 기반 찬반은?'
+  - '3. 토론 질문 3: 운영에서만 간헐적으로 결제가 실패하고, 로컬에서는 재현이 안 된다. 각자의 디버깅 순서는?'
+  member_opinions:
+  - question_no: 1
+    author: Alice
+    emoji: 🐻
+    opinion: (b) — 결함이 생기지 않는 구조가 더 중요하다고 생각함. 테스트만으로는 품질을 만들 수 없고, 잘 짜여진 구조일수록 테스트도 용이해지기 때문에 짜임새 있는 구조가 먼저고 테스트는 그 뒤에 따라온다고 봄.
+  - question_no: 1
+    author: Crong
+    emoji: 🐧
+    opinion: (b) — 테스트는 근시안적인 장치임. 단위 테스트가 통과했다고 좋은 코드는 아니듯이, 결함이 생기지 않는 구조를 만드는 게 훨씬 중요함.
+  - question_no: 1
+    author: Leo
+    emoji: 🦁
+    opinion: '사실 두 문장 다 완전히는 불가능하다고 생각하지만, 굳이 고르면 (b). 시스템 차원에서의 무언가가 매우 중요하다고 느낌.
+
+      현업 경험: 패키지 매니저에서 yarn의 catalogs 기능을 이용해서 패키지 버전을 일관되게 관리하고, 린트에 워닝이 있으면 push가 되지 않게끔 막아두는 식으로 시스템 차원의 장치를 두고 있음.'
+  - question_no: 2
+    author: Alice
+    emoji: 🐻
+    opinion: '찬성. 모든 가능성을 초기에 고려하는 게 과한 설계가 될 수 있지만, 실제 발생 가능성이 있는 변화에는 여지를 남겨두는 것이 중요함.
+
+      현업 경험: 회사 전체에서 공통으로 쓰는 Table 컴포넌트를 props 기반으로 설계했다가, 서비스가 분리되며 props가 4~5개 이상 추가되고 조건 분기가 복잡해졌음. 결국 컴파운드 컴포넌트로 재설계했지만 이미 구현된 모든 곳을 리팩토링해야 해서 더 많은 비용이 들었음.'
+  - question_no: 2
+    author: Crong
+    emoji: 🐧
+    opinion: 찬성 — 아토믹 디자인 패턴(atom/molecule/organism)도 결국 같은 맥락이라고 봄.
+  - question_no: 2
+    author: Leo
+    emoji: 🦁
+    opinion: '매우 찬성. 다만 현실적으로 빠르게 개발해야 할 상황이 많고, 그런 상황에서는 저점을 최대한 높이는 게 가장 중요한 전략이라고 봄.
+
+      현업 경험: 기술적 복잡도가 높아져서 해결해야 했던 문제들 대부분이, 그 당시에 해소하는 게 가장 비용이 저렴했을 것으로 예상되는 케이스였음. 시간이 많이 지난 뒤에 해소하려니 맥락이 유지되지 않는 게 가장 어려운 부분.'
+  - question_no: 3
+    author: Alice
+    emoji: 🐻
+    opinion: '운영에만 있고 로컬에서 재현 안 되는 건 보통 환경/데이터/타이밍 셋 중 하나라고 생각해서, 그 순서대로 좁혀가는 편.
+
+      현업 경험: 광고 작업할 때가 딱 이런 케이스였음. 광고 SDK는 로컬에서 호출 자체가 허용이 안 돼서 재현 자체가 불가능했고, 결국 개발 환경에 배포해가면서 확인하는 식으로 진행했음. 이때 배운 건 "재현이 안 되는 환경에서는 한 번 배포할 때 가설을 최대한 많이 끼워넣어야 한다"는 것. 그 뒤로는 디버깅 시에는 로그를 평소보다 훨씬 촘촘하게 박아두고 배포하는 습관이 생김.'
+  - question_no: 3
+    author: zinii
+    emoji: 🐣
+    opinion: '디버깅을 잘한다는 건 문제 본질을 명확히 파악하고 정확히 해결하는 것. 문제의 본질을 모르고 추측성 시도부터 하면 하루 종일 삽질하게 됨. 현상을 덮기 전에 각 아키텍처 계층 간의 동작 규칙을 완벽히 이해하는 것이 가장 빠른 디버깅의 지름길.
+
+      현업 경험: Next.js에서 백엔드 API 호출 시 401 Unauthorized가 계속 나는 문제. CORS/쿠키 도메인부터 의심하며 next.config의 rewrites/middleware 설정을 산발적으로 바꿨다가 시간만 날림. 근본 원인은 브라우저에서는 자동으로 첨부되는 쿠키가 서버 사이드 fetch에서는 자동 릴레이되지 않는 것이었음. Route Handler + next/headers의 cookies()로 명시적으로 Authorization: Bearer 헤더를 세팅하는 구조로 바꿈.'
+  - question_no: 3
+    author: Amber
+    emoji: 🦊
+    opinion: '분할정복으로 코드 영역을 좁힐 수 있어야 하고, 여러 테스트 케이스를 수집해서 가설을 세우고 해당하지 않는 영역을 지워가며 원인에 접근하는 것이 디버깅을 잘하는 것이라고 봄.
+
+      현업 경험: Next.js App Router 처음 쓸 때, 페이지 이동 시마다 최상단 로딩 스피너가 계속 보이는 이슈. Suspense 원리 이해가 부족해서 loading.tsx를 이곳저곳 넣어봄. 진짜 원인은 페이지 컴포넌트 함수에 오타로 async가 붙어있어서 내부 코드가 비동기로 취급되며 루트 loading.tsx가 보였던 것. "어떤 경우에 loading.tsx가 보이는가?"를 케이스로 먼저 정리했다면 더 빨리 찾았을 것.'
+  votes:
+    Alice: null
+    Amber: null
+    Crong: null
+    diego: null
+    Jay: null
+    Leo: null
+    zinii: null
+  best_pick:
+    content: '[내용 요약]'
+    reason: '[선정 이유]'
+  per_chapter_devils_advocate:
+  - chapter_no: 20
+    title: '"품질 투자의 적정선은 프로젝트 수명에 따라 완전히 달라진다"'
+    argument: McConnell은 "품질을 높이면 개발 비용이 줄어든다"고 말하고, 장기적으로는 맞다. 그런데 반대 질문을 던져볼 수 있다 — 모든 코드가 장기적일 필요가 있는가? 3개월짜리 MVP, 검증 전 프로토타입, 이벤트 랜딩 페이지처럼 수명이 짧은 코드에도 같은 품질 기준을 적용하면, "빠르게 학습하고 방향을 전환하는 능력"을 잃을 수 있다. 품질은 공짜가 아니라 투자이고, 투자에는 회수 기간이 있다. "이 코드가 얼마나 오래 살아남을 것인가?"를 먼저 묻고 품질 수준을 결정하는 것도 유효한 전략이다.
+  - chapter_no: 21
+    title: '"리뷰의 가치는 결함 탐지가 아니라 지식 공유에 있을 수 있다"'
+    argument: McConnell은 코드 리뷰의 핵심 가치를 "결함 탐지율 60~70%"에 둔다. 그런데 2026년 FE 현실에서 리뷰가 실제로 잡는 결함의 상당수는 타입 체커나 린터가 이미 잡을 수 있는 것들이다. 그렇다면 리뷰의 진짜 가치는 결함 탐지 자체보다 "설계 의도 공유", "팀 컨텍스트 동기화", "주니어 성장"에 있는 게 아닌가? 만약 그렇다면, 리뷰의 성공 기준도 "몇 개의 결함을 찾았는가"가 아니라 "리뷰 후 팀의 코드 이해도가 올라갔는가"로 바뀌어야 한다. 결함 탐지 중심으로 리뷰를 설계하면, 정작 리뷰의 더 큰 효용을 놓칠 수 있다.
+  - chapter_no: 22
+    title: '"FE에서 테스트 피라미드는 뒤집어야 할 수도 있다"'
+    argument: McConnell은 단위 테스트를 개발자 테스트의 기본으로 놓는다. 전통적 테스트 피라미드도 단위 테스트를 가장 두텁게 쌓으라고 말한다. 그런데 FE 코드의 상당 부분은 "데이터를 받아서 화면에 그리는 것"이고, 이런 코드의 단위 테스트는 구현에 강하게 결합되어 리팩터링할 때마다 깨지기 쉽다. 반면 E2E 테스트(Playwright)나 비주얼 리그레션은 사용자 관점에서 "실제로 깨진 것"만 잡아준다. FE에서는 "단위 테스트를 많이 → 통합 테스트 적당히 → E2E 조금"이 아니라, 비즈니스 크리티컬 경로에 E2E를 두텁게 깔고 순수 로직에만 단위 테스트를 쓰는 것이 더 현실적인 전략일 수 있다. 피라미드가 아니라 트로피 모양이 FE에 맞을 수도 있다는 이야기다.
+  - chapter_no: 23
+    title: '"개인의 디버깅 사고력과 팀의 디버깅 인프라, 어디에 투자할 것인가"'
+    argument: McConnell은 가설 수립, 이분 탐색, 고무 오리 디버깅 등 개인의 체계적 사고력을 강조한다. 틀린 말이 아니지만, 2026년 FE에서 가장 잡기 어려운 버그는 로컬에서 재현되지 않는 버그다 — 특정 브라우저, 특정 네트워크, 특정 사용자 데이터 조합에서만 발생한다. 이런 버그에 "가설을 세우고 좁혀가라"만으로는 한계가 있다. Sentry의 에러 컨텍스트, Session Replay, 소스맵 스택 트레이스가 개인의 추론 10단계를 단축시킨다. 그래서 "개인의 디버깅 실력을 키우자"와 "팀의 디버깅 인프라를 세팅하자"는 양쪽 다 필요하다는 관점이 있다 — 다만 팀 레벨 투자가 먼저일 때 개인의 사고력도 더 잘 작동한다.

@@ -25,7 +25,8 @@ export const MEMBER_DATA: Record<MemberName, MemberProfile> = {
   diego: {
     github: 'jangwonyoon',
     linkedin: 'https://www.linkedin.com/in/%EC%9E%A5%EC%9B%90-%EC%9C%A4-5908911ba/?locale=en',
-    description: '운동은 안하고 클로드에 월 50만원 쓰면서 데이터로 뇌 운동 하는 5년차 프론트엔드 개발자',
+    description:
+      '운동은 안하고 클로드에 월 50만원 쓰면서 데이터로 뇌 운동 하는 5년차 프론트엔드 개발자',
   },
   Jay: {
     github: 'jxxunnn',

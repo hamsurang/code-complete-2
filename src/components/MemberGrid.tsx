@@ -34,7 +34,9 @@ export default function MemberGrid() {
 
         return (
           <div key={name} className={styles.card}>
-            <span className={styles.emoji} aria-hidden="true">{emoji}</span>
+            <span className={styles.emoji} aria-hidden="true">
+              {emoji}
+            </span>
             <p className={styles.name}>
               <strong>{name}</strong>
               <span className={styles.koName}> ({koName})</span>
