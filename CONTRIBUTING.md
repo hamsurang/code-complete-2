@@ -26,7 +26,7 @@ pnpm install
 pnpm start
 ```
 
-브라우저에서 `http://localhost:3000/code-complete/` 가 자동으로 열립니다.
+브라우저에서 `http://localhost:3000/code-complete-2/` 가 자동으로 열립니다.
 파일을 수정하면 새로고침 없이 바로 반영됩니다.
 
 ## 프로젝트 구조

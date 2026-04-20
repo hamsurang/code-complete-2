@@ -1,3 +1,4 @@
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import MemberCard from './MemberCard';
 import type { MemberName } from './types';
 import styles from './HeroSection.module.css';
@@ -57,6 +58,8 @@ const members: readonly Member[] = [
 ];
 
 export default function HeroSection() {
+  const heroImage = useBaseUrl('/img/members/hero.png');
+
   return (
     <section className={styles.hero}>
       <div className={styles.intro}>
@@ -68,11 +71,7 @@ export default function HeroSection() {
         </p>
       </div>
       <figure className={styles.figure}>
-        <img
-          src="/code-complete/img/members/hero.png"
-          alt="함수랑 산악회 7인 캐릭터"
-          loading="lazy"
-        />
+        <img src={heroImage} alt="함수랑 산악회 7인 캐릭터" loading="lazy" />
       </figure>
       <div className={styles.grid}>
         {members.map((m) => (

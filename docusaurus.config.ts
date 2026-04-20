@@ -12,10 +12,10 @@ const config: Config = {
   },
 
   url: 'https://hamsurang.github.io',
-  baseUrl: '/code-complete/',
+  baseUrl: '/code-complete-2/',
 
   organizationName: 'hamsurang',
-  projectName: 'code-complete',
+  projectName: 'code-complete-2',
 
   onBrokenLinks: 'throw',
 
@@ -31,7 +31,7 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           routeBasePath: '/',
-          editUrl: 'https://github.com/hamsurang/code-complete/tree/main/',
+          editUrl: 'https://github.com/hamsurang/code-complete-2/tree/main/',
         },
         blog: false,
         theme: {
@@ -56,7 +56,7 @@ const config: Config = {
           label: '목차',
         },
         {
-          href: 'https://github.com/hamsurang/code-complete',
+          href: 'https://github.com/hamsurang/code-complete-2',
           label: 'GitHub',
           position: 'right',
         },
