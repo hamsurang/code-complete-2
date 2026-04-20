@@ -1,38 +1,78 @@
-/**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
- */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 
-/* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  /* 함수랑 산악회 — 산록(山麓) 그린 팔레트 */
+  --ifm-color-primary: #16A34A;
+  --ifm-color-primary-dark: #15803D;
+  --ifm-color-primary-darker: #166534;
+  --ifm-color-primary-darkest: #14532D;
+  --ifm-color-primary-light: #22C55E;
+  --ifm-color-primary-lighter: #4ADE80;
+  --ifm-color-primary-lightest: #86EFAC;
+
   --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --docusaurus-highlighted-code-line-bg: rgba(22, 163, 74, 0.08);
+
+  --ifm-font-family-base: 'Noto Sans KR', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', sans-serif;
+  --ifm-heading-font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', sans-serif;
+  --ifm-heading-font-weight: 700;
+
+  --ifm-navbar-background-color: #fff;
+  --ifm-navbar-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.08);
+
+  /* 산악회 amber 강조색 */
+  --ham-accent: #D97706;
+  --ham-accent-light: #FCD34D;
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --ifm-color-primary: #4ADE80;
+  --ifm-color-primary-dark: #22C55E;
+  --ifm-color-primary-darker: #16A34A;
+  --ifm-color-primary-darkest: #15803D;
+  --ifm-color-primary-light: #86EFAC;
+  --ifm-color-primary-lighter: #BBF7D0;
+  --ifm-color-primary-lightest: #DCFCE7;
+
+  --docusaurus-highlighted-code-line-bg: rgba(74, 222, 128, 0.08);
+
+  --ifm-background-color: #0D1117;
+  --ifm-navbar-background-color: #161B22;
+  --ifm-navbar-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.06);
+  --ifm-card-background-color: #161B22;
 }
 
+/* 사이드바 메뉴 폰트 크기 */
 .menu__link {
   font-size: 0.85rem;
 }
 
 .menu__list-item-collapsible .menu__link {
   font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* 내비게이션 바 타이틀 */
+.navbar__title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* 코드 블록 */
+.prism-code {
+  font-size: 0.875rem;
+}
+
+/* 마크다운 본문 한글 최적화 */
+.markdown {
+  line-height: 1.75;
+  word-break: keep-all;
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3 {
+  letter-spacing: -0.03em;
 }
