@@ -110,6 +110,8 @@ Notion `code.language`가:
 
 **블록 트리 순회:** 재귀적으로 `has_children: true`인 블록은 children 다시 호출. 중첩 limit 없음.
 
+특히 `callout` / `toggle` / `column` / `quote` 는 본문을 children에 담는 패턴이 흔하다. rich_text는 템플릿 헤더만 있고 실제 값은 children에 있을 수 있음 (2026-04-20 ch7-9/ch20-23 판정 누락의 원인).
+
 ## Common Mistakes
 
 | 실수 | 결과 | 수정 |
@@ -118,6 +120,7 @@ Notion `code.language`가:
 | `-` 투표를 0으로 치환 | 평균 왜곡 | 반드시 `null` |
 | 코드 블록의 plain_text만 추출 | indent 소실 | `rich_text[].plain_text`를 **그대로** 연결 |
 | Human-only 영역 요약/재표현 | 멤버 목소리 왜곡 | literal 보존, 한 글자도 수정 금지 |
+| `has_children: true` callout의 children 미재귀 | 판정·의견 본문 누락. rich_text의 템플릿 헤더(`[🟢 생존 / 🟡 변형 / 🔴 사망]`)만 긁혀 "미작성"으로 렌더됨 | 모든 `has_children: true` 블록은 `API-get-block-children` 재호출. callout/toggle 특히 주의 (2026-04-20 실제 발생 버그) |
 
 ## 원본 JSON 덤프 필수
 
