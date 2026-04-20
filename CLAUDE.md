@@ -92,8 +92,10 @@ code-complete-2/
 │   └── verify-human-only-hash.js  # Human-only Zone 해시 검증 (Node)
 ├── docs/
 │   ├── index.mdx
-│   ├── weeks/                     # 실제 진행된 주차별 묶음 (week-02 ~ week-08)
-│   └── appendix/                  # 집계 대시보드
+│   ├── foundations/               # 🧭 구현의 기초 (ch1-4, ch5-6)
+│   ├── good-code/                 # ✏️ 좋은 코드 쓰기 (ch7-9, ch20-23)
+│   ├── growth/                    # 🔧 완성과 성장 (ch24-26, ch31-34)
+│   └── appendix/                  # 집계 대시보드 (사이드바 미노출, URL 유지)
 ├── plans/                         # 로컬 실행 플랜 (.gitignore, docs/ 밖)
 ├── src/
 │   ├── components/                # 커스텀 MDX 컴포넌트 (Phase 4)
