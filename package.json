@@ -12,7 +12,7 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "lint": "eslint \"{src,docs}/**/*.{ts,tsx,js,jsx,md,mdx}\" --max-warnings 0 --format compact",
+    "lint": "eslint \"{src,docs}/**/*.{ts,tsx,js,jsx,md,mdx}\" --max-warnings 0",
     "lint:fix": "pnpm lint --fix",
     "format": "prettier --write \"{src,docs,scripts,.github}/**/*.{ts,tsx,js,jsx,md,mdx,json,yml,yaml}\"",
     "format:check": "prettier --check \"{src,docs,scripts,.github}/**/*.{ts,tsx,js,jsx,md,mdx,json,yml,yaml}\"",
