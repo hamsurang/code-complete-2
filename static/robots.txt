@@ -1,0 +1,7 @@
+# 조용한 공개 (quiet launch) 전략
+# Why: 35장 중 실제 콘텐츠가 있는 장이 아직 소수. 검색엔진에 공사 중 페이지가
+# 고정 노출되면 첫인상이 굳어지고 SEO 회복이 오래 걸린다.
+# 3~5장 누적 + 각 장 voice-validator pass 이후 별도 PR로 Disallow 제거.
+
+User-agent: *
+Disallow: /
