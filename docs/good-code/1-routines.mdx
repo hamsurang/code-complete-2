@@ -22,6 +22,7 @@ edited_at: 2026-04-19T23:40:00+09:00
 enhanced_at: 2026-04-19T23:55:00+09:00
 ---
 
+import Verdict from '@site/src/components/Verdict';
 import MemberOpinion from '@site/src/components/MemberOpinion';
 import DevilsAdvocate from '@site/src/components/DevilsAdvocate';
 
@@ -47,11 +48,10 @@ import DevilsAdvocate from '@site/src/components/DevilsAdvocate';
 
 ## Chapter 7. High-Quality Routines
 
-:::note 판정 미작성
-
-이 장의 스터디 판정이 아직 정리되지 않았어요. Notion에 채워지면 다시 추출해서 반영할게요.
-
-:::
+<Verdict
+  rating="🟢 생존"
+  rationale={`"루틴을 만드는 가장 중요한 이유는 복잡도를 줄이는 것이다", "하나의 루틴은 하나의 일만 한다(기능적 응집도)" — 함수형 컴포넌트·커스텀 훅·유틸 함수가 전부인 FE에서 "좋은 함수란 무엇인가"는 매일의 질문이다.`}
+/>
 
 ### ✅ 체크리스트
 
@@ -367,11 +367,10 @@ async function handleRefund(paymentId: string, amount: number) {
 
 ## Chapter 8. Defensive Programming
 
-:::note 판정 미작성
-
-이 장의 스터디 판정이 아직 정리되지 않았어요. Notion에 채워지면 다시 추출해서 반영할게요.
-
-:::
+<Verdict
+  rating="🟡 변형"
+  rationale={`"나쁜 입력으로부터 프로그램을 보호하라", "바리케이드를 세워 안전 구역을 만들라"는 원칙은 유효하지만, FE에서 방어의 주된 수단이 assertion/error code에서 TypeScript 타입 시스템 + Zod/Valibot 런타임 검증 + Error Boundary로 이동했다.`}
+/>
 
 ### ✅ 체크리스트
 
@@ -635,11 +634,10 @@ function getUserName(user: User): string {
 
 ## Chapter 9. The Pseudocode Programming Process
 
-:::note 판정 미작성
-
-이 장의 스터디 판정이 아직 정리되지 않았어요. Notion에 채워지면 다시 추출해서 반영할게요.
-
-:::
+<Verdict
+  rating="🟡 변형"
+  rationale={`"코딩 전에 의사코드로 설계하라"는 사고 습관은 유효하지만, 2026년 FE에서 의사코드의 자리를 타입 정의 먼저 작성하기(type-first), 인터페이스 스케치, 또는 테스트 먼저 작성하기(TDD)가 대체한 경우가 많다.`}
+/>
 
 ### ✅ 체크리스트
 
@@ -859,7 +857,6 @@ experience=""
 
 :::note 생략된 섹션
 
-- **Verdict**: 7·8·9장 모두 스터디 판정 미작성 (rating·rationale placeholder)
 - **VotingBar**: 스터디원 투표 미작성 (votes 전원 null)
 - **BestPickCallout**: 베스트 토론 미선정 (content·reason 모두 placeholder)
 
