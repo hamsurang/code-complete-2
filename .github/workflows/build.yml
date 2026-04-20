@@ -27,12 +27,14 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Lint (agent-optimized output)
-        run: pnpm lint 2>&1 | head -50
-        continue-on-error: false
+      # Why: 이전 버전은 `pnpm lint | head -50` 형태로 `head`가 파이프라인을 SIGPIPE로
+      # 조기 종료시켜 ESLint 실패 exit code가 CI에 전파되지 않는 버그가 있었다.
+      # 에이전트 친화 짧은 출력은 ESLint --format compact가 이미 담당하므로 파이프 제거.
+      - name: Lint
+        run: pnpm lint
 
       - name: Format check
-        run: pnpm format:check 2>&1 | head -30
+        run: pnpm format:check
 
       - name: Build
         # docusaurus.config.ts의 onBrokenLinks: 'throw'로 링크 깨짐 차단

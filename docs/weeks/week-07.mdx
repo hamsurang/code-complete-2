@@ -1,7 +1,7 @@
 ---
 sidebar_position: 7
-title: "Week 7 — 7~9장: 좋은 루틴 · 방어적 프로그래밍 · PPP"
-description: "함수랑 산악회가 Code Complete 7~9장을 2026년 FE 관점으로 한 호흡에 묶어 읽은 7주차. 좋은 루틴의 기준부터 방어 전략의 경계, 코딩 전 의사코드까지."
+title: 'Week 7 — 7~9장: 좋은 루틴 · 방어적 프로그래밍 · PPP'
+description: '함수랑 산악회가 Code Complete 7~9장을 2026년 FE 관점으로 한 호흡에 묶어 읽은 7주차. 좋은 루틴의 기준부터 방어 전략의 경계, 코딩 전 의사코드까지.'
 authors:
   - Alice
   - Amber
@@ -76,7 +76,7 @@ import DevilsAdvocate from '@site/src/components/DevilsAdvocate';
 ```typescript
 type ApiPayment = {
   id: string;
-  status: "paid" | "failed" | "refunded";
+  status: 'paid' | 'failed' | 'refunded';
   amount: number;
   paidAt: string;
   customerName: string;
@@ -85,17 +85,15 @@ type ApiPayment = {
 export async function loadAndShapePayments(
   storeId: string,
   q: string,
-  status: "all" | ApiPayment["status"],
-  page: number
+  status: 'all' | ApiPayment['status'],
+  page: number,
 ) {
-  const res = await fetch(
-    `/api/payments?storeId=${storeId}&q=${encodeURIComponent(q)}&status=${status}&page=${page}`
-  );
+  const res = await fetch(`/api/payments?storeId=${storeId}&q=${encodeURIComponent(q)}&status=${status}&page=${page}`);
   const json = await res.json();
 
   const items = (json.items ?? []) as ApiPayment[];
 
-  const filtered = status === "all" ? items : items.filter((p) => p.status === status);
+  const filtered = status === 'all' ? items : items.filter((p) => p.status === status);
   const searched = q ? filtered.filter((p) => p.customerName.includes(q)) : filtered;
 
   return searched.map((p) => ({
@@ -116,8 +114,8 @@ export async function loadAndShapePayments(
 ```typescript
 // ━━ Types ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-type PaymentStatus = "paid" | "failed" | "refunded";
-type StatusFilter = PaymentStatus | "all";
+type PaymentStatus = 'paid' | 'failed' | 'refunded';
+type StatusFilter = PaymentStatus | 'all';
 
 interface ApiPayment {
   id: string;
@@ -144,8 +142,8 @@ interface PaymentQuery {
 async function fetchPayments(params: PaymentQuery): Promise<ApiPayment[]> {
   const searchParams = new URLSearchParams({
     storeId: params.storeId,
-    q: params.query ?? "",
-    status: params.status ?? "all",
+    q: params.query ?? '',
+    status: params.status ?? 'all',
     page: String(params.page ?? 1),
   });
 
@@ -157,7 +155,7 @@ async function fetchPayments(params: PaymentQuery): Promise<ApiPayment[]> {
 // ━━ 도메인 로직: 필터링 (순수 함수) ━━━━━━━━
 
 function filterByStatus(payments: ApiPayment[], status: StatusFilter): ApiPayment[] {
-  if (status === "all") return payments;
+  if (status === 'all') return payments;
   return payments.filter((p) => p.status === status);
 }
 
@@ -180,8 +178,8 @@ function toPaymentView(payment: ApiPayment): PaymentView {
 
 export async function loadPayments(params: PaymentQuery): Promise<PaymentView[]> {
   const raw = await fetchPayments(params);
-  const byStatus = filterByStatus(raw, params.status ?? "all");
-  const byName = filterByCustomerName(byStatus, params.query ?? "");
+  const byStatus = filterByStatus(raw, params.status ?? 'all');
+  const byName = filterByCustomerName(byStatus, params.query ?? '');
   return byName.map(toPaymentView);
 }
 ```
@@ -199,12 +197,12 @@ export async function loadPayments(params: PaymentQuery): Promise<PaymentView[]>
 ```typescript
 export async function saveMemoAndNotify(paymentId: string, memo: string) {
   await fetch(`/api/payments/${paymentId}/memo`, {
-    method: "PUT",
+    method: 'PUT',
     body: JSON.stringify({ memo }),
   });
 
-  alert("저장 완료");
-  console.log("memo_saved", { paymentId });
+  alert('저장 완료');
+  console.log('memo_saved', { paymentId });
 }
 ```
 
@@ -217,8 +215,8 @@ export async function saveMemoAndNotify(paymentId: string, memo: string) {
 
 export async function saveMemo(paymentId: string, memo: string): Promise<void> {
   const res = await fetch(`/api/payments/${paymentId}/memo`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ memo }),
   });
 
@@ -234,10 +232,10 @@ function useMemoSave(paymentId: string) {
     setSaving(true);
     try {
       await saveMemo(paymentId, memo);
-      toast.success("저장 완료");
-      logger.info("memo_saved", { paymentId });
+      toast.success('저장 완료');
+      logger.info('memo_saved', { paymentId });
     } catch (e) {
-      toast.error("저장에 실패했습니다");
+      toast.error('저장에 실패했습니다');
     } finally {
       setSaving(false);
     }
@@ -256,10 +254,10 @@ function useMemoSave(paymentId: string) {
 ```typescript
 export async function refund(paymentId: string, amount: number) {
   const res = await fetch(`/api/refund`, {
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify({ paymentId, amount }),
   });
-  if (!res.ok) throw new Error("refund failed");
+  if (!res.ok) throw new Error('refund failed');
   return res.json();
 }
 ```
@@ -271,10 +269,10 @@ export async function refund(paymentId: string, amount: number) {
 
 type RefundResult =
   | { ok: true; refundId: string; refundedAmount: number }
-  | { ok: false; type: "network"; message: string }
-  | { ok: false; type: "insufficient_balance"; available: number }
-  | { ok: false; type: "already_refunded" }
-  | { ok: false; type: "unknown"; message: string };
+  | { ok: false; type: 'network'; message: string }
+  | { ok: false; type: 'insufficient_balance'; available: number }
+  | { ok: false; type: 'already_refunded' }
+  | { ok: false; type: 'unknown'; message: string };
 
 // ━━ API 응답 타입 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -284,7 +282,7 @@ interface RefundApiSuccess {
 }
 
 interface RefundApiError {
-  code: "INSUFFICIENT_BALANCE" | "ALREADY_REFUNDED" | string;
+  code: 'INSUFFICIENT_BALANCE' | 'ALREADY_REFUNDED' | string;
   message: string;
   available?: number;
 }
@@ -295,13 +293,13 @@ export async function refund(paymentId: string, amount: number): Promise<RefundR
   let res: Response;
 
   try {
-    res = await fetch("/api/refund", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    res = await fetch('/api/refund', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ paymentId, amount }),
     });
   } catch {
-    return { ok: false, type: "network", message: "서버에 연결할 수 없습니다" };
+    return { ok: false, type: 'network', message: '서버에 연결할 수 없습니다' };
   }
 
   if (res.ok) {
@@ -309,15 +307,15 @@ export async function refund(paymentId: string, amount: number): Promise<RefundR
     return { ok: true, refundId: data.refundId, refundedAmount: data.refundedAmount };
   }
 
-  const error: RefundApiError = await res.json().catch(() => ({ code: "UNKNOWN", message: "알 수 없는 오류" }));
+  const error: RefundApiError = await res.json().catch(() => ({ code: 'UNKNOWN', message: '알 수 없는 오류' }));
 
   switch (error.code) {
-    case "INSUFFICIENT_BALANCE":
-      return { ok: false, type: "insufficient_balance", available: error.available ?? 0 };
-    case "ALREADY_REFUNDED":
-      return { ok: false, type: "already_refunded" };
+    case 'INSUFFICIENT_BALANCE':
+      return { ok: false, type: 'insufficient_balance', available: error.available ?? 0 };
+    case 'ALREADY_REFUNDED':
+      return { ok: false, type: 'already_refunded' };
     default:
-      return { ok: false, type: "unknown", message: error.message };
+      return { ok: false, type: 'unknown', message: error.message };
   }
 }
 
@@ -332,16 +330,16 @@ async function handleRefund(paymentId: string, amount: number) {
   }
 
   switch (result.type) {
-    case "network":
-      toast.error("네트워크 오류. 다시 시도해주세요.");
+    case 'network':
+      toast.error('네트워크 오류. 다시 시도해주세요.');
       break;
-    case "insufficient_balance":
+    case 'insufficient_balance':
       toast.error(`잔액 부족: ${result.available.toLocaleString()}원까지 가능`);
       break;
-    case "already_refunded":
-      toast.error("이미 환불된 결제입니다.");
+    case 'already_refunded':
+      toast.error('이미 환불된 결제입니다.');
       break;
-    case "unknown":
+    case 'unknown':
       toast.error(result.message);
       break;
     // TypeScript가 여기서 never 체크 → 새 타입 추가 시 컴파일 에러
@@ -546,7 +544,7 @@ function calculateDiscount(price: number, rate: number): number {
 
 ```typescript
 async function fetchPayments() {
-  const res = await fetch("/api/payments");
+  const res = await fetch('/api/payments');
   return res.json();
 }
 ```
@@ -570,28 +568,26 @@ interface PaymentsResponse {
   items: Payment[];
 }
 
-type FetchResult =
-  | { ok: true; payments: Payment[] }
-  | { ok: false; error: "network" | "server" | "parse" };
+type FetchResult = { ok: true; payments: Payment[] } | { ok: false; error: 'network' | 'server' | 'parse' };
 
 async function fetchPayments(): Promise<FetchResult> {
   let res: Response;
 
   try {
-    res = await fetch("/api/payments");
+    res = await fetch('/api/payments');
   } catch {
-    return { ok: false, error: "network" };
+    return { ok: false, error: 'network' };
   }
 
   if (!res.ok) {
-    return { ok: false, error: "server" };
+    return { ok: false, error: 'server' };
   }
 
   try {
     const data: PaymentsResponse = await res.json();
     return { ok: true, payments: data.items };
   } catch {
-    return { ok: false, error: "parse" };
+    return { ok: false, error: 'parse' };
   }
 }
 ```
@@ -605,8 +601,8 @@ async function fetchPayments(): Promise<FetchResult> {
 ```typescript
 // A안 — 과도한 방어 ❌
 function getUserName(user) {
-  if (!user) return "";
-  if (!user.name) return "";
+  if (!user) return '';
+  if (!user.name) return '';
   return user.name;
 }
 ```
@@ -680,9 +676,7 @@ interface CartItem {
   qty: number;
 }
 
-type Coupon =
-  | { type: "rate"; value: number }
-  | { type: "flat"; value: number };
+type Coupon = { type: 'rate'; value: number } | { type: 'flat'; value: number };
 
 // 1. 소계 합산
 function calcSubtotal(items: CartItem[]): number {
@@ -697,10 +691,7 @@ function calcSubtotal(items: CartItem[]): number {
 function applyCoupon(subtotal: number, coupon?: Coupon): number {
   if (!coupon) return subtotal;
 
-  const discounted =
-    coupon.type === "rate"
-      ? subtotal * (1 - coupon.value)
-      : subtotal - coupon.value;
+  const discounted = coupon.type === 'rate' ? subtotal * (1 - coupon.value) : subtotal - coupon.value;
 
   return Math.max(discounted, 0);
 }
@@ -722,14 +713,12 @@ function calcCartTotal(items: CartItem[], coupon?: Coupon): number {
 function getVisiblePayments(payments, status, query) {
   let result = payments;
 
-  if (status !== "all") {
+  if (status !== 'all') {
     result = result.filter((p) => p.status === status);
   }
 
   if (query) {
-    result = result.filter((p) =>
-      p.customerName.includes(query)
-    );
+    result = result.filter((p) => p.customerName.includes(query));
   }
 
   return result;
@@ -749,8 +738,8 @@ function getVisiblePayments(payments, status, query) {
 ##### After ✅
 
 ```typescript
-type PaymentStatus = "paid" | "failed" | "refunded";
-type StatusFilter = PaymentStatus | "all";
+type PaymentStatus = 'paid' | 'failed' | 'refunded';
+type StatusFilter = PaymentStatus | 'all';
 
 interface Payment {
   id: string;
@@ -761,7 +750,7 @@ interface Payment {
 
 // 2. 상태 필터
 function filterByStatus(payments: Payment[], status: StatusFilter): Payment[] {
-  if (status === "all") return payments;
+  if (status === 'all') return payments;
   return payments.filter((p) => p.status === status);
 }
 
@@ -772,11 +761,7 @@ function filterByCustomerName(payments: Payment[], query: string): Payment[] {
 }
 
 // 1→2→3→4 조합
-function getVisiblePayments(
-  payments: Payment[],
-  status: StatusFilter,
-  query: string
-): Payment[] {
+function getVisiblePayments(payments: Payment[], status: StatusFilter, query: string): Payment[] {
   const byStatus = filterByStatus(payments, status);
   const byName = filterByCustomerName(byStatus, query);
   return byName;
@@ -827,7 +812,7 @@ function getVisiblePayments(
   opinion={`assertion은 "이 코드에 도달했다면 이 조건은 무조건 참이어야 한다"는 개발자의 전제를 명시하는 도구. 터지면 그건 사용자나 외부 환경 문제가 아니라 코드 버그라는 신호. 반면 예외 처리는 서버 다운, 네트워크 끊김, 잘못된 사용자 입력처럼 정상 흐름에서도 충분히 일어날 수 있는 상황을 다룸. 그래서 외부 입력이 들어오는 경계(API 응답, 사용자 입력)에는 예외 처리를, 내부 함수끼리 호출할 때 "이건 당연히 지켜질 거야"라는 전제에는 assertion이 맞다고 생각함.
 
 현업 경험: 500 에러처럼 서버 자체가 죽었거나 복구 불가능한 상황은 에러 페이지로 보내고, 400 에러처럼 사용자 입력이나 비즈니스 규칙 때문에 발생한 복구 가능한 케이스는 모달로 안내함.`}
-  experience=""
+experience=""
 />
 
 <MemberOpinion
@@ -836,7 +821,7 @@ function getVisiblePayments(
   opinion={`(이번 주 추가 공부 주제로 깊이 파봄) 어설션은 프로그래머의 실수(버그)를 잡는 도구. 사용자/외부 환경 문제가 아니라 개발자가 논리를 잘못 짠 것을 잡아냄. 정상적으로 동작하는 프로그램에서는 절대 터지면 안 되고, 프로덕션에서는 비활성화 가능. 예외 처리는 외부 요인에 의한 실패를 다루는 도구 — 서버 다운, 네트워크 끊김처럼 정상 프로그램에서도 충분히 발생할 수 있는 상황. 비유하자면 어설션은 공장 출하 전 품질 검사, 예외는 운전 중 대시보드 경고등.
 
 현업 경험: Medium의 "Assertions are not Exceptions!!"와 Inspired Python 글, Stefan Scherfke의 글을 정리해서 팀에 공유함.`}
-  experience=""
+experience=""
 />
 
 <MemberOpinion
@@ -868,7 +853,7 @@ function getVisiblePayments(
   opinion={`렌더링 중 터지는 에러는 Error Boundary, 이벤트 핸들러/비동기 코드는 따로 처리. 페이지 단위로 Error Boundary 감싸고 fallback에서 "다시 시도" 버튼을 주는 게 무난함. 네트워크 오류는 React Query/SWR의 isError로 관리하고, 401 인증 만료 같은 전역 처리는 axios interceptor/fetch wrapper에서 한 번에 처리.
 
 현업 경험: 과거에 SentryErrorBoundary를 최상단에 올려 렌더링/네트워크 에러를 한 번에 처리했지만, 두 계층이 분리되어 있으니 좋은 방법이 아니었다고 회고.`}
-  experience=""
+experience=""
 />
 
 의견은 저마다 다르지만, 세 장이 한 흐름으로 이어진다는 감각은 공유돼요.

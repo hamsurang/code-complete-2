@@ -1,7 +1,7 @@
 ---
 sidebar_position: 8
-title: "Week 8 — 1~4장: 소프트웨어 구현이란 · 비유 · 문제 정의 · 요구사항"
-description: "함수랑 산악회가 Code Complete 1~4장을 2026년 FE 관점으로 한 호흡에 묶어 읽은 8주차. construction의 정의부터 비유, 사전 준비, 핵심 결정까지."
+title: 'Week 8 — 1~4장: 소프트웨어 구현이란 · 비유 · 문제 정의 · 요구사항'
+description: '함수랑 산악회가 Code Complete 1~4장을 2026년 FE 관점으로 한 호흡에 묶어 읽은 8주차. construction의 정의부터 비유, 사전 준비, 핵심 결정까지.'
 authors:
   - Alice
   - Amber
@@ -149,7 +149,7 @@ import DevilsAdvocate from '@site/src/components/DevilsAdvocate';
   opinion={`지금 요구사항을 정확히 해결하면서도 다음 변경에 무너지지 않는 코드를 만드는 것. 미래에 변경사항이 생겼을 때 쉽게 확장할 수 있는 구조를 만들되, 단순히 "확장 가능하게"가 아니라 현재 필요한 만큼만 적절히 추상화하는 균형 감각이 중요함. 설계와 구현은 섞여 있는 활동.
 
 현업 경험: 어드민 MVP를 만들 때 기획자 없이 직접 기획·설계·구현을 모두 맡았는데, 코드 작성 시간보다 "이 기능이 사용자에게 어떤 흐름으로 보여야 하는가"를 정리하는 시간이 더 길었음.`}
-  experience=""
+experience=""
 />
 
 <MemberOpinion
@@ -174,7 +174,7 @@ import DevilsAdvocate from '@site/src/components/DevilsAdvocate';
   opinion={`잘못된 접근이라고 생각하지 않음. 가끔은 빠르게 만들어보면서 사용자 관점으로 문제를 바라보게 되고, 그 과정에서 해결 방향이 보이는 경우도 있음. 문제 정의는 "이 기능이 왜 필요한지"를 팀원 과반 이상이 문제라고 생각하고 개선안에 공감할 때 충분함.
 
 현업 경험: 화면이 느리다는 피드백을 받고 렌더링 최적화에 집중했는데, 실제 원인은 API 응답 자체가 느린 것이어서 프론트 최적화가 체감 개선으로 이어지지 않았던 경험. 문제 정의를 충분히 하지 않으면 잘못된 방향에 시간을 씀.`}
-  experience=""
+experience=""
 />
 
 <MemberOpinion
@@ -199,7 +199,7 @@ import DevilsAdvocate from '@site/src/components/DevilsAdvocate';
   opinion={`장점은 그 시점의 문제들을 개선하고 생태계가 같은 방향으로 모이기 때문에 빠르게 따라잡을 수 있다는 것. 단점은 deprecated 되면 굉장히 난감 — 의존하던 기능을 대체해야 하는 비용이 큼.
 
 현업 경험: 잘한 선택 — react-hook-form + zod 도입. 이전에 context 기반으로 폼 관리를 하다가 상태가 복잡해지고 에러 관리가 어려워져서 전환했더니 깔끔해짐. 아쉬운 선택 — 입력 필드 2~3개짜리 단순 검색/필터 폼에도 RHF를 적용한 것. "폼이니까 폼 라이브러리 써야지"라는 관성으로 도입했는데 controlled/uncontrolled가 섞이면서 오히려 복잡해짐. 결국 제거하고 useState 기반으로 자체 구현. 같은 라이브러리라도 맥락에 따라 잘한 선택/아쉬운 선택이 될 수 있다는 걸 배움.`}
-  experience=""
+experience=""
 />
 
 <MemberOpinion
@@ -208,7 +208,7 @@ import DevilsAdvocate from '@site/src/components/DevilsAdvocate';
   opinion={`장점은 활발한 커뮤니티/학습자료/채용 시 장점. 단점은 베스트 프랙티스가 정립되지 않고 브레이킹 체인지가 잦을 수 있음.
 
 현업 경험: Next.js App Router를 도입했는데 module federation을 사용할 수 없게 된 케이스.`}
-  experience=""
+experience=""
 />
 
 <MemberOpinion
@@ -217,7 +217,7 @@ import DevilsAdvocate from '@site/src/components/DevilsAdvocate';
   opinion={`유행하는 기술 도입도 일반적인 기술 도입과 동일하게 판단하면 됨. 풀려는 문제를 해당 기술이 얼마나 효과적으로 해결해주는지가 중요. MSA처럼 팀 역량이 매우 중요한 기술도 있어서, 팀이 제대로 다룰 수 없는 기술을 섣불리 도입하는 건 경계해야 함.
 
 현업 경험: 회사 FE가 혼자였을 때 React Query 적극 도입은 좋았지만, "그냥 써보고 싶다"는 이유로 sass/emotion/tailwindcss를 프로젝트별로 다르게 가져갔던 게 두고두고 별로였음.`}
-  experience=""
+experience=""
 />
 
 의견은 저마다 다르지만, 네 장이 한 흐름으로 이어진다는 감각은 공유돼요.
