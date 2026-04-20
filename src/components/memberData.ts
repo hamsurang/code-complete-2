@@ -9,7 +9,7 @@ interface MemberProfile {
 export const MEMBER_DATA: Record<MemberName, MemberProfile> = {
   Alice: {
     github: 'sHyunis',
-    linkedin: null,
+    linkedin: 'https://www.linkedin.com/in/%EC%86%8C%ED%98%84-%EC%A0%95-100448322/',
     description: '2년차 프론트엔드 개발자 (F-pretence)',
   },
   Amber: {
