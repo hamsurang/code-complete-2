@@ -1,54 +1,163 @@
+<div align="center">
+
 # Code Complete 2판 한글 스터디
 
-> 함수랑 동아리 — Code Complete 2nd Edition 함께 읽기
+**변하지 않는 기술에 집중하는 7인의 프론트엔드 개발자 스터디**
+
+[![Site](https://img.shields.io/badge/스터디_노트_보러가기-hamsurang.github.io-16A34A?style=for-the-badge&logo=docusaurus&logoColor=white)](https://hamsurang.github.io/code-complete-2/)
+[![Notion](https://img.shields.io/badge/Notion-산출물_모아보기-000000?style=for-the-badge&logo=notion&logoColor=white)](https://hamsurang.notion.site/2f845f0c788b80f9899aee806838614d?source=copy_link)
+
+<br />
+
+<img src="./static/img/members/study-members.png" width="700" alt="함수랑 산악회 스터디원" />
+
+</div>
+
+<br />
 
 ## 목적
 
-매일 바뀌는 기술이 아닌, **변하지 않는 기술**에 집중하고, 개발자로서 필요한 지식들을 스터디를 통해 얻어갑니다.
+매일 바뀌는 기술이 아닌, **변하지 않는 기술**에 집중합니다.  
+Code Complete는 30년이 지난 지금도 유효한 소프트웨어 구현 원칙을 담고 있어요.  
+7명의 프론트엔드 개발자가 함께 읽고, 토론하고, 2026년 FE 현업 관점으로 재해석합니다.
 
-| [책 사러 가기](https://www.yes24.com/product/goods/44130507)                                                     |
-| ---------------------------------------------------------------------------------------------------------------- |
-| <a href="https://www.yes24.com/product/goods/44130507"><img src="./static/img/book-image.png" width="200" /></a> |
+<br />
 
-[노션도 놀러와요!](https://hamsurang.notion.site/2f845f0c788b80f9899aee806838614d?source=copy_link)
+## 이렇게 읽었어요
 
-## 챕터
+매 챕터마다 7명이 각자 읽고, 아래 형식으로 스터디 노트를 만들었습니다.
 
-1부 (기초 확립): 2p ~ 72p
+| 항목 | 내용 |
+|------|------|
+| ⚖️ **판정** | 챕터 내용이 2026년 FE 현업에서 생존 / 변형 / 사망인지 투표로 결론 |
+| 📝 **핵심 요약** | 챕터의 핵심 개념을 FE 관점으로 3줄 요약 |
+| 💻 **코드 예제** | 원서의 Java/C++ 예제를 React/TypeScript Before → After로 번역 |
+| 🔥 **토론 포인트** | 스터디원들이 직접 뽑은 이 챕터의 쟁점 질문 |
+| 🗣️ **멤버 의견** | 7명의 솔직한 현업 경험담 및 동의/반박 |
+| 😈 **Devil's Advocate** | 일부러 반대 입장에서 챕터를 공격하는 코너 |
+| 📊 **유효성 투표** | 각 멤버가 5점 만점으로 챕터 유효성을 평가 |
+| ✅ **FE 체크리스트** | 챕터 내용을 ESLint 룰 / TypeScript 패턴과 연결한 실천 목록 |
 
-2부 (고품질 코드 작성): 74p ~ 249p
+<br />
 
-3부 (변수): 251p ~ 370p
+## 스터디원
 
-4부 (명령문): 372p ~ 498p
+<table>
+  <tr>
+    <td align="center" width="140">
+      <a href="https://github.com/sHyunis">
+        <img src="https://github.com/sHyunis.png" width="72" style="border-radius:50%" /><br />
+        <b>🦊 Alice</b>
+      </a><br />
+      <sub>정소현</sub><br />
+      <sub><i>2년차 프론트엔드 개발자 (F-pretence)</i></sub><br />
+      <br />
+      <a href="https://github.com/sHyunis"><img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white" /></a>
+      <a href="https://www.linkedin.com/in/%EC%86%8C%ED%98%84-%EC%A0%95-100448322/"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=flat&logo=linkedin&logoColor=white" /></a>
+    </td>
+    <td align="center" width="140">
+      <a href="https://github.com/doyoonear">
+        <img src="https://github.com/doyoonear.png" width="72" style="border-radius:50%" /><br />
+        <b>🐵 Amber</b>
+      </a><br />
+      <sub>이도윤</sub><br />
+      <sub><i>5년차 프론트엔드 개발자, 지금은 취준생</i></sub><br />
+      <br />
+      <a href="https://github.com/doyoonear"><img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white" /></a>
+      <a href="https://www.linkedin.com/in/doyoonleee/"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=flat&logo=linkedin&logoColor=white" /></a>
+    </td>
+    <td align="center" width="140">
+      <a href="https://github.com/Kyujenius">
+        <img src="https://github.com/Kyujenius.png" width="72" style="border-radius:50%" /><br />
+        <b>🦎 Crong</b>
+      </a><br />
+      <sub>홍규진</sub><br />
+      <sub><i>토큰 없으면 퇴근하는 1년차 프론트엔드 개발자</i></sub><br />
+      <br />
+      <a href="https://github.com/Kyujenius"><img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white" /></a>
+      <a href="https://www.linkedin.com/in/hongkyujin"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=flat&logo=linkedin&logoColor=white" /></a>
+    </td>
+    <td align="center" width="140">
+      <a href="https://github.com/jangwonyoon">
+        <img src="https://github.com/jangwonyoon.png" width="72" style="border-radius:50%" /><br />
+        <b>🦉 diego</b>
+      </a><br />
+      <sub>윤장원</sub><br />
+      <sub><i>운동은 안하고 클로드에 월 50만원 쓰면서 데이터로 뇌 운동 하는 5년차 프론트엔드 개발자</i></sub><br />
+      <br />
+      <a href="https://github.com/jangwonyoon"><img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white" /></a>
+      <a href="https://www.linkedin.com/in/%EC%9E%A5%EC%9B%90-%EC%9C%A4-5908911ba/?locale=en"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=flat&logo=linkedin&logoColor=white" /></a>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="140">
+      <a href="https://github.com/jxxunnn">
+        <img src="https://github.com/jxxunnn.png" width="72" style="border-radius:50%" /><br />
+        <b>🦜 Jay</b>
+      </a><br />
+      <sub>이준근</sub><br />
+      <sub><i>에어팟 없으면 개발 못하는 3년차 프론트엔드 개발자</i></sub><br />
+      <br />
+      <a href="https://github.com/jxxunnn"><img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white" /></a>
+      <a href="https://www.linkedin.com/in/jxxunnn"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=flat&logo=linkedin&logoColor=white" /></a>
+    </td>
+    <td align="center" width="140">
+      <a href="https://github.com/Seung-wan">
+        <img src="https://github.com/Seung-wan.png" width="72" style="border-radius:50%" /><br />
+        <b>🐻 Leo</b>
+      </a><br />
+      <sub>유승완</sub><br />
+      <sub><i>아침 밥 안먹는 4년차 프론트엔드 개발자</i></sub><br />
+      <br />
+      <a href="https://github.com/Seung-wan"><img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white" /></a>
+      <a href="https://www.linkedin.com/in/seungwanyu/"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=flat&logo=linkedin&logoColor=white" /></a>
+    </td>
+    <td align="center" width="140">
+      <a href="https://github.com/azure-553">
+        <img src="https://github.com/azure-553.png" width="72" style="border-radius:50%" /><br />
+        <b>🐿️ zinii</b>
+      </a><br />
+      <sub>심미진</sub><br />
+      <sub><i>클로드에게 직장을 빼앗기게 생긴 고꼬마 개발자</i></sub><br />
+      <br />
+      <a href="https://github.com/azure-553"><img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white" /></a>
+      <a href="https://www.linkedin.com/in/mijin-sim4530"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=flat&logo=linkedin&logoColor=white" /></a>
+    </td>
+    <td align="center" width="140">
+      <a href="https://www.yes24.com/product/goods/44130507">
+        <img src="./static/img/book-image.png" width="72" /><br />
+        <b>📖 Code Complete</b>
+      </a><br />
+      <sub>Steve McConnell</sub><br />
+      <sub><i>소프트웨어 구현의 바이블</i></sub><br />
+      <br />
+      <a href="https://www.yes24.com/product/goods/44130507"><img src="https://img.shields.io/badge/YES24-FF6600?style=flat&logoColor=white" /></a>
+    </td>
+  </tr>
+</table>
 
-5부 (코드 향상): 500p ~ 697p
+<br />
 
-6부 (시스템 고려 사항): 699p ~ 784p
+## 챕터 구성
 
-7부 (소프트웨어 장인정신): 786p ~ 932p
+| 파트 | 챕터 | 주제 |
+|------|------|------|
+| 🧭 구현의 기초 | 1–4장 | 소프트웨어 구현 기초, 메타포, 선행 조건 |
+| 🧭 구현의 기초 | 5–6장 | 루틴 설계, 클래스 품질 |
+| ✏️ 좋은 코드 쓰기 | 7–9장 | 고품질 루틴, 방어적 프로그래밍, 의사코드 |
+| ✏️ 좋은 코드 쓰기 | 20–23장 | 소프트웨어 품질, 협업, 개발자 테스트, 디버깅 |
+| 🔧 완성과 성장 | 24–26장 | 리팩터링, 코드 튜닝 전략·기법 |
+| 🔧 완성과 성장 | 31–34장 | 레이아웃·자기문서화, 개인 성격, 소프트웨어 장인정신 |
 
-## 참여자
+<br />
 
-|                           프로필                            | 이름                                     |
-| :---------------------------------------------------------: | ---------------------------------------- |
-|   <img src="https://github.com/jxxunnn.png" width="50" />   | [이준근](https://github.com/jxxunnn)     |
-| <img src="https://github.com/jangwonyoon.png" width="50" /> | [윤장원](https://github.com/jangwonyoon) |
-|  <img src="https://github.com/Seung-wan.png" width="50" />  | [유승완](https://github.com/Seung-wan)   |
-|  <img src="https://github.com/Kyujenius.png" width="50" />  | [홍규진](https://github.com/Kyujenius)   |
-|  <img src="https://github.com/doyoonear.png" width="50" />  | [이도윤](https://github.com/doyoonear)   |
-|   <img src="https://github.com/sHyunis.png" width="50" />   | [정소현](https://github.com/sHyunis)     |
-|  <img src="https://github.com/azure-553.png" width="50" />  | [심미진](https://github.com/azure-553)   |
-
-## 문서 기여 세팅
+## 로컬 개발
 
 ```bash
 npm install -g pnpm
 pnpm install
 pnpm start
 ```
-
-## 빌드
 
 ```bash
 pnpm build
@@ -57,5 +166,5 @@ pnpm build
 ## 기여 방법
 
 1. 이 저장소를 Fork합니다.
-2. 담당 챕터의 마크다운 파일을 수정합니다.
+2. 담당 챕터의 MDX 파일을 수정합니다.
 3. Pull Request를 생성합니다.
