@@ -5,7 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'Code Complete 2판 한글 스터디',
   tagline: '함수랑 동아리 — Code Complete 2nd Edition 함께 읽기',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.jpeg',
 
   future: {
     v4: true,
@@ -61,30 +61,6 @@ const config: Config = {
           position: 'right',
         },
       ],
-    },
-    footer: {
-      style: 'dark',
-      links: [
-        {
-          title: '문서',
-          items: [
-            {
-              label: '목차',
-              to: '/',
-            },
-          ],
-        },
-        {
-          title: '함수랑',
-          items: [
-            {
-              label: 'GitHub',
-              href: 'https://github.com/hamsurang',
-            },
-          ],
-        },
-      ],
-      copyright: `Copyright © ${new Date().getFullYear()} 함수랑. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,
