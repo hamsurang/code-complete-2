@@ -2,7 +2,7 @@
 sidebar_position: 99
 title: '📊 스터디 대시보드'
 description: '함수랑 산악회 7명이 다룬 20장(Code Complete 2판 35장 중)의 판정·토론·활동 집계예요.'
-generated_at: 2026-04-19T23:59:00+09:00
+generated_at: 2026-04-20T12:00:00+09:00
 unlisted: true
 ---
 
@@ -19,11 +19,11 @@ import BestDiscussions from '@site/src/components/BestDiscussions';
 
 ## 📊 판정 분포
 
-<VerdictDistribution alive={7} evolved={5} dead={1} />
+<VerdictDistribution alive={10} evolved={9} dead={1} />
 
-- **집계 완료:** 13장 (🟢 생존 7 · 🟡 변형 5 · 🔴 사망 1)
-- **미작성 판정:** 7장 — `3~4주차` (20~23장)와 `7주차` (7~9장)는 Notion 원본에 `verdict_state: placeholder`로 남아있어 판정 분포 버킷에서 제외했어요. (`❓ 미작성`)
-- 판정 이모지는 표준 3종(🟢/🟡/🔴)만 인식하고, 미작성 챕터는 별도로 분리해 집계했어요.
+- **집계 완료:** 20장 (🟢 생존 10 · 🟡 변형 9 · 🔴 사망 1)
+- **모든 장 판정 작성 완료** — 2026-04-20 갱신으로 `3~4주차` (20~23장)와 `7주차` (7~9장)의 판정이 placeholder에서 실제 값으로 확정됐어요.
+- 판정 이모지는 표준 3종(🟢/🟡/🔴)만 인식해요.
 
 ## 🏆 베스트 토론
 
@@ -47,13 +47,13 @@ import BestDiscussions from '@site/src/components/BestDiscussions';
 | 4   | 핵심 구현 결정                      | 8주차   | 🟢 생존 or 🟡 변형               |
 | 5   | 구현 설계                           | 6주차   | 🟢 생존 or 🟡 변형               |
 | 6   | 클래스 설계                         | 6주차   | 🟢 생존 or 🟡 변형               |
-| 7   | 좋은 루틴                           | 7주차   | ❓ 미작성                        |
-| 8   | 방어적 프로그래밍                   | 7주차   | ❓ 미작성                        |
-| 9   | Pseudocode Programming Process      | 7주차   | ❓ 미작성                        |
-| 20  | 소프트웨어 품질                     | 3~4주차 | ❓ 미작성                        |
-| 21  | 협력 구현                           | 3~4주차 | ❓ 미작성                        |
-| 22  | 개발자 테스트                       | 3~4주차 | ❓ 미작성                        |
-| 23  | 디버깅                              | 3~4주차 | ❓ 미작성                        |
+| 7   | 좋은 루틴                           | 7주차   | 🟢 생존                          |
+| 8   | 방어적 프로그래밍                   | 7주차   | 🟡 변형                          |
+| 9   | Pseudocode Programming Process      | 7주차   | 🟡 변형                          |
+| 20  | 소프트웨어 품질                     | 3~4주차 | 🟢 생존                          |
+| 21  | 협력 구현                           | 3~4주차 | 🟡 변형                          |
+| 22  | 개발자 테스트                       | 3~4주차 | 🟢 생존                          |
+| 23  | 디버깅                              | 3~4주차 | 🟡 변형                          |
 | 24  | 리팩터링                            | 5주차   | 🟢 · 🟡 · 🔴 중 하나             |
 | 25  | 코드 튜닝 전략                      | 5주차   | 🟢 · 🟡 · 🔴 중 하나             |
 | 26  | 코드 튜닝 기법                      | 5주차   | 🟢 · 🟡 · 🔴 중 하나             |
@@ -62,7 +62,7 @@ import BestDiscussions from '@site/src/components/BestDiscussions';
 | 33  | 개인적 성격                         | 2주차   | 🟢 · 🟡 중 하나                  |
 | 34  | 소프트웨어 장인정신으로의 주제      | 2주차   | 🟢 · 🟡 중 하나                  |
 
-> 챕터별 개별 판정은 각 주차 페이지의 `<Verdict>` 컴포넌트에서 확인할 수 있어요. 이 표의 판정 열은 페이지 단위 `verdict_summary` 합계를 보여줘요.
+> 챕터별 개별 판정은 각 주차 페이지의 `<Verdict>` 컴포넌트에서 확인할 수 있어요. 이 표의 판정 열은 페이지 단위 `verdict_summary` 합계를 보여줘요 — 7~9, 20~23장은 챕터별 개별 rating이 명시돼 있어 단일 이모지로 표기했어요.
 
 ## 😈 Devil's Advocate 모음
 
@@ -111,23 +111,24 @@ import BestDiscussions from '@site/src/components/BestDiscussions';
 
 스터디는 책 챕터 순서가 아니라 주차 순서로 진행됐어요. 누적 챕터 수는 다음과 같이 쌓였어요.
 
-| 순서 | 주차    | 책 챕터        | 파트 레이블                               | 판정 상태   | 누적 |
-| ---- | ------- | -------------- | ----------------------------------------- | ----------- | ---- |
-| 1    | 2주차   | 31, 32, 33, 34 | Part 7 (레이아웃·자기 설명·성격·장인정신) | complete    | 4장  |
-| 2    | 3~4주차 | 20, 21, 22, 23 | Part 5 (품질·협력·테스트·디버깅)          | placeholder | 8장  |
-| 3    | 5주차   | 24, 25, 26     | Part 5 (리팩터링·튜닝 전략·튜닝 기법)     | complete    | 11장 |
-| 4    | 6주차   | 5, 6           | Part 2 (구현 설계·클래스 설계)            | complete    | 13장 |
-| 5    | 7주차   | 7, 8, 9        | Part 2 (루틴·방어적 프로그래밍·PPP)       | placeholder | 16장 |
-| 6    | 8주차   | 1, 2, 3, 4     | Part 1 (개요·비유·사전준비·핵심결정)      | complete    | 20장 |
+| 순서 | 주차    | 책 챕터        | 파트 레이블                               | 판정 상태 | 누적 |
+| ---- | ------- | -------------- | ----------------------------------------- | --------- | ---- |
+| 1    | 2주차   | 31, 32, 33, 34 | Part 7 (레이아웃·자기 설명·성격·장인정신) | complete  | 4장  |
+| 2    | 3~4주차 | 20, 21, 22, 23 | Part 5 (품질·협력·테스트·디버깅)          | complete  | 8장  |
+| 3    | 5주차   | 24, 25, 26     | Part 5 (리팩터링·튜닝 전략·튜닝 기법)     | complete  | 11장 |
+| 4    | 6주차   | 5, 6           | Part 2 (구현 설계·클래스 설계)            | complete  | 13장 |
+| 5    | 7주차   | 7, 8, 9        | Part 2 (루틴·방어적 프로그래밍·PPP)       | complete  | 16장 |
+| 6    | 8주차   | 1, 2, 3, 4     | Part 1 (개요·비유·사전준비·핵심결정)      | complete  | 20장 |
 
 ## ⚠️ 경고
 
 - `VOTES_ALL_NULL` (scope: all-pages) — 6개 페이지 모두 `human_only.votes`가 7명 전원 null. 투표 평균·상하위 랭킹 계산 불가. 모든 페이지에서 `voting_bar` 섹션이 dropped 처리됐어요.
 - `BEST_PICK_NOT_SELECTED` (scope: all-pages) — 6개 페이지 모두 `human_only.best_pick.content`·`reason`이 null 또는 placeholder(`[내용 요약]`·`[선정 이유]`). 큐레이션 불가. 모든 페이지에서 `best_pick` 섹션이 dropped 처리됐어요.
-- `VERDICT_PLACEHOLDER` (scope: week-03-04, week-07) — 챕터 20·21·22·23·7·8·9의 Notion 원본에 rating이 `❓ 미작성`, rationale이 `스터디 판정 미작성`으로 표시돼 있어요. `verdict_distribution.unwritten` 버킷으로 분리 집계했어요.
 - `DEVILS_ADVOCATE_NO_AUTHOR` (scope: all-pages) — 모든 페이지의 `per_chapter_devils_advocate` 항목에 author 필드가 없어요. 페이지 전체 논의 형태로 기재돼 있어서 `member_activity.devils_advocate_count`는 전원 0으로 집계됐어요.
 - `MEMBER_NO_OPINIONS` (scope: Jay) — Jay는 6개 페이지 어디에도 opinion 기록이 없어요 (0건). 스터디 참여 상태는 다른 채널(투표/리뷰/세션 참석)로 확인이 필요해요.
 
+> 이전 경고였던 `VERDICT_PLACEHOLDER`는 2026-04-20 기준 resolved — week-03-04(ch20-23)·week-07(ch7-9) 판정이 placeholder에서 실제 값으로 업데이트됐어요.
+
 ---
 
-_aggregator page-unit-v1 · pages_included: 6 · chapters_in_book: 20 · generated_at: 2026-04-19T23:59:00+09:00_
+_aggregator page-unit-v1 · pages_included: 6 · chapters_in_book: 20 · generated_at: 2026-04-20T12:00:00+09:00_

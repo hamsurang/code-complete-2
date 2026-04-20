@@ -20,6 +20,7 @@ edited_at: 2026-04-19T17:05:00+09:00
 enhanced_at: 2026-04-19T17:45:00+09:00
 ---
 
+import Verdict from '@site/src/components/Verdict';
 import MemberOpinion from '@site/src/components/MemberOpinion';
 import DevilsAdvocate from '@site/src/components/DevilsAdvocate';
 
@@ -47,11 +48,10 @@ import DevilsAdvocate from '@site/src/components/DevilsAdvocate';
 
 ## Chapter 20. The Software-Quality Landscape
 
-:::note 판정 미작성
-
-스터디 판정 미작성 — Notion 원본에 rating/rationale이 비어 있어 placeholder로 유지해요.
-
-:::
+<Verdict
+  rating="🟢 생존"
+  rationale={`"단일 기법으로는 결함의 60%도 못 잡는다, 여러 기법을 조합해야 한다"는 원칙은 타입 체커 + 린터 + 테스트 + 코드 리뷰를 겹겹이 쓰는 2026년 FE 품질 전략의 정확한 근거다.`}
+/>
 
 ### ✅ 체크리스트
 
@@ -212,11 +212,10 @@ describe('pay', () => {
 
 ## Chapter 21. Collaborative Construction
 
-:::note 판정 미작성
-
-스터디 판정 미작성 — Notion 원본에 rating/rationale이 비어 있어 placeholder로 유지해요.
-
-:::
+<Verdict
+  rating="🟡 변형"
+  rationale={`"코드를 다른 사람에게 보여주면 결함을 찾는다"는 핵심은 살아있지만, 형식이 "Fagan식 정규 인스펙션"에서 "GitHub PR 리뷰 + AI 리뷰 봇"으로 완전히 대체되었다 — 원칙은 생존, 형식은 사망.`}
+/>
 
 ### ✅ 체크리스트
 
@@ -260,11 +259,10 @@ describe('pay', () => {
 
 ## Chapter 22. Developer Testing
 
-:::note 판정 미작성
-
-스터디 판정 미작성 — Notion 원본에 rating/rationale이 비어 있어 placeholder로 유지해요.
-
-:::
+<Verdict
+  rating="🟢 생존"
+  rationale={`"코드 작성 전에 테스트를 설계하라", "경계값·나쁜 데이터·정상 데이터 클래스를 체계적으로 만들라"는 원칙은 Vitest·Testing Library·Playwright가 도구를 바꿨을 뿐, 테스트 설계의 사고방식 자체는 그대로 유효하다.`}
+/>
 
 ### ✅ 체크리스트
 
@@ -428,11 +426,10 @@ describe('registerOrder', () => {
 
 ## Chapter 23. Debugging
 
-:::note 판정 미작성
-
-스터디 판정 미작성 — Notion 원본에 rating/rationale이 비어 있어 placeholder로 유지해요.
-
-:::
+<Verdict
+  rating="🟡 변형"
+  rationale={`"과학적 방법으로 가설을 세우고 좁혀가라"는 디버깅의 핵심 사고법은 유효하지만, 2026년 FE에서는 React DevTools·브라우저 퍼포먼스 탭·에러 트래킹(Sentry) 등 도구 의존도가 훨씬 높아져서, "머릿속 디버깅"보다 "도구를 잘 쓰는 능력"이 더 결정적인 차이를 만든다.`}
+/>
 
 ### ✅ 체크리스트
 
@@ -600,7 +597,6 @@ experience=""
 
 :::note 생략된 섹션
 
-- **Verdict**: 20~23장 모두 스터디 판정 미작성 (rating·rationale placeholder)
 - **VotingBar**: 스터디원 투표 미작성 (votes 전원 null)
 - **BestPickCallout**: 베스트 토론 미선정 (content·reason 모두 placeholder)
 
