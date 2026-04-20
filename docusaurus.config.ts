@@ -4,7 +4,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'Code Complete 2판 한글 스터디',
-  tagline: '함수랑 동아리 — Code Complete 2nd Edition 함께 읽기',
+  tagline: 'FE 개발자 7명이 Code Complete 2판을 읽고, 2026년에도 살아있는지 직접 투표했어요',
   favicon: 'img/favicon.jpeg',
 
   future: {

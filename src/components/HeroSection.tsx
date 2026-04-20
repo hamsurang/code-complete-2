@@ -64,10 +64,10 @@ export default function HeroSection() {
     <section className={styles.hero}>
       <div className={styles.intro}>
         <p className={styles.eyebrow}>함수랑 산악회</p>
-        <h1 className={styles.title}>7명이 읽고 토론한 Code Complete 2판</h1>
+        <h1 className={styles.title}>FE 개발자 7명이 Code Complete 2판을 읽고, 2026년에도 살아있는지 직접 투표했어요</h1>
         <p className={styles.subtitle}>
-          2026년 프론트엔드 현업 관점으로 다시 본 Steve McConnell의 고전. 멤버 의견 · 투표 ·
-          Devil&apos;s Advocate는 AI가 건드리지 않은 원본 그대로예요.
+          2026년 프론트엔드 현업 관점으로 다시 본 Steve McConnell의 고전. 각자의 경험으로 읽고,
+          직접 투표하고, 치열하게 토론했어요.
         </p>
       </div>
       <figure className={styles.figure}>
