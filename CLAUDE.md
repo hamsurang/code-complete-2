@@ -91,10 +91,10 @@ code-complete-2/
 ├── scripts/
 │   └── verify-human-only-hash.js  # Human-only Zone 해시 검증 (Node)
 ├── docs/
-│   ├── index.md
-│   ├── part-01 ~ part-07/         # 35장 스켈레톤
-│   ├── appendix/                  # mdx-writer가 생성 (Phase 5 이후)
-│   └── plans/                     # writing-plans 산출물 (선택)
+│   ├── index.mdx
+│   ├── weeks/                     # 실제 진행된 주차별 묶음 (week-02 ~ week-08)
+│   └── appendix/                  # 집계 대시보드
+├── plans/                         # 로컬 실행 플랜 (.gitignore, docs/ 밖)
 ├── src/
 │   ├── components/                # 커스텀 MDX 컴포넌트 (Phase 4)
 │   └── css/custom.css
