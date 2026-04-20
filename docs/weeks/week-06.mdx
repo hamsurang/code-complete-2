@@ -1,7 +1,7 @@
 ---
 sidebar_position: 6
-title: "Week 6 — 5~6장: 구현 설계 · 클래스 설계"
-description: "함수랑 산악회가 Code Complete 5~6장을 2026년 FE 관점으로 묶어 읽은 6주차. 구현 설계 원칙부터 클래스/훅/모듈 경계까지 한 흐름으로."
+title: 'Week 6 — 5~6장: 구현 설계 · 클래스 설계'
+description: '함수랑 산악회가 Code Complete 5~6장을 2026년 FE 관점으로 묶어 읽은 6주차. 구현 설계 원칙부터 클래스/훅/모듈 경계까지 한 흐름으로.'
 authors:
   - Alice
   - Leo
@@ -73,10 +73,10 @@ function PaymentsPage() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch("/api/payments")
+    fetch('/api/payments')
       .then((r) => r.json())
       .then((list) => {
-        const filtered = list.filter((p) => p.status === "paid");
+        const filtered = list.filter((p) => p.status === 'paid');
         const sorted = filtered.sort((a, b) => b.createdAt - a.createdAt);
         setData(sorted);
       });
@@ -104,7 +104,7 @@ function PaymentsPage() {
 ```tsx
 // ━━ Types ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-type PaymentStatus = "paid" | "refunded" | "failed";
+type PaymentStatus = 'paid' | 'refunded' | 'failed';
 
 interface Payment {
   id: string;
@@ -116,7 +116,7 @@ interface Payment {
 // ━━ API 레이어: 데이터 패칭만 담당 ━━━━━━━━━
 
 async function fetchPayments(): Promise<Payment[]> {
-  const res = await fetch("/api/payments");
+  const res = await fetch('/api/payments');
   return res.json();
 }
 
@@ -140,7 +140,7 @@ function usePaidPayments() {
     setLoading(true);
     fetchPayments()
       .then((list) => {
-        const paid = filterByStatus(list, "paid");
+        const paid = filterByStatus(list, 'paid');
         const sorted = sortByLatest(paid);
         setPayments(sorted);
       })
@@ -210,18 +210,18 @@ function PaymentsPage() {
 class ImageUploadService {
   async upload(file) {
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append('file', file);
 
-    const res = await fetch("/api/upload", {
-      method: "POST",
+    const res = await fetch('/api/upload', {
+      method: 'POST',
       body: formData,
     });
 
     const data = await res.json();
 
-    logger.log("upload success");
+    logger.log('upload success');
 
-    alert("이미지 업로드 완료");
+    alert('이미지 업로드 완료');
 
     return data.url;
   }
@@ -230,12 +230,12 @@ class ImageUploadService {
 
 **Before의 책임 섞임**
 
-| 책임 | 코드 위치 | 레이어 |
-| --- | --- | --- |
+| 책임                             | 코드 위치            | 레이어       |
+| -------------------------------- | -------------------- | ------------ |
 | HTTP 요청 (FormData 구성, fetch) | `upload` 메서드 내부 | API / 인프라 |
-| 로깅 | `logger.log(...)` | 인프라 |
-| 사용자 알림 | `alert(...)` | UI |
-| 에러 처리 | 없음 (실패 시 무시) | — |
+| 로깅                             | `logger.log(...)`    | 인프라       |
+| 사용자 알림                      | `alert(...)`         | UI           |
+| 에러 처리                        | 없음 (실패 시 무시)  | —            |
 
 alert는 UI 레이어에 속한다. 서비스 코드가 UI를 직접 호출하면, 같은 업로드 로직을 토스트 알림으로 바꾸거나 서버 사이드에서 재사용할 때 alert가 터진다.
 
@@ -260,10 +260,10 @@ interface Notifier {
 
 async function uploadImage(file: File): Promise<UploadResult> {
   const formData = new FormData();
-  formData.append("file", file);
+  formData.append('file', file);
 
-  const res = await fetch("/api/upload", {
-    method: "POST",
+  const res = await fetch('/api/upload', {
+    method: 'POST',
     body: formData,
   });
 
@@ -302,11 +302,11 @@ function useImageUpload(options?: UseImageUploadOptions) {
 
     try {
       const result = await uploadImage(file);
-      logger.log("upload success");
-      notifier.success("이미지 업로드 완료");
+      logger.log('upload success');
+      notifier.success('이미지 업로드 완료');
       return result.url;
     } catch (e) {
-      const message = e instanceof Error ? e.message : "알 수 없는 오류";
+      const message = e instanceof Error ? e.message : '알 수 없는 오류';
       setError(message);
       return null;
     } finally {
@@ -330,7 +330,7 @@ function useImageUpload(options?: UseImageUploadOptions) {
 
 ```tsx
 const editorState = {
-  content: "",
+  content: '',
   lastSavedAt: null,
 };
 
@@ -365,9 +365,9 @@ type EditorListener = (snapshot: EditorSnapshot) => void;
 // ━━ 캡슐화된 에디터 상태 ━━━━━━━━━━━━━━━━━━
 
 function createEditorStore() {
-  let content = "";
+  let content = '';
   let lastSavedAt: Date | null = null;
-  let savedContent = "";
+  let savedContent = '';
   const listeners: Set<EditorListener> = new Set();
 
   function getSnapshot(): EditorSnapshot {
@@ -434,31 +434,39 @@ class EditorManager {
 // ━━ 문서 저장: 하나의 관심사 ━━━━━━━━━━━━━━
 
 class DocumentService {
-  saveDocument() { /* ... */ }
-  autoSave() { /* ... */ }
+  saveDocument() {
+    /* ... */
+  }
+  autoSave() {
+    /* ... */
+  }
 }
 
 // ━━ 분석 이벤트: 하나의 관심사 ━━━━━━━━━━━━
 
 class AnalyticsService {
-  sendAnalytics() { /* ... */ }
+  sendAnalytics() {
+    /* ... */
+  }
 }
 
 // ━━ 사용자 알림: 하나의 관심사 ━━━━━━━━━━━━
 
 class NotificationService {
-  showNotification() { /* ... */ }
+  showNotification() {
+    /* ... */
+  }
 }
 ```
 
 **응집도 비교**
 
-| 관점 | EditorManager (Before) | 분리 구조 (After) |
-| --- | --- | --- |
-| 응집도 | 낮음 — 저장, 분석, 알림이 한 클래스에 혼재 | 높음 — 각 클래스가 하나의 관심사만 담당 |
+| 관점      | EditorManager (Before)                                 | 분리 구조 (After)                           |
+| --------- | ------------------------------------------------------ | ------------------------------------------- |
+| 응집도    | 낮음 — 저장, 분석, 알림이 한 클래스에 혼재             | 높음 — 각 클래스가 하나의 관심사만 담당     |
 | 변경 영향 | 알림 로직을 바꾸면 저장 로직도 같은 파일에서 수정 위험 | 알림을 바꿔도 `DocumentService`는 영향 없음 |
-| 테스트 | 알림 테스트를 위해 `EditorManager` 전체를 인스턴스화 | `NotificationService`만 단독 테스트 가능 |
-| 의존성 | 클래스가 커질수록 내부 의존성이 보이지 않게 엉킴 | 클래스 간 의존이 명시적 (필요할 때만 주입) |
+| 테스트    | 알림 테스트를 위해 `EditorManager` 전체를 인스턴스화   | `NotificationService`만 단독 테스트 가능    |
+| 의존성    | 클래스가 커질수록 내부 의존성이 보이지 않게 엉킴       | 클래스 간 의존이 명시적 (필요할 때만 주입)  |
 
 #### 프론트엔드에서의 선택: 클래스 대신 훅/모듈
 
@@ -498,11 +506,11 @@ export function formatDocTitle(title: string, maxLen: number): string {
 
 **구조 비교**
 
-| 구조 | 용도 | 장점 |
-| --- | --- | --- |
-| **커스텀 훅** | 상태 + 사이드이펙트가 함께 필요할 때 (`useDocumentSave`) | React 생명주기와 자연스럽게 연결, 상태를 컴포넌트에 바인딩 |
-| **서비스 모듈** | 상태 없이 외부 호출만 할 때 (`analytics.ts`) | 프레임워크 무관, 어디서든 import해서 사용 가능 |
-| **유틸 함수** | 순수 변환 로직 (`format.ts`) | 테스트가 가장 쉬움, 의존성 없음 |
+| 구조            | 용도                                                     | 장점                                                       |
+| --------------- | -------------------------------------------------------- | ---------------------------------------------------------- |
+| **커스텀 훅**   | 상태 + 사이드이펙트가 함께 필요할 때 (`useDocumentSave`) | React 생명주기와 자연스럽게 연결, 상태를 컴포넌트에 바인딩 |
+| **서비스 모듈** | 상태 없이 외부 호출만 할 때 (`analytics.ts`)             | 프레임워크 무관, 어디서든 import해서 사용 가능             |
+| **유틸 함수**   | 순수 변환 로직 (`format.ts`)                             | 테스트가 가장 쉬움, 의존성 없음                            |
 
 클래스가 유리한 경우는 장기 생명주기 + 내부 상태 + 복잡한 초기화/정리가 동시에 필요할 때다. 예를 들어 WebSocket 연결 관리, Canvas/WebGL 렌더러, 복잡한 상태 머신 등은 클래스의 constructor/destroy 패턴이 훅의 useEffect cleanup보다 명확할 수 있다.
 

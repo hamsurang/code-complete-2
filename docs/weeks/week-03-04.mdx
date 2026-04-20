@@ -1,6 +1,6 @@
 ---
 sidebar_position: 4
-title: "Week 3~4 — 20~23장: 품질 · 협력 구현 · 개발자 테스트 · 디버깅"
+title: 'Week 3~4 — 20~23장: 품질 · 협력 구현 · 개발자 테스트 · 디버깅'
 description: "함수랑 산악회가 Code Complete 20~23장을 2026년 FE 관점으로 한 호흡에 묶어 읽은 3~4주차. 품질의 큰 그림부터 협력 프로세스, 개발자 테스트, 디버깅까지 '결함을 언제 어디서 잡을 것인가'라는 한 축으로."
 authors:
   - Alice
@@ -72,11 +72,11 @@ import DevilsAdvocate from '@site/src/components/DevilsAdvocate';
 ```typescript
 export async function pay(order, user) {
   if (!user) return;
-  if (order.status === "paid") return;
+  if (order.status === 'paid') return;
 
-  const res = await fetch("/pay", { method: "POST" });
+  const res = await fetch('/pay', { method: 'POST' });
   if (res.ok) {
-    order.status = "paid";
+    order.status = 'paid';
   }
 }
 ```
@@ -86,7 +86,7 @@ export async function pay(order, user) {
 ```typescript
 // ━━ Types ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-type OrderStatus = "pending" | "paid" | "failed";
+type OrderStatus = 'pending' | 'paid' | 'failed';
 
 interface Order {
   id: string;
@@ -102,16 +102,16 @@ interface User {
 
 type PayResult =
   | { ok: true; order: Order }
-  | { ok: false; reason: "no_user" | "already_paid" | "payment_failed"; statusCode?: number };
+  | { ok: false; reason: 'no_user' | 'already_paid' | 'payment_failed'; statusCode?: number };
 
 // ━━ 상태 전이 정책 ━━━━━━━━━━━━━━━━━━━━━━━━━
 
-function canPay(order: Order): order is Order & { status: "pending" } {
-  return order.status !== "paid";
+function canPay(order: Order): order is Order & { status: 'pending' } {
+  return order.status !== 'paid';
 }
 
 function markAsPaid(order: Order): Order {
-  return { ...order, status: "paid" };
+  return { ...order, status: 'paid' };
 }
 
 // ━━ 외부 호출 경계 ━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -122,8 +122,8 @@ interface PaymentGateway {
 
 export const defaultGateway: PaymentGateway = {
   async charge(orderId, amount) {
-    const res = await fetch("/pay", {
-      method: "POST",
+    const res = await fetch('/pay', {
+      method: 'POST',
       body: JSON.stringify({ orderId, amount }),
     });
     return { ok: res.ok, statusCode: res.status };
@@ -135,20 +135,20 @@ export const defaultGateway: PaymentGateway = {
 export async function pay(
   order: Order,
   user: User | null,
-  gateway: PaymentGateway = defaultGateway
+  gateway: PaymentGateway = defaultGateway,
 ): Promise<PayResult> {
   if (!user) {
-    return { ok: false, reason: "no_user" };
+    return { ok: false, reason: 'no_user' };
   }
 
   if (!canPay(order)) {
-    return { ok: false, reason: "already_paid" };
+    return { ok: false, reason: 'already_paid' };
   }
 
   const result = await gateway.charge(order.id, order.amount);
 
   if (!result.ok) {
-    return { ok: false, reason: "payment_failed", statusCode: result.statusCode };
+    return { ok: false, reason: 'payment_failed', statusCode: result.statusCode };
   }
 
   const paidOrder = markAsPaid(order);
@@ -159,37 +159,37 @@ export async function pay(
 ##### 테스트 코드
 
 ```typescript
-import { describe, it, expect, vi } from "vitest";
-import { pay } from "./pay";
+import { describe, it, expect, vi } from 'vitest';
+import { pay } from './pay';
 
-const baseOrder = { id: "o1", status: "pending" as const, amount: 10000 };
-const user = { id: "u1" };
+const baseOrder = { id: 'o1', status: 'pending' as const, amount: 10000 };
+const user = { id: 'u1' };
 
-describe("pay", () => {
-  it("유저 없으면 no_user를 반환한다", async () => {
+describe('pay', () => {
+  it('유저 없으면 no_user를 반환한다', async () => {
     const result = await pay(baseOrder, null);
-    expect(result).toEqual({ ok: false, reason: "no_user" });
+    expect(result).toEqual({ ok: false, reason: 'no_user' });
   });
 
-  it("이미 결제된 주문이면 already_paid를 반환한다", async () => {
-    const result = await pay({ ...baseOrder, status: "paid" }, user);
-    expect(result).toEqual({ ok: false, reason: "already_paid" });
+  it('이미 결제된 주문이면 already_paid를 반환한다', async () => {
+    const result = await pay({ ...baseOrder, status: 'paid' }, user);
+    expect(result).toEqual({ ok: false, reason: 'already_paid' });
   });
 
-  it("PG 실패 시 payment_failed와 statusCode를 반환한다", async () => {
+  it('PG 실패 시 payment_failed와 statusCode를 반환한다', async () => {
     const gateway = { charge: vi.fn().mockResolvedValue({ ok: false, statusCode: 502 }) };
     const result = await pay(baseOrder, user, gateway);
 
-    expect(result).toEqual({ ok: false, reason: "payment_failed", statusCode: 502 });
+    expect(result).toEqual({ ok: false, reason: 'payment_failed', statusCode: 502 });
   });
 
-  it("성공 시 불변의 paid 주문을 반환한다", async () => {
+  it('성공 시 불변의 paid 주문을 반환한다', async () => {
     const gateway = { charge: vi.fn().mockResolvedValue({ ok: true, statusCode: 200 }) };
     const result = await pay(baseOrder, user, gateway);
 
-    expect(result).toEqual({ ok: true, order: { ...baseOrder, status: "paid" } });
+    expect(result).toEqual({ ok: true, order: { ...baseOrder, status: 'paid' } });
     // 원본 주문은 변하지 않음
-    expect(baseOrder.status).toBe("pending");
+    expect(baseOrder.status).toBe('pending');
   });
 });
 ```
@@ -285,16 +285,16 @@ describe("pay", () => {
 
 ```typescript
 export async function registerOrder(order) {
-  if (!order.user) throw new Error("no user");
+  if (!order.user) throw new Error('no user');
 
   const price = order.items.reduce((sum, i) => sum + i.price, 0);
 
-  await fetch("/api/orders", {
-    method: "POST",
+  await fetch('/api/orders', {
+    method: 'POST',
     body: JSON.stringify({ ...order, price }),
   });
 
-  console.log("order saved");
+  console.log('order saved');
 }
 ```
 
@@ -324,7 +324,7 @@ interface Logger {
 // ━━ 순수 함수: 테스트 가능한 핵심 로직 ━━━━━
 
 export function validateOrder(order: Order): void {
-  if (!order.user) throw new Error("no user");
+  if (!order.user) throw new Error('no user');
 }
 
 export function calcTotalPrice(items: OrderItem[]): number {
@@ -335,8 +335,8 @@ export function calcTotalPrice(items: OrderItem[]): number {
 
 export const defaultOrderApi: OrderApi = {
   async save(payload) {
-    await fetch("/api/orders", {
-      method: "POST",
+    await fetch('/api/orders', {
+      method: 'POST',
       body: JSON.stringify(payload),
     });
   },
@@ -353,7 +353,7 @@ export const defaultLogger: Logger = {
 export async function registerOrder(
   order: Order,
   api: OrderApi = defaultOrderApi,
-  logger: Logger = defaultLogger
+  logger: Logger = defaultLogger,
 ): Promise<void> {
   validateOrder(order);
 
@@ -361,56 +361,55 @@ export async function registerOrder(
 
   await api.save({ ...order, price });
 
-  logger.info("order saved");
+  logger.info('order saved');
 }
 ```
 
 ##### 테스트 코드
 
 ```typescript
-import { describe, it, expect, vi } from "vitest";
-import { validateOrder, calcTotalPrice, registerOrder } from "./registerOrder";
+import { describe, it, expect, vi } from 'vitest';
+import { validateOrder, calcTotalPrice, registerOrder } from './registerOrder';
 
 // 1) 순수 함수 — 외부 의존 없이 바로 테스트
-describe("validateOrder", () => {
-  it("user가 없으면 에러를 던진다", () => {
-    expect(() => validateOrder({ user: "", items: [] })).toThrow("no user");
+describe('validateOrder', () => {
+  it('user가 없으면 에러를 던진다', () => {
+    expect(() => validateOrder({ user: '', items: [] })).toThrow('no user');
   });
 
-  it("user가 있으면 통과한다", () => {
-    expect(() => validateOrder({ user: "u1", items: [] })).not.toThrow();
+  it('user가 있으면 통과한다', () => {
+    expect(() => validateOrder({ user: 'u1', items: [] })).not.toThrow();
   });
 });
 
-describe("calcTotalPrice", () => {
-  it("아이템 가격의 합을 반환한다", () => {
-    const items = [{ id: "a", price: 1000 }, { id: "b", price: 2000 }];
+describe('calcTotalPrice', () => {
+  it('아이템 가격의 합을 반환한다', () => {
+    const items = [
+      { id: 'a', price: 1000 },
+      { id: 'b', price: 2000 },
+    ];
     expect(calcTotalPrice(items)).toBe(3000);
   });
 
-  it("빈 배열이면 0을 반환한다", () => {
+  it('빈 배열이면 0을 반환한다', () => {
     expect(calcTotalPrice([])).toBe(0);
   });
 });
 
 // 2) 통합 — 가짜 의존성을 주입해서 fetch/console 없이 테스트
-describe("registerOrder", () => {
-  it("계산된 price와 함께 API를 호출한다", async () => {
+describe('registerOrder', () => {
+  it('계산된 price와 함께 API를 호출한다', async () => {
     const fakeApi = { save: vi.fn() };
     const fakeLogger = { info: vi.fn() };
 
-    await registerOrder(
-      { user: "u1", items: [{ id: "a", price: 500 }] },
-      fakeApi,
-      fakeLogger
-    );
+    await registerOrder({ user: 'u1', items: [{ id: 'a', price: 500 }] }, fakeApi, fakeLogger);
 
     expect(fakeApi.save).toHaveBeenCalledWith({
-      user: "u1",
-      items: [{ id: "a", price: 500 }],
+      user: 'u1',
+      items: [{ id: 'a', price: 500 }],
       price: 500,
     });
-    expect(fakeLogger.info).toHaveBeenCalledWith("order saved");
+    expect(fakeLogger.info).toHaveBeenCalledWith('order saved');
   });
 });
 ```
@@ -482,9 +481,7 @@ const DISCOUNT_RATE = 0.9;
 function itemAmount(item: PricedItem): number {
   if (!item.active) return 0;
 
-  return item.discountEligible
-    ? item.value * DISCOUNT_RATE
-    : item.value;
+  return item.discountEligible ? item.value * DISCOUNT_RATE : item.value;
 }
 
 export function calcActiveTotal(items: PricedItem[]): number {
@@ -541,7 +538,7 @@ export function calcActiveTotal(items: PricedItem[]): number {
   opinion={`사실 두 문장 다 완전히는 불가능하다고 생각하지만, 굳이 고르면 (b). 시스템 차원에서의 무언가가 매우 중요하다고 느낌.
 
 현업 경험: 패키지 매니저에서 yarn의 catalogs 기능을 이용해서 패키지 버전을 일관되게 관리하고, 린트에 워닝이 있으면 push가 되지 않게끔 막아두는 식으로 시스템 차원의 장치를 두고 있음.`}
-  experience=""
+experience=""
 />
 
 ### 질문 2. "초기에 결함을 제거하는 것이 가장 싸다"는 주장, 실제 경험 기반 찬반은?
@@ -552,7 +549,7 @@ export function calcActiveTotal(items: PricedItem[]): number {
   opinion={`찬성. 모든 가능성을 초기에 고려하는 게 과한 설계가 될 수 있지만, 실제 발생 가능성이 있는 변화에는 여지를 남겨두는 것이 중요함.
 
 현업 경험: 회사 전체에서 공통으로 쓰는 Table 컴포넌트를 props 기반으로 설계했다가, 서비스가 분리되며 props가 4~5개 이상 추가되고 조건 분기가 복잡해졌음. 결국 컴파운드 컴포넌트로 재설계했지만 이미 구현된 모든 곳을 리팩토링해야 해서 더 많은 비용이 들었음.`}
-  experience=""
+experience=""
 />
 
 <MemberOpinion
@@ -568,7 +565,7 @@ export function calcActiveTotal(items: PricedItem[]): number {
   opinion={`매우 찬성. 다만 현실적으로 빠르게 개발해야 할 상황이 많고, 그런 상황에서는 저점을 최대한 높이는 게 가장 중요한 전략이라고 봄.
 
 현업 경험: 기술적 복잡도가 높아져서 해결해야 했던 문제들 대부분이, 그 당시에 해소하는 게 가장 비용이 저렴했을 것으로 예상되는 케이스였음. 시간이 많이 지난 뒤에 해소하려니 맥락이 유지되지 않는 게 가장 어려운 부분.`}
-  experience=""
+experience=""
 />
 
 ### 질문 3. 운영에서만 간헐적으로 결제가 실패하고, 로컬에서는 재현이 안 된다. 각자의 디버깅 순서는?
@@ -579,7 +576,7 @@ export function calcActiveTotal(items: PricedItem[]): number {
   opinion={`운영에만 있고 로컬에서 재현 안 되는 건 보통 환경/데이터/타이밍 셋 중 하나라고 생각해서, 그 순서대로 좁혀가는 편.
 
 현업 경험: 광고 작업할 때가 딱 이런 케이스였음. 광고 SDK는 로컬에서 호출 자체가 허용이 안 돼서 재현 자체가 불가능했고, 결국 개발 환경에 배포해가면서 확인하는 식으로 진행했음. 이때 배운 건 "재현이 안 되는 환경에서는 한 번 배포할 때 가설을 최대한 많이 끼워넣어야 한다"는 것. 그 뒤로는 디버깅 시에는 로그를 평소보다 훨씬 촘촘하게 박아두고 배포하는 습관이 생김.`}
-  experience=""
+experience=""
 />
 
 <MemberOpinion
@@ -588,7 +585,7 @@ export function calcActiveTotal(items: PricedItem[]): number {
   opinion={`디버깅을 잘한다는 건 문제 본질을 명확히 파악하고 정확히 해결하는 것. 문제의 본질을 모르고 추측성 시도부터 하면 하루 종일 삽질하게 됨. 현상을 덮기 전에 각 아키텍처 계층 간의 동작 규칙을 완벽히 이해하는 것이 가장 빠른 디버깅의 지름길.
 
 현업 경험: Next.js에서 백엔드 API 호출 시 401 Unauthorized가 계속 나는 문제. CORS/쿠키 도메인부터 의심하며 next.config의 rewrites/middleware 설정을 산발적으로 바꿨다가 시간만 날림. 근본 원인은 브라우저에서는 자동으로 첨부되는 쿠키가 서버 사이드 fetch에서는 자동 릴레이되지 않는 것이었음. Route Handler + next/headers의 cookies()로 명시적으로 Authorization: Bearer 헤더를 세팅하는 구조로 바꿈.`}
-  experience=""
+experience=""
 />
 
 <MemberOpinion
@@ -597,7 +594,7 @@ export function calcActiveTotal(items: PricedItem[]): number {
   opinion={`분할정복으로 코드 영역을 좁힐 수 있어야 하고, 여러 테스트 케이스를 수집해서 가설을 세우고 해당하지 않는 영역을 지워가며 원인에 접근하는 것이 디버깅을 잘하는 것이라고 봄.
 
 현업 경험: Next.js App Router 처음 쓸 때, 페이지 이동 시마다 최상단 로딩 스피너가 계속 보이는 이슈. Suspense 원리 이해가 부족해서 loading.tsx를 이곳저곳 넣어봄. 진짜 원인은 페이지 컴포넌트 함수에 오타로 async가 붙어있어서 내부 코드가 비동기로 취급되며 루트 loading.tsx가 보였던 것. "어떤 경우에 loading.tsx가 보이는가?"를 케이스로 먼저 정리했다면 더 빨리 찾았을 것.`}
-  experience=""
+experience=""
 />
 
 의견은 저마다 다르지만, 네 장이 한 흐름으로 이어진다는 감각은 공유돼요.

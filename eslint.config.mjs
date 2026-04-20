@@ -1,7 +1,8 @@
 // ESLint 9 flat config
 // Why: Docusaurus 3.9는 ESLint 9+ 를 지원한다. 이 설정은 에이전트가 MDX/TSX 생성 시
 // 실수를 CI에서 차단하기 위한 최소한의 가드레일이다.
-// 에러 포맷은 --format compact로 에이전트가 파싱하기 쉽게 한다.
+// 포맷터는 ESLint 9 기본(stylish) 사용. `compact`는 ESLint 9에서 core에서 분리되어
+// 별도 패키지 설치가 필요한데, stylish도 파일·라인 단위 출력이라 파싱에 충분하다.
 
 import js from '@eslint/js';
 import tseslint from '@typescript-eslint/eslint-plugin';
