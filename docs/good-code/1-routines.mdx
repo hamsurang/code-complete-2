@@ -13,6 +13,9 @@ authors:
 ai_assisted:
   - summary.lead
   - summary.bullets
+  - chapter7.book_summary
+  - chapter8.book_summary
+  - chapter9.book_summary
   - checklist.text
 source: notion-pull
 source_page_id: e6bde71a-aa9f-83d4-b14f-01adf26b8bd6
@@ -47,6 +50,18 @@ import DevilsAdvocate from '@site/src/components/DevilsAdvocate';
 큰 그림을 훑었으니, 각 장으로 들어가서 판정·체크·코드·반대 관점을 차례로 짚어 볼게요.
 
 ## Chapter 7. High-Quality Routines
+
+### 📖 원문 핵심
+
+**루틴을 만드는 가장 중요한 이유**: 복잡도를 줄이기 위해서예요. 루틴 안에 세부 구현을 감춰두면, 호출하는 쪽에서는 내부 동작을 몰라도 사용할 수 있어요.
+
+**응집도(Cohesion)**: 루틴 내 연산들이 얼마나 밀접하게 관련돼 있는지를 나타내는 척도예요. 가장 좋은 형태는 루틴이 딱 하나의 일만 수행하는 기능적 응집(Functional Cohesion)이에요.
+
+**루틴 이름은 하는 일 전체를 서술해야 해요**: 이름이 길고 어색해진다면 루틴 자체에 부작용(side effect)이 있다는 신호이므로, 이름을 억지로 줄이기보다 루틴을 다시 설계하는 게 맞아요.
+
+**루틴 길이**: 연구 결과들을 종합하면 200줄 이내가 안전한 기준이에요. 길이 자체보다 응집도·중첩 깊이·변수 수 같은 복잡도 지표가 적절한 길이를 결정해요.
+
+**매개변수는 7개 이하로**: 심리학 연구에 따르면 인간이 동시에 추적할 수 있는 정보 덩어리는 약 7개예요. 그 이상이 필요하다면 루틴 간 결합이 너무 강하다는 설계 신호예요.
 
 <Verdict
   rating="🟢 생존"
@@ -367,6 +382,18 @@ async function handleRefund(paymentId: string, amount: number) {
 
 ## Chapter 8. Defensive Programming
 
+### 📖 원문 핵심
+
+**방어적 프로그래밍의 전제**: 프로그램에 잘못된 데이터가 들어와도 손상되지 않아야 한다는 아이디어로, "garbage in, garbage out"은 오늘날 기준으로 허술하고 불안전한 프로그램의 징표예요.
+
+**Assertion(단언문)**: 개발 중에 코드가 스스로를 검증하는 수단으로, 절대 발생해서는 안 되는 조건을 체크하며 전제조건과 사후조건을 문서화하는 실행 가능한 명세 역할을 해요. Assertion은 버그를 잡는 것이고 에러 처리 코드는 예상 가능한 이상 상황을 처리하는 것으로, 둘은 목적이 다르므로 혼용해서는 안 돼요.
+
+**Robustness vs. Correctness**: Correctness는 부정확한 결과를 절대 반환하지 않는 것이고, Robustness는 소프트웨어가 계속 동작하게 하는 것으로, 안전 최우선 시스템은 Correctness를, 소비자용 애플리케이션은 Robustness를 우선시해요.
+
+**Exception(예외) 사용 원칙**: 예외는 다른 방법으로 처리할 수 없는 진정으로 예외적인 조건에만 사용해야 하며, 예외의 추상화 수준은 해당 루틴 인터페이스 수준과 일치해야 하고 빈 catch 블록은 금지예요.
+
+**바리케이드(Barricade) 패턴**: 시스템을 "안전 구역"과 "외부 구역"으로 나누어, 경계에서 데이터를 검증하고 정제하면 내부 코드는 데이터가 깨끗하다고 가정할 수 있어 에러 처리 부담이 줄어들어요.
+
 <Verdict
   rating="🟡 변형"
   rationale={`"나쁜 입력으로부터 프로그램을 보호하라", "바리케이드를 세워 안전 구역을 만들라"는 원칙은 유효하지만, FE에서 방어의 주된 수단이 assertion/error code에서 TypeScript 타입 시스템 + Zod/Valibot 런타임 검증 + Error Boundary로 이동했다.`}
@@ -633,6 +660,18 @@ function getUserName(user: User): string {
 방어 위치를 정했다면, 코딩에 들어가기 직전 한 단계를 더 둘 수 있어요. 9장의 PPP가 그 자리예요.
 
 ## Chapter 9. The Pseudocode Programming Process
+
+### 📖 원문 핵심
+
+**PPP (Pseudocode Programming Process)**: 루틴을 슈도코드로 설계한 뒤 그 슈도코드를 주석으로 유지하면서 실제 코드를 채워 넣는 루틴 구성 방법론이에요.
+
+**슈도코드 작성 원칙**: 특정 언어 문법에 종속되지 않는 자연어로 작성하고, "어떻게"가 아니라 "무엇을"에 집중해 의도 수준에서 기술해야 해요. 일단 코드를 작성하면 설계를 버리기가 심리적으로 훨씬 어려워지므로, 슈도코드 단계에서 충분히 다듬어야 해요.
+
+**슈도코드 → 고수준 주석 전환**: 슈도코드 각 문장을 코드 내 주석으로 남기고, 그 주석 아래에 실제 구현 코드를 채워 넣는 방식으로 진행해요. 주석 하나가 약 2~10줄의 코드에 대응해요.
+
+**코드 확인(Check the Code)**: 구현 완료 후 정신적 실행(mental walkthrough), 컴파일, 디버거 단계 실행, 테스트를 순서대로 수행하며 각 단계에서 오류를 잡아내야 해요.
+
+**코드 이해 의무**: 코드가 동작하는 것으로는 충분하지 않으며, 왜 동작하는지 이해하지 못한다면 이해할 때까지 공부하고 대안 설계를 실험해야 해요.
 
 <Verdict
   rating="🟡 변형"
