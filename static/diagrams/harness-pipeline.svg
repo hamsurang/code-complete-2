@@ -1,0 +1,185 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 0 1092 520" role="img" aria-labelledby="hp-title hp-desc" preserveAspectRatio="xMidYMid meet">
+  <title id="hp-title">code-complete-2 하네스 6-에이전트 파이프라인</title>
+  <desc id="hp-desc">Notion DB를 입력으로 받아 6개 에이전트가 3-Zone YAML을 다듬어 Docusaurus MDX를 생성하는 데이터 파이프라인</desc>
+
+  <style>
+    .bg-paper { fill: #ffffff; }
+    .bg-paper-2 { fill: #f6f8fa; }
+    .c-ink { fill: #1F2328; }
+    .c-muted { fill: #57534e; }
+    .c-soft { fill: #78716c; }
+    .c-accent { fill: #16A34A; }
+    .c-accent-2 { fill: #D97706; }
+    .s-ink { stroke: #1F2328; }
+    .s-muted { stroke: #78716c; }
+    .s-accent { stroke: #16A34A; }
+    .s-accent-2 { stroke: #D97706; }
+    .s-rule { stroke: rgba(120,113,108,0.35); }
+    .fill-accent-tint { fill: rgba(22,163,74,0.10); }
+    .fill-ink-003 { fill: rgba(31,35,40,0.03); }
+    .fill-ink-005 { fill: rgba(31,35,40,0.05); }
+    .fill-ink-002 { fill: rgba(31,35,40,0.02); }
+    .mask { fill: #ffffff; }
+    text { font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .mono { font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
+
+    @media (prefers-color-scheme: dark) {
+      .bg-paper { fill: #0D1117; }
+      .bg-paper-2 { fill: #161B22; }
+      .c-ink { fill: #f0f6fc; }
+      .c-muted { fill: #a8a29e; }
+      .c-soft { fill: #8e8680; }
+      .c-accent { fill: #4ADE80; }
+      .c-accent-2 { fill: #FCD34D; }
+      .s-ink { stroke: #f0f6fc; }
+      .s-muted { stroke: #a8a29e; }
+      .s-accent { stroke: #4ADE80; }
+      .s-accent-2 { stroke: #FCD34D; }
+      .s-rule { stroke: rgba(168,162,158,0.35); }
+      .fill-accent-tint { fill: rgba(74,222,128,0.14); }
+      .fill-ink-003 { fill: rgba(240,246,252,0.04); }
+      .fill-ink-005 { fill: rgba(240,246,252,0.06); }
+      .fill-ink-002 { fill: rgba(240,246,252,0.03); }
+      .mask { fill: #0D1117; }
+    }
+  </style>
+
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon class="c-soft" points="0 0, 9 3.5, 0 7"/>
+    </marker>
+    <marker id="a-fb" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <polygon class="c-accent-2" points="0 0, 9 3.5, 0 7"/>
+    </marker>
+  </defs>
+
+  <rect class="bg-paper" x="-2" width="1092" height="520"/>
+
+  <!-- Main flow arrows (y=72) -->
+  <line class="s-muted" x1="140" y1="72" x2="216" y2="72" stroke-width="1.2" marker-end="url(#a)"/>
+  <rect class="mask" x="150" y="58" width="60" height="14" rx="2"/>
+  <text class="mono c-soft" x="180" y="69" font-size="8" text-anchor="middle" letter-spacing="0.14em">FETCH</text>
+
+  <line class="s-muted" x1="344" y1="72" x2="416" y2="72" stroke-width="1.2" marker-end="url(#a)"/>
+  <rect class="mask" x="352" y="58" width="62" height="14" rx="2"/>
+  <text class="mono c-soft" x="383" y="69" font-size="8" text-anchor="middle" letter-spacing="0.14em">3-ZONE YAML</text>
+
+  <line class="s-muted" x1="544" y1="72" x2="616" y2="72" stroke-width="1.2" marker-end="url(#a)"/>
+  <rect class="mask" x="552" y="58" width="66" height="14" rx="2"/>
+  <text class="mono c-soft" x="585" y="69" font-size="8" text-anchor="middle" letter-spacing="0.14em">EDITED YAML</text>
+
+  <line class="s-muted" x1="744" y1="72" x2="816" y2="72" stroke-width="1.2" marker-end="url(#a)"/>
+  <rect class="mask" x="752" y="58" width="68" height="14" rx="2"/>
+  <text class="mono c-soft" x="786" y="69" font-size="8" text-anchor="middle" letter-spacing="0.14em">ENHANCED</text>
+
+  <line class="s-muted" x1="944" y1="72" x2="1016" y2="72" stroke-width="1.2" marker-end="url(#a)"/>
+  <rect class="mask" x="952" y="58" width="60" height="14" rx="2"/>
+  <text class="mono c-soft" x="982" y="69" font-size="8" text-anchor="middle" letter-spacing="0.14em">WRITE</text>
+
+  <!-- Branch to aggregator -->
+  <line class="s-muted" x1="680" y1="128" x2="680" y2="250" stroke-width="1.2" marker-end="url(#a)"/>
+  <rect class="mask" x="650" y="180" width="62" height="14" rx="2"/>
+  <text class="mono c-soft" x="681" y="191" font-size="8" text-anchor="middle" letter-spacing="0.14em">ALL YAML</text>
+
+  <line class="s-muted" x1="744" y1="280" x2="1016" y2="280" stroke-width="1.2" marker-end="url(#a)"/>
+  <rect class="mask" x="860" y="266" width="68" height="14" rx="2"/>
+  <text class="mono c-soft" x="894" y="277" font-size="8" text-anchor="middle" letter-spacing="0.14em">DASHBOARD</text>
+
+  <!-- validate -->
+  <line class="s-muted" x1="880" y1="128" x2="880" y2="330" stroke-width="1.2" marker-end="url(#a)"/>
+  <rect class="mask" x="846" y="220" width="70" height="14" rx="2"/>
+  <text class="mono c-soft" x="881" y="231" font-size="8" text-anchor="middle" letter-spacing="0.14em">VALIDATE</text>
+
+  <!-- Feedback loop -->
+  <path class="s-accent-2" d="M 816 360 Q 480 420 480 128" fill="none" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#a-fb)"/>
+  <rect class="mask" x="320" y="400" width="120" height="14" rx="2"/>
+  <text class="mono c-accent-2" x="380" y="411" font-size="8" text-anchor="middle" letter-spacing="0.14em">SLOP DETECTED · REWORK</text>
+
+  <!-- Notion DB -->
+  <rect class="bg-paper" x="16" y="36" width="124" height="72" rx="8"/>
+  <rect class="fill-ink-003 s-ink" x="16" y="36" width="124" height="72" rx="8" stroke-opacity="0.30" stroke-width="1"/>
+  <rect x="24" y="44" width="32" height="12" rx="2" fill="none" class="s-ink" stroke-opacity="0.40" stroke-width="0.8"/>
+  <text class="mono c-muted" x="40" y="53" font-size="7" text-anchor="middle" letter-spacing="0.14em">SOURCE</text>
+  <text class="c-ink" x="78" y="80" font-size="13" font-weight="600" text-anchor="middle">Notion DB</text>
+  <text class="mono c-muted" x="78" y="98" font-size="9" text-anchor="middle">산출물 워크스페이스</text>
+
+  <!-- 1. notion-extractor -->
+  <rect class="bg-paper" x="216" y="36" width="128" height="72" rx="8"/>
+  <rect class="bg-paper-2 s-ink" x="216" y="36" width="128" height="72" rx="8" stroke-width="1"/>
+  <rect x="224" y="44" width="32" height="12" rx="2" fill="none" class="s-ink" stroke-opacity="0.40" stroke-width="0.8"/>
+  <text class="mono c-muted" x="240" y="53" font-size="7" text-anchor="middle" letter-spacing="0.14em">AGENT</text>
+  <text class="c-ink" x="280" y="80" font-size="13" font-weight="600" text-anchor="middle">notion-extractor</text>
+  <text class="mono c-muted" x="280" y="98" font-size="9" text-anchor="middle">raw → 3-Zone YAML</text>
+
+  <!-- 2. chapter-editor ★ FOCAL -->
+  <rect class="bg-paper" x="416" y="28" width="128" height="88" rx="8"/>
+  <rect class="fill-accent-tint s-accent" x="416" y="28" width="128" height="88" rx="8" stroke-width="1.4"/>
+  <rect x="424" y="36" width="44" height="12" rx="2" fill="none" class="s-accent" stroke-opacity="0.70" stroke-width="0.8"/>
+  <text class="mono c-accent" x="446" y="45" font-size="7" text-anchor="middle" letter-spacing="0.14em">★ LEAD</text>
+  <text class="c-ink" x="480" y="72" font-size="13" font-weight="600" text-anchor="middle">chapter-editor</text>
+  <text class="mono c-muted" x="480" y="90" font-size="9" text-anchor="middle">9섹션 재배치</text>
+  <text class="mono c-muted" x="480" y="105" font-size="9" text-anchor="middle">+ 브릿지 문장</text>
+
+  <!-- 3. fe-content-enhancer -->
+  <rect class="bg-paper" x="616" y="36" width="128" height="72" rx="8"/>
+  <rect class="bg-paper-2 s-ink" x="616" y="36" width="128" height="72" rx="8" stroke-width="1"/>
+  <rect x="624" y="44" width="32" height="12" rx="2" fill="none" class="s-ink" stroke-opacity="0.40" stroke-width="0.8"/>
+  <text class="mono c-muted" x="640" y="53" font-size="7" text-anchor="middle" letter-spacing="0.14em">AGENT</text>
+  <text class="c-ink" x="680" y="78" font-size="13" font-weight="600" text-anchor="middle">fe-content-enhancer</text>
+  <text class="mono c-muted" x="680" y="96" font-size="9" text-anchor="middle">Java/C++ → React/TS</text>
+
+  <!-- 4. mdx-writer -->
+  <rect class="bg-paper" x="816" y="36" width="128" height="72" rx="8"/>
+  <rect class="bg-paper-2 s-ink" x="816" y="36" width="128" height="72" rx="8" stroke-width="1"/>
+  <rect x="824" y="44" width="32" height="12" rx="2" fill="none" class="s-ink" stroke-opacity="0.40" stroke-width="0.8"/>
+  <text class="mono c-muted" x="840" y="53" font-size="7" text-anchor="middle" letter-spacing="0.14em">AGENT</text>
+  <text class="c-ink" x="880" y="78" font-size="13" font-weight="600" text-anchor="middle">mdx-writer</text>
+  <text class="mono c-muted" x="880" y="96" font-size="9" text-anchor="middle">YAML → MDX</text>
+
+  <!-- MDX output -->
+  <rect class="bg-paper" x="1016" y="36" width="64" height="72" rx="8"/>
+  <rect class="fill-accent-tint s-accent" x="1016" y="36" width="64" height="72" rx="8" stroke-opacity="0.70" stroke-width="1"/>
+  <rect x="1022" y="44" width="36" height="12" rx="2" fill="none" class="s-accent" stroke-opacity="0.60" stroke-width="0.8"/>
+  <text class="mono c-accent" x="1040" y="53" font-size="7" text-anchor="middle" letter-spacing="0.14em">OUTPUT</text>
+  <text class="c-ink" x="1048" y="78" font-size="12" font-weight="600" text-anchor="middle">docs/*.mdx</text>
+  <text class="mono c-muted" x="1048" y="96" font-size="9" text-anchor="middle">6 페이지</text>
+
+  <!-- 5. aggregator -->
+  <rect class="bg-paper" x="616" y="244" width="128" height="72" rx="8"/>
+  <rect class="bg-paper-2 s-ink" x="616" y="244" width="128" height="72" rx="8" stroke-width="1"/>
+  <rect x="624" y="252" width="32" height="12" rx="2" fill="none" class="s-ink" stroke-opacity="0.40" stroke-width="0.8"/>
+  <text class="mono c-muted" x="640" y="261" font-size="7" text-anchor="middle" letter-spacing="0.14em">AGENT</text>
+  <text class="c-ink" x="680" y="286" font-size="13" font-weight="600" text-anchor="middle">aggregator</text>
+  <text class="mono c-muted" x="680" y="304" font-size="9" text-anchor="middle">판정·투표·토론 집계</text>
+
+  <!-- Dashboard output -->
+  <rect class="bg-paper" x="1016" y="244" width="64" height="72" rx="8"/>
+  <rect class="fill-ink-005 s-muted" x="1016" y="244" width="64" height="72" rx="8" stroke-width="1"/>
+  <rect x="1022" y="252" width="36" height="12" rx="2" fill="none" class="s-muted" stroke-opacity="0.60" stroke-width="0.8"/>
+  <text class="mono c-muted" x="1040" y="261" font-size="7" text-anchor="middle" letter-spacing="0.14em">OUTPUT</text>
+  <text class="c-ink" x="1048" y="286" font-size="12" font-weight="600" text-anchor="middle">dashboard</text>
+  <text class="mono c-muted" x="1048" y="304" font-size="9" text-anchor="middle">부록</text>
+
+  <!-- 6. voice-validator (feedback) -->
+  <rect class="bg-paper" x="816" y="324" width="128" height="72" rx="8"/>
+  <rect class="fill-ink-002 s-accent-2" x="816" y="324" width="128" height="72" rx="8" stroke-opacity="0.60" stroke-width="1" stroke-dasharray="4,4"/>
+  <rect x="824" y="332" width="56" height="12" rx="2" fill="none" class="s-accent-2" stroke-opacity="0.70" stroke-width="0.8"/>
+  <text class="mono c-accent-2" x="852" y="341" font-size="7" text-anchor="middle" letter-spacing="0.14em">FEEDBACK</text>
+  <text class="c-ink" x="880" y="366" font-size="13" font-weight="600" text-anchor="middle">voice-validator</text>
+  <text class="mono c-muted" x="880" y="384" font-size="9" text-anchor="middle">AI 슬롭 탐지 · 재작성 유도</text>
+
+  <!-- Legend -->
+  <line class="s-rule" x1="0" y1="460" x2="1088" y2="460" stroke-width="0.8"/>
+  <text class="mono c-muted" x="0" y="480" font-size="9" letter-spacing="0.14em">LEGEND</text>
+
+  <rect class="fill-accent-tint s-accent" x="100" y="472" width="14" height="10" rx="2" stroke-width="1"/>
+  <text class="c-muted" x="120" y="481" font-size="10">주역 · 결과물</text>
+
+  <line class="s-muted" x1="236" y1="477" x2="264" y2="477" stroke-width="1.2"/>
+  <text class="c-muted" x="272" y="481" font-size="10">주 흐름</text>
+
+  <line class="s-accent-2" x1="360" y1="477" x2="388" y2="477" stroke-width="1.2" stroke-dasharray="5,4"/>
+  <text class="c-muted" x="396" y="481" font-size="10">피드백 루프 (슬롭 재작성)</text>
+
+  <text class="mono c-soft" x="1088" y="481" font-size="9" text-anchor="end" letter-spacing="0.14em">6 AGENTS · 10 SKILLS</text>
+</svg>
