@@ -40,19 +40,19 @@ export default function HarnessPipeline() {
         <rect x="-2" width="1092" height="520" fill="var(--cc2-paper)" />
         <rect x="-2" width="1092" height="520" fill="url(#h-dots)" opacity="0.6" />
 
-        {/* Main flow arrows */}
+        {/* ─── Main-row arrows ─── */}
         <line
           x1="140"
           y1="72"
-          x2="216"
+          x2="176"
           y2="72"
           stroke="var(--cc2-arrow-default)"
           strokeWidth="1.2"
           markerEnd="url(#h-arrow)"
         />
-        <rect x="150" y="58" width="60" height="14" rx="2" fill="var(--cc2-paper)" />
+        <rect x="138" y="58" width="40" height="14" rx="2" fill="var(--cc2-paper)" />
         <text
-          x="180"
+          x="158"
           y="69"
           className="mono"
           fill="var(--cc2-soft)"
@@ -64,17 +64,17 @@ export default function HarnessPipeline() {
         </text>
 
         <line
-          x1="344"
+          x1="320"
           y1="72"
-          x2="416"
+          x2="356"
           y2="72"
           stroke="var(--cc2-arrow-default)"
           strokeWidth="1.2"
           markerEnd="url(#h-arrow)"
         />
-        <rect x="352" y="58" width="62" height="14" rx="2" fill="var(--cc2-paper)" />
+        <rect x="306" y="58" width="64" height="14" rx="2" fill="var(--cc2-paper)" />
         <text
-          x="383"
+          x="338"
           y="69"
           className="mono"
           fill="var(--cc2-soft)"
@@ -86,17 +86,17 @@ export default function HarnessPipeline() {
         </text>
 
         <line
-          x1="544"
+          x1="500"
           y1="72"
-          x2="616"
+          x2="536"
           y2="72"
           stroke="var(--cc2-arrow-default)"
           strokeWidth="1.2"
           markerEnd="url(#h-arrow)"
         />
-        <rect x="552" y="58" width="66" height="14" rx="2" fill="var(--cc2-paper)" />
+        <rect x="486" y="58" width="64" height="14" rx="2" fill="var(--cc2-paper)" />
         <text
-          x="585"
+          x="518"
           y="69"
           className="mono"
           fill="var(--cc2-soft)"
@@ -108,17 +108,17 @@ export default function HarnessPipeline() {
         </text>
 
         <line
-          x1="744"
+          x1="696"
           y1="72"
-          x2="816"
+          x2="732"
           y2="72"
           stroke="var(--cc2-arrow-default)"
           strokeWidth="1.2"
           markerEnd="url(#h-arrow)"
         />
-        <rect x="752" y="58" width="68" height="14" rx="2" fill="var(--cc2-paper)" />
+        <rect x="682" y="58" width="64" height="14" rx="2" fill="var(--cc2-paper)" />
         <text
-          x="786"
+          x="714"
           y="69"
           className="mono"
           fill="var(--cc2-soft)"
@@ -130,17 +130,17 @@ export default function HarnessPipeline() {
         </text>
 
         <line
-          x1="944"
+          x1="876"
           y1="72"
-          x2="1016"
+          x2="912"
           y2="72"
           stroke="var(--cc2-arrow-default)"
           strokeWidth="1.2"
           markerEnd="url(#h-arrow)"
         />
-        <rect x="952" y="58" width="60" height="14" rx="2" fill="var(--cc2-paper)" />
+        <rect x="862" y="58" width="40" height="14" rx="2" fill="var(--cc2-paper)" />
         <text
-          x="982"
+          x="882"
           y="69"
           className="mono"
           fill="var(--cc2-soft)"
@@ -151,19 +151,19 @@ export default function HarnessPipeline() {
           WRITE
         </text>
 
-        {/* Branch to aggregator */}
+        {/* ─── Branch to aggregator (enhancer → aggregator) ─── */}
         <line
-          x1="680"
+          x1="616"
           y1="128"
-          x2="680"
-          y2="250"
+          x2="616"
+          y2="244"
           stroke="var(--cc2-arrow-default)"
           strokeWidth="1.2"
           markerEnd="url(#h-arrow)"
         />
-        <rect x="650" y="180" width="62" height="14" rx="2" fill="var(--cc2-paper)" />
+        <rect x="586" y="180" width="62" height="14" rx="2" fill="var(--cc2-paper)" />
         <text
-          x="681"
+          x="617"
           y="191"
           className="mono"
           fill="var(--cc2-soft)"
@@ -174,18 +174,19 @@ export default function HarnessPipeline() {
           ALL YAML
         </text>
 
+        {/* aggregator → dashboard */}
         <line
-          x1="744"
+          x1="688"
           y1="280"
-          x2="1016"
+          x2="912"
           y2="280"
           stroke="var(--cc2-arrow-default)"
           strokeWidth="1.2"
           markerEnd="url(#h-arrow)"
         />
-        <rect x="860" y="266" width="68" height="14" rx="2" fill="var(--cc2-paper)" />
+        <rect x="762" y="266" width="68" height="14" rx="2" fill="var(--cc2-paper)" />
         <text
-          x="894"
+          x="796"
           y="277"
           className="mono"
           fill="var(--cc2-soft)"
@@ -196,20 +197,20 @@ export default function HarnessPipeline() {
           DASHBOARD
         </text>
 
-        {/* voice-validator: write → validate */}
+        {/* writer → voice-validator */}
         <line
-          x1="880"
+          x1="804"
           y1="128"
-          x2="880"
-          y2="330"
+          x2="804"
+          y2="324"
           stroke="var(--cc2-arrow-default)"
           strokeWidth="1.2"
           markerEnd="url(#h-arrow)"
         />
-        <rect x="846" y="220" width="70" height="14" rx="2" fill="var(--cc2-paper)" />
+        <rect x="770" y="216" width="68" height="14" rx="2" fill="var(--cc2-paper)" />
         <text
-          x="881"
-          y="231"
+          x="804"
+          y="227"
           className="mono"
           fill="var(--cc2-soft)"
           fontSize="8"
@@ -219,18 +220,18 @@ export default function HarnessPipeline() {
           VALIDATE
         </text>
 
-        {/* Feedback loop */}
+        {/* Feedback loop — voice-validator → chapter-editor */}
         <path
-          d="M 816 360 Q 480 420 480 128"
+          d="M 732 360 Q 430 440 428 116"
           fill="none"
           stroke="var(--cc2-arrow-feedback)"
           strokeWidth="1.2"
           strokeDasharray="5,4"
           markerEnd="url(#h-arrow-feedback)"
         />
-        <rect x="320" y="400" width="120" height="14" rx="2" fill="var(--cc2-paper)" />
+        <rect x="300" y="400" width="120" height="14" rx="2" fill="var(--cc2-paper)" />
         <text
-          x="380"
+          x="360"
           y="411"
           className="mono"
           fill="var(--cc2-arrow-feedback)"
@@ -241,7 +242,7 @@ export default function HarnessPipeline() {
           SLOP DETECTED · REWORK
         </text>
 
-        {/* Notion DB (external) */}
+        {/* ─── Notion DB ─── */}
         <rect x="16" y="36" width="124" height="72" rx="8" fill="var(--cc2-paper)" />
         <rect
           x="16"
@@ -298,12 +299,12 @@ export default function HarnessPipeline() {
           산출물 워크스페이스
         </text>
 
-        {/* 1. notion-extractor */}
-        <rect x="216" y="36" width="128" height="72" rx="8" fill="var(--cc2-paper)" />
+        {/* ─── 1. notion-extractor ─── */}
+        <rect x="176" y="36" width="144" height="72" rx="8" fill="var(--cc2-paper)" />
         <rect
-          x="216"
+          x="176"
           y="36"
-          width="128"
+          width="144"
           height="72"
           rx="8"
           fill="#ffffff"
@@ -312,7 +313,7 @@ export default function HarnessPipeline() {
           strokeWidth="1"
         />
         <rect
-          x="224"
+          x="184"
           y="44"
           width="32"
           height="12"
@@ -323,7 +324,7 @@ export default function HarnessPipeline() {
           strokeWidth="0.8"
         />
         <text
-          x="240"
+          x="200"
           y="53"
           className="mono"
           fill="var(--cc2-muted)"
@@ -334,7 +335,7 @@ export default function HarnessPipeline() {
           AGENT
         </text>
         <text
-          x="280"
+          x="248"
           y="80"
           fill="var(--cc2-ink)"
           fontSize="13"
@@ -344,7 +345,7 @@ export default function HarnessPipeline() {
           notion-extractor
         </text>
         <text
-          x="280"
+          x="248"
           y="98"
           className="mono"
           fill="var(--cc2-muted)"
@@ -354,12 +355,12 @@ export default function HarnessPipeline() {
           raw → 3-Zone YAML
         </text>
 
-        {/* 2. chapter-editor ★ FOCAL */}
-        <rect x="416" y="28" width="128" height="88" rx="8" fill="var(--cc2-paper)" />
+        {/* ─── 2. chapter-editor ★ FOCAL ─── */}
+        <rect x="356" y="28" width="144" height="88" rx="8" fill="var(--cc2-paper)" />
         <rect
-          x="416"
+          x="356"
           y="28"
-          width="128"
+          width="144"
           height="88"
           rx="8"
           fill="var(--cc2-accent-tint)"
@@ -367,7 +368,7 @@ export default function HarnessPipeline() {
           strokeWidth="1.4"
         />
         <rect
-          x="424"
+          x="364"
           y="36"
           width="44"
           height="12"
@@ -378,7 +379,7 @@ export default function HarnessPipeline() {
           strokeWidth="0.8"
         />
         <text
-          x="446"
+          x="386"
           y="45"
           className="mono"
           fill="var(--cc2-accent)"
@@ -389,7 +390,7 @@ export default function HarnessPipeline() {
           ★ LEAD
         </text>
         <text
-          x="480"
+          x="428"
           y="72"
           fill="var(--cc2-ink)"
           fontSize="13"
@@ -399,7 +400,7 @@ export default function HarnessPipeline() {
           chapter-editor
         </text>
         <text
-          x="480"
+          x="428"
           y="90"
           className="mono"
           fill="var(--cc2-muted)"
@@ -409,7 +410,7 @@ export default function HarnessPipeline() {
           9섹션 재배치
         </text>
         <text
-          x="480"
+          x="428"
           y="105"
           className="mono"
           fill="var(--cc2-muted)"
@@ -419,12 +420,12 @@ export default function HarnessPipeline() {
           + 브릿지 문장
         </text>
 
-        {/* 3. fe-content-enhancer */}
-        <rect x="616" y="36" width="128" height="72" rx="8" fill="var(--cc2-paper)" />
+        {/* ─── 3. fe-content-enhancer ─── */}
+        <rect x="536" y="36" width="160" height="72" rx="8" fill="var(--cc2-paper)" />
         <rect
-          x="616"
+          x="536"
           y="36"
-          width="128"
+          width="160"
           height="72"
           rx="8"
           fill="#ffffff"
@@ -433,7 +434,7 @@ export default function HarnessPipeline() {
           strokeWidth="1"
         />
         <rect
-          x="624"
+          x="544"
           y="44"
           width="32"
           height="12"
@@ -444,7 +445,7 @@ export default function HarnessPipeline() {
           strokeWidth="0.8"
         />
         <text
-          x="640"
+          x="560"
           y="53"
           className="mono"
           fill="var(--cc2-muted)"
@@ -455,7 +456,7 @@ export default function HarnessPipeline() {
           AGENT
         </text>
         <text
-          x="680"
+          x="616"
           y="78"
           fill="var(--cc2-ink)"
           fontSize="13"
@@ -465,7 +466,7 @@ export default function HarnessPipeline() {
           fe-content-enhancer
         </text>
         <text
-          x="680"
+          x="616"
           y="96"
           className="mono"
           fill="var(--cc2-muted)"
@@ -475,12 +476,12 @@ export default function HarnessPipeline() {
           Java/C++ → React/TS
         </text>
 
-        {/* 4. mdx-writer */}
-        <rect x="816" y="36" width="128" height="72" rx="8" fill="var(--cc2-paper)" />
+        {/* ─── 4. mdx-writer ─── */}
+        <rect x="732" y="36" width="144" height="72" rx="8" fill="var(--cc2-paper)" />
         <rect
-          x="816"
+          x="732"
           y="36"
-          width="128"
+          width="144"
           height="72"
           rx="8"
           fill="#ffffff"
@@ -489,7 +490,7 @@ export default function HarnessPipeline() {
           strokeWidth="1"
         />
         <rect
-          x="824"
+          x="740"
           y="44"
           width="32"
           height="12"
@@ -500,7 +501,7 @@ export default function HarnessPipeline() {
           strokeWidth="0.8"
         />
         <text
-          x="840"
+          x="756"
           y="53"
           className="mono"
           fill="var(--cc2-muted)"
@@ -511,7 +512,7 @@ export default function HarnessPipeline() {
           AGENT
         </text>
         <text
-          x="880"
+          x="804"
           y="78"
           fill="var(--cc2-ink)"
           fontSize="13"
@@ -521,7 +522,7 @@ export default function HarnessPipeline() {
           mdx-writer
         </text>
         <text
-          x="880"
+          x="804"
           y="96"
           className="mono"
           fill="var(--cc2-muted)"
@@ -531,12 +532,12 @@ export default function HarnessPipeline() {
           YAML → MDX
         </text>
 
-        {/* MDX output */}
-        <rect x="1016" y="36" width="64" height="72" rx="8" fill="var(--cc2-paper)" />
+        {/* ─── MDX output ─── */}
+        <rect x="912" y="36" width="88" height="72" rx="8" fill="var(--cc2-paper)" />
         <rect
-          x="1016"
+          x="912"
           y="36"
-          width="64"
+          width="88"
           height="72"
           rx="8"
           fill="var(--cc2-accent-tint)"
@@ -545,7 +546,7 @@ export default function HarnessPipeline() {
           strokeOpacity="0.70"
         />
         <rect
-          x="1022"
+          x="920"
           y="44"
           width="36"
           height="12"
@@ -556,7 +557,7 @@ export default function HarnessPipeline() {
           strokeWidth="0.8"
         />
         <text
-          x="1040"
+          x="938"
           y="53"
           className="mono"
           fill="var(--cc2-accent)"
@@ -567,7 +568,7 @@ export default function HarnessPipeline() {
           OUTPUT
         </text>
         <text
-          x="1048"
+          x="956"
           y="78"
           fill="var(--cc2-ink)"
           fontSize="12"
@@ -577,7 +578,7 @@ export default function HarnessPipeline() {
           docs/*.mdx
         </text>
         <text
-          x="1048"
+          x="956"
           y="96"
           className="mono"
           fill="var(--cc2-muted)"
@@ -587,12 +588,12 @@ export default function HarnessPipeline() {
           6 페이지
         </text>
 
-        {/* 5. aggregator */}
-        <rect x="616" y="244" width="128" height="72" rx="8" fill="var(--cc2-paper)" />
+        {/* ─── 5. aggregator ─── */}
+        <rect x="544" y="244" width="144" height="72" rx="8" fill="var(--cc2-paper)" />
         <rect
-          x="616"
+          x="544"
           y="244"
-          width="128"
+          width="144"
           height="72"
           rx="8"
           fill="#ffffff"
@@ -601,7 +602,7 @@ export default function HarnessPipeline() {
           strokeWidth="1"
         />
         <rect
-          x="624"
+          x="552"
           y="252"
           width="32"
           height="12"
@@ -612,7 +613,7 @@ export default function HarnessPipeline() {
           strokeWidth="0.8"
         />
         <text
-          x="640"
+          x="568"
           y="261"
           className="mono"
           fill="var(--cc2-muted)"
@@ -623,7 +624,7 @@ export default function HarnessPipeline() {
           AGENT
         </text>
         <text
-          x="680"
+          x="616"
           y="286"
           fill="var(--cc2-ink)"
           fontSize="13"
@@ -633,7 +634,7 @@ export default function HarnessPipeline() {
           aggregator
         </text>
         <text
-          x="680"
+          x="616"
           y="304"
           className="mono"
           fill="var(--cc2-muted)"
@@ -643,12 +644,12 @@ export default function HarnessPipeline() {
           판정·투표·토론 집계
         </text>
 
-        {/* Dashboard output */}
-        <rect x="1016" y="244" width="64" height="72" rx="8" fill="var(--cc2-paper)" />
+        {/* ─── Dashboard output ─── */}
+        <rect x="912" y="244" width="88" height="72" rx="8" fill="var(--cc2-paper)" />
         <rect
-          x="1016"
+          x="912"
           y="244"
-          width="64"
+          width="88"
           height="72"
           rx="8"
           fill="var(--cc2-ink)"
@@ -657,7 +658,7 @@ export default function HarnessPipeline() {
           strokeWidth="1"
         />
         <rect
-          x="1022"
+          x="920"
           y="252"
           width="36"
           height="12"
@@ -668,7 +669,7 @@ export default function HarnessPipeline() {
           strokeWidth="0.8"
         />
         <text
-          x="1040"
+          x="938"
           y="261"
           className="mono"
           fill="var(--cc2-muted)"
@@ -679,7 +680,7 @@ export default function HarnessPipeline() {
           OUTPUT
         </text>
         <text
-          x="1048"
+          x="956"
           y="286"
           fill="var(--cc2-ink)"
           fontSize="12"
@@ -689,7 +690,7 @@ export default function HarnessPipeline() {
           dashboard
         </text>
         <text
-          x="1048"
+          x="956"
           y="304"
           className="mono"
           fill="var(--cc2-muted)"
@@ -699,12 +700,12 @@ export default function HarnessPipeline() {
           부록
         </text>
 
-        {/* 6. voice-validator (feedback loop) */}
-        <rect x="816" y="324" width="128" height="72" rx="8" fill="var(--cc2-paper)" />
+        {/* ─── 6. voice-validator (feedback) ─── */}
+        <rect x="732" y="324" width="144" height="72" rx="8" fill="var(--cc2-paper)" />
         <rect
-          x="816"
+          x="732"
           y="324"
-          width="128"
+          width="144"
           height="72"
           rx="8"
           fill="var(--cc2-ink)"
@@ -715,7 +716,7 @@ export default function HarnessPipeline() {
           strokeDasharray="4,4"
         />
         <rect
-          x="824"
+          x="740"
           y="332"
           width="56"
           height="12"
@@ -726,7 +727,7 @@ export default function HarnessPipeline() {
           strokeWidth="0.8"
         />
         <text
-          x="852"
+          x="768"
           y="341"
           className="mono"
           fill="var(--cc2-accent-2)"
@@ -737,7 +738,7 @@ export default function HarnessPipeline() {
           FEEDBACK
         </text>
         <text
-          x="880"
+          x="804"
           y="366"
           fill="var(--cc2-ink)"
           fontSize="13"
@@ -747,7 +748,7 @@ export default function HarnessPipeline() {
           voice-validator
         </text>
         <text
-          x="880"
+          x="804"
           y="384"
           className="mono"
           fill="var(--cc2-muted)"
@@ -757,7 +758,7 @@ export default function HarnessPipeline() {
           AI 슬롭 탐지 · 재작성 유도
         </text>
 
-        {/* Legend */}
+        {/* ─── Legend ─── */}
         <line x1="0" y1="460" x2="1088" y2="460" stroke="var(--cc2-rule)" strokeWidth="0.8" />
         <text
           x="0"
