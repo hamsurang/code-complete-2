@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 0 1092 340" role="img" aria-labelledby="pt-title pt-desc" preserveAspectRatio="xMidYMid meet">
+  <title id="pt-title">스터디 진행 타임라인</title>
+  <desc id="pt-desc">2주차부터 8주차까지 누적 4장→8장→11장→13장→16장→20장으로 쌓인 진행 경과</desc>
+
+  <style>
+    .bg-paper { fill: #ffffff; }
+    .c-ink { fill: #1F2328; }
+    .c-muted { fill: #57534e; }
+    .c-soft { fill: #78716c; }
+    .c-accent { fill: #16A34A; }
+    .s-accent { stroke: #16A34A; }
+    .s-rule-solid { stroke: rgba(120,113,108,0.35); }
+    .s-rule { stroke: rgba(31,35,40,0.12); }
+    .s-paper { stroke: #ffffff; }
+    .fill-accent-tint { fill: rgba(22,163,74,0.10); }
+    text { font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .mono { font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
+    .title { font-family: Georgia, 'Noto Serif KR', serif; font-style: italic; }
+
+    @media (prefers-color-scheme: dark) {
+      .bg-paper { fill: #0D1117; }
+      .c-ink { fill: #f0f6fc; }
+      .c-muted { fill: #a8a29e; }
+      .c-soft { fill: #8e8680; }
+      .c-accent { fill: #4ADE80; }
+      .s-accent { stroke: #4ADE80; }
+      .s-rule-solid { stroke: rgba(168,162,158,0.35); }
+      .s-rule { stroke: rgba(240,246,252,0.18); }
+      .s-paper { stroke: #0D1117; }
+      .fill-accent-tint { fill: rgba(74,222,128,0.14); }
+    }
+  </style>
+
+  <rect class="bg-paper" x="-2" width="1092" height="340"/>
+
+  <!-- Baseline -->
+  <line class="s-rule-solid" x1="60" y1="170" x2="1020" y2="170" stroke-width="1"/>
+  <!-- Progress fill -->
+  <line class="s-accent" x1="60" y1="170" x2="1020" y2="170" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Node 1 · 2주차 (above) -->
+  <circle class="c-accent s-paper" cx="60" cy="170" r="5" stroke-width="2"/>
+  <line class="s-rule-solid" x1="60" y1="160" x2="60" y2="130" stroke-width="0.8"/>
+  <text class="mono c-muted" x="60" y="118" font-size="9" text-anchor="middle" letter-spacing="0.14em">2주차 · PART 7</text>
+  <text class="c-ink" x="60" y="100" font-size="12" font-weight="600" text-anchor="middle">31 · 32 · 33 · 34</text>
+  <text class="c-muted" x="60" y="82" font-size="10" text-anchor="middle">레이아웃 · 자기 설명</text>
+  <text class="mono c-soft" x="60" y="196" font-size="9" text-anchor="middle" letter-spacing="0.14em">4 / 35</text>
+
+  <!-- Node 2 · 3~4주차 (below) -->
+  <circle class="c-accent s-paper" cx="220" cy="170" r="5" stroke-width="2"/>
+  <line class="s-rule-solid" x1="220" y1="180" x2="220" y2="210" stroke-width="0.8"/>
+  <text class="mono c-muted" x="220" y="226" font-size="9" text-anchor="middle" letter-spacing="0.14em">3~4주차 · PART 5</text>
+  <text class="c-ink" x="220" y="244" font-size="12" font-weight="600" text-anchor="middle">20 · 21 · 22 · 23</text>
+  <text class="c-muted" x="220" y="262" font-size="10" text-anchor="middle">품질 · 협력 · 테스트</text>
+  <text class="mono c-soft" x="220" y="154" font-size="9" text-anchor="middle" letter-spacing="0.14em">8 / 35</text>
+
+  <!-- Node 3 · 5주차 (above) -->
+  <circle class="c-accent s-paper" cx="540" cy="170" r="5" stroke-width="2"/>
+  <line class="s-rule-solid" x1="540" y1="160" x2="540" y2="130" stroke-width="0.8"/>
+  <text class="mono c-muted" x="540" y="118" font-size="9" text-anchor="middle" letter-spacing="0.14em">5주차 · PART 5</text>
+  <text class="c-ink" x="540" y="100" font-size="12" font-weight="600" text-anchor="middle">24 · 25 · 26</text>
+  <text class="c-muted" x="540" y="82" font-size="10" text-anchor="middle">리팩터링 · 튜닝</text>
+  <text class="mono c-soft" x="540" y="196" font-size="9" text-anchor="middle" letter-spacing="0.14em">11 / 35</text>
+
+  <!-- Node 4 · 6주차 (below) -->
+  <circle class="c-accent s-paper" cx="700" cy="170" r="5" stroke-width="2"/>
+  <line class="s-rule-solid" x1="700" y1="180" x2="700" y2="210" stroke-width="0.8"/>
+  <text class="mono c-muted" x="700" y="226" font-size="9" text-anchor="middle" letter-spacing="0.14em">6주차 · PART 2</text>
+  <text class="c-ink" x="700" y="244" font-size="12" font-weight="600" text-anchor="middle">5 · 6</text>
+  <text class="c-muted" x="700" y="262" font-size="10" text-anchor="middle">구현 설계 · 클래스</text>
+  <text class="mono c-soft" x="700" y="154" font-size="9" text-anchor="middle" letter-spacing="0.14em">13 / 35</text>
+
+  <!-- Node 5 · 7주차 (above) -->
+  <circle class="c-accent s-paper" cx="860" cy="170" r="5" stroke-width="2"/>
+  <line class="s-rule-solid" x1="860" y1="160" x2="860" y2="130" stroke-width="0.8"/>
+  <text class="mono c-muted" x="860" y="118" font-size="9" text-anchor="middle" letter-spacing="0.14em">7주차 · PART 2</text>
+  <text class="c-ink" x="860" y="100" font-size="12" font-weight="600" text-anchor="middle">7 · 8 · 9</text>
+  <text class="c-muted" x="860" y="82" font-size="10" text-anchor="middle">루틴 · 방어 · PPP</text>
+  <text class="mono c-soft" x="860" y="196" font-size="9" text-anchor="middle" letter-spacing="0.14em">16 / 35</text>
+
+  <!-- Node 6 · 8주차 FOCAL (below) -->
+  <circle class="fill-accent-tint s-accent" cx="1020" cy="170" r="8" stroke-width="2"/>
+  <circle class="c-accent" cx="1020" cy="170" r="3"/>
+  <line class="s-accent" x1="1020" y1="182" x2="1020" y2="210" stroke-width="0.8"/>
+  <text class="mono c-accent" x="1020" y="226" font-size="9" text-anchor="middle" letter-spacing="0.14em">8주차 · PART 1</text>
+  <text class="c-ink" x="1020" y="244" font-size="12" font-weight="600" text-anchor="middle">1 · 2 · 3 · 4</text>
+  <text class="c-muted" x="1020" y="262" font-size="10" text-anchor="middle">개요 · 비유 · 결정</text>
+  <text class="mono c-accent" x="1020" y="154" font-size="10" text-anchor="middle" font-weight="600" letter-spacing="0.14em">20 / 35</text>
+
+  <!-- Editorial aside -->
+  <text class="title c-muted" x="60" y="300" font-size="13">책 챕터 순서가 아니라 주차 순서로 진행했어요 — 가장 최근에 읽은 1~4장이 맨 오른쪽.</text>
+
+  <!-- Legend -->
+  <line class="s-rule" x1="0" y1="320" x2="1088" y2="320" stroke-width="0.8"/>
+  <text class="mono c-muted" x="0" y="334" font-size="9" letter-spacing="0.14em">LEGEND</text>
+
+  <circle class="c-accent" cx="106" cy="330" r="4"/>
+  <text class="c-muted" x="118" y="334" font-size="10">완료 주차</text>
+
+  <circle class="fill-accent-tint s-accent" cx="218" cy="330" r="6" stroke-width="1.5"/>
+  <text class="c-muted" x="232" y="334" font-size="10">현재 지점</text>
+
+  <text class="mono c-soft" x="1088" y="334" font-size="9" text-anchor="end" letter-spacing="0.14em">6 SESSIONS · 20 CHAPTERS</text>
+</svg>
