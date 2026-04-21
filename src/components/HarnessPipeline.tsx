@@ -50,19 +50,6 @@ export default function HarnessPipeline() {
           strokeWidth="1.2"
           markerEnd="url(#h-arrow)"
         />
-        <rect x="138" y="58" width="40" height="14" rx="2" fill="var(--cc2-paper)" />
-        <text
-          x="158"
-          y="69"
-          className="mono"
-          fill="var(--cc2-soft)"
-          fontSize="8"
-          textAnchor="middle"
-          letterSpacing="0.14em"
-        >
-          FETCH
-        </text>
-
         <line
           x1="320"
           y1="72"
@@ -72,19 +59,6 @@ export default function HarnessPipeline() {
           strokeWidth="1.2"
           markerEnd="url(#h-arrow)"
         />
-        <rect x="306" y="58" width="64" height="14" rx="2" fill="var(--cc2-paper)" />
-        <text
-          x="338"
-          y="69"
-          className="mono"
-          fill="var(--cc2-soft)"
-          fontSize="8"
-          textAnchor="middle"
-          letterSpacing="0.14em"
-        >
-          3-ZONE YAML
-        </text>
-
         <line
           x1="500"
           y1="72"
@@ -94,19 +68,6 @@ export default function HarnessPipeline() {
           strokeWidth="1.2"
           markerEnd="url(#h-arrow)"
         />
-        <rect x="486" y="58" width="64" height="14" rx="2" fill="var(--cc2-paper)" />
-        <text
-          x="518"
-          y="69"
-          className="mono"
-          fill="var(--cc2-soft)"
-          fontSize="8"
-          textAnchor="middle"
-          letterSpacing="0.14em"
-        >
-          EDITED YAML
-        </text>
-
         <line
           x1="696"
           y1="72"
@@ -116,19 +77,6 @@ export default function HarnessPipeline() {
           strokeWidth="1.2"
           markerEnd="url(#h-arrow)"
         />
-        <rect x="682" y="58" width="64" height="14" rx="2" fill="var(--cc2-paper)" />
-        <text
-          x="714"
-          y="69"
-          className="mono"
-          fill="var(--cc2-soft)"
-          fontSize="8"
-          textAnchor="middle"
-          letterSpacing="0.14em"
-        >
-          ENHANCED
-        </text>
-
         <line
           x1="876"
           y1="72"
@@ -138,18 +86,6 @@ export default function HarnessPipeline() {
           strokeWidth="1.2"
           markerEnd="url(#h-arrow)"
         />
-        <rect x="862" y="58" width="40" height="14" rx="2" fill="var(--cc2-paper)" />
-        <text
-          x="882"
-          y="69"
-          className="mono"
-          fill="var(--cc2-soft)"
-          fontSize="8"
-          textAnchor="middle"
-          letterSpacing="0.14em"
-        >
-          WRITE
-        </text>
 
         {/* ─── Branch to aggregator (enhancer → aggregator) ─── */}
         <line
@@ -161,18 +97,6 @@ export default function HarnessPipeline() {
           strokeWidth="1.2"
           markerEnd="url(#h-arrow)"
         />
-        <rect x="586" y="180" width="62" height="14" rx="2" fill="var(--cc2-paper)" />
-        <text
-          x="617"
-          y="191"
-          className="mono"
-          fill="var(--cc2-soft)"
-          fontSize="8"
-          textAnchor="middle"
-          letterSpacing="0.14em"
-        >
-          ALL YAML
-        </text>
 
         {/* aggregator → dashboard */}
         <line
@@ -184,18 +108,6 @@ export default function HarnessPipeline() {
           strokeWidth="1.2"
           markerEnd="url(#h-arrow)"
         />
-        <rect x="762" y="266" width="68" height="14" rx="2" fill="var(--cc2-paper)" />
-        <text
-          x="796"
-          y="277"
-          className="mono"
-          fill="var(--cc2-soft)"
-          fontSize="8"
-          textAnchor="middle"
-          letterSpacing="0.14em"
-        >
-          DASHBOARD
-        </text>
 
         {/* writer → voice-validator */}
         <line
@@ -207,18 +119,6 @@ export default function HarnessPipeline() {
           strokeWidth="1.2"
           markerEnd="url(#h-arrow)"
         />
-        <rect x="770" y="216" width="68" height="14" rx="2" fill="var(--cc2-paper)" />
-        <text
-          x="804"
-          y="227"
-          className="mono"
-          fill="var(--cc2-soft)"
-          fontSize="8"
-          textAnchor="middle"
-          letterSpacing="0.14em"
-        >
-          VALIDATE
-        </text>
 
         {/* Feedback loop — voice-validator → chapter-editor */}
         <path
@@ -229,18 +129,6 @@ export default function HarnessPipeline() {
           strokeDasharray="5,4"
           markerEnd="url(#h-arrow-feedback)"
         />
-        <rect x="300" y="400" width="120" height="14" rx="2" fill="var(--cc2-paper)" />
-        <text
-          x="360"
-          y="411"
-          className="mono"
-          fill="var(--cc2-arrow-feedback)"
-          fontSize="8"
-          textAnchor="middle"
-          letterSpacing="0.14em"
-        >
-          SLOP DETECTED · REWORK
-        </text>
 
         {/* ─── Notion DB ─── */}
         <rect x="16" y="36" width="124" height="72" rx="8" fill="var(--cc2-paper)" />

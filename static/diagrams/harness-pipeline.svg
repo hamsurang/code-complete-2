@@ -57,43 +57,20 @@
 
   <!-- Main flow arrows -->
   <line class="s-muted" x1="140" y1="72" x2="176" y2="72" stroke-width="1.2" marker-end="url(#a)"/>
-  <rect class="mask" x="138" y="58" width="40" height="14" rx="2"/>
-  <text class="mono c-soft" x="158" y="69" font-size="8" text-anchor="middle" letter-spacing="0.14em">FETCH</text>
-
   <line class="s-muted" x1="320" y1="72" x2="356" y2="72" stroke-width="1.2" marker-end="url(#a)"/>
-  <rect class="mask" x="306" y="58" width="64" height="14" rx="2"/>
-  <text class="mono c-soft" x="338" y="69" font-size="8" text-anchor="middle" letter-spacing="0.14em">3-ZONE YAML</text>
-
   <line class="s-muted" x1="500" y1="72" x2="536" y2="72" stroke-width="1.2" marker-end="url(#a)"/>
-  <rect class="mask" x="486" y="58" width="64" height="14" rx="2"/>
-  <text class="mono c-soft" x="518" y="69" font-size="8" text-anchor="middle" letter-spacing="0.14em">EDITED YAML</text>
-
   <line class="s-muted" x1="696" y1="72" x2="732" y2="72" stroke-width="1.2" marker-end="url(#a)"/>
-  <rect class="mask" x="682" y="58" width="64" height="14" rx="2"/>
-  <text class="mono c-soft" x="714" y="69" font-size="8" text-anchor="middle" letter-spacing="0.14em">ENHANCED</text>
-
   <line class="s-muted" x1="876" y1="72" x2="912" y2="72" stroke-width="1.2" marker-end="url(#a)"/>
-  <rect class="mask" x="862" y="58" width="40" height="14" rx="2"/>
-  <text class="mono c-soft" x="882" y="69" font-size="8" text-anchor="middle" letter-spacing="0.14em">WRITE</text>
 
   <!-- Branch to aggregator -->
   <line class="s-muted" x1="616" y1="128" x2="616" y2="244" stroke-width="1.2" marker-end="url(#a)"/>
-  <rect class="mask" x="586" y="180" width="62" height="14" rx="2"/>
-  <text class="mono c-soft" x="617" y="191" font-size="8" text-anchor="middle" letter-spacing="0.14em">ALL YAML</text>
-
   <line class="s-muted" x1="688" y1="280" x2="912" y2="280" stroke-width="1.2" marker-end="url(#a)"/>
-  <rect class="mask" x="762" y="266" width="68" height="14" rx="2"/>
-  <text class="mono c-soft" x="796" y="277" font-size="8" text-anchor="middle" letter-spacing="0.14em">DASHBOARD</text>
 
   <!-- validate -->
   <line class="s-muted" x1="804" y1="128" x2="804" y2="324" stroke-width="1.2" marker-end="url(#a)"/>
-  <rect class="mask" x="770" y="216" width="68" height="14" rx="2"/>
-  <text class="mono c-soft" x="804" y="227" font-size="8" text-anchor="middle" letter-spacing="0.14em">VALIDATE</text>
 
   <!-- Feedback loop -->
   <path class="s-accent-2" d="M 732 360 Q 430 440 428 116" fill="none" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#a-fb)"/>
-  <rect class="mask" x="300" y="400" width="120" height="14" rx="2"/>
-  <text class="mono c-accent-2" x="360" y="411" font-size="8" text-anchor="middle" letter-spacing="0.14em">SLOP DETECTED · REWORK</text>
 
   <!-- Notion DB -->
   <rect class="bg-paper" x="16" y="36" width="124" height="72" rx="8"/>
