@@ -1,0 +1,16 @@
+.wrapper {
+  margin: 1rem 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  overflow-x: auto;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-width: 820px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
