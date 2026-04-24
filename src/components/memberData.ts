@@ -41,6 +41,6 @@ export const MEMBER_DATA: Record<MemberName, MemberProfile> = {
   zinii: {
     github: 'azure-553',
     linkedin: 'https://www.linkedin.com/in/mijin-sim4530',
-    description: '클로드에게 직장을 빼앗기게 생긴 고꼬마 개발자',
+    description: '클로드에게 직장을 빼앗기게 생긴 꼬꼬마 개발자',
   },
 };
