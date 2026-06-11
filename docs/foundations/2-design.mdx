@@ -32,7 +32,7 @@ import DevilsAdvocate from '@site/src/components/DevilsAdvocate';
   - [Chapter 5. Design in Construction](#chapter-5-design-in-construction)
   - [Chapter 6. Working Classes](#chapter-6-working-classes)
 
-구현 설계와 클래스 설계를 붙여 읽으면, "무엇을 감추고 무엇을 드러낼 것인가"라는 한 질문이 보여요.
+구현 설계와 클래스 설계를 함께 읽으면, "무엇을 감추고 무엇을 드러낼 것인가"라는 한 질문이 보여요.
 
 ## 📝 묶음 요약
 
@@ -40,7 +40,7 @@ import DevilsAdvocate from '@site/src/components/DevilsAdvocate';
 
 - 5장 — "복잡도 관리가 소프트웨어의 최우선 기술적 과제"라는 전제는 컴포넌트·상태·빌드가 얽힌 2026년 FE에서 더 절실해요.
 - 5장 — 정보 은닉·반복 설계·변경 가능성 격리 같은 원칙은 프레임워크가 레일을 깐 뒤에도 "어떤 결정을 어디에 숨길지"를 고르는 판단으로 살아남아요.
-- 6장 — ADT·캡슐화·응집도·결합도는 그대로 유효하지만, 적용 단위가 class에서 hook/component로 번역되면서 의미가 달라져요.
+- 6장 — ADT·캡슐화·응집도·결합도는 그대로 유효하지만, 적용 단위가 class에서 component/hook으로 번역되면서 의미가 달라져요.
 - 6장 — 훅은 클래스보다 경계가 느슨해서 원칙만으로는 지키기 어렵고, TypeScript 반환 타입 같은 강제 장치가 함께 가야 해요.
 
 큰 그림을 훑었으니, 각 장의 판정과 체크, 그리고 실제 코드로 들어가 볼게요.
@@ -68,21 +68,21 @@ import DevilsAdvocate from '@site/src/components/DevilsAdvocate';
 
 - [ ] "이 훅/컴포넌트가 숨기는 비밀이 무엇인가?"라는 질문에 한 문장으로 답할 수 있나요? (정보 은닉)
 - [ ] API 응답 구조나 외부 라이브러리 인터페이스처럼 변경 가능성이 높은 결정이 한 곳에 격리되어 있나요?
-- [ ] 컴포넌트 간 순환 import가 없나요?
+- [ ] 컴포넌트 간 순환 참조가 없나요?
   - 관련 ESLint: [`import/no-cycle`](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-cycle.md)
 - [ ] 컴포넌트/훅 구조를 최소 2가지 이상 시도하고, 첫 번째가 아닌 더 나은 안을 선택했나요?
 - [ ] 설계가 lean한가요? 모든 추상화 레이어에 존재 이유가 있는지, "나중에 필요할 것 같아서" 만든 레이어는 없는지 살펴봤나요?
 
-다섯 가지 질문을 한 화면에서 어떻게 풀어내는지, PaymentsPage 리팩터로 확인해 볼게요.
+다섯 가지 질문을 한 화면에서 어떻게 풀어내는지, PaymentPage 리팩터링으로 확인해 볼게요.
 
 ### 💻 React/TS 코드 예제
 
-#### 심화 미션 — 설계가 아쉬운 코드 분석 + 개선 (PaymentsPage)
+#### 심화 미션 — 설계가 아쉬운 코드 분석 + 개선 (PaymentPage)
 
 ##### Before ❌
 
 ```tsx
-function PaymentsPage() {
+function PaymentPage() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -113,6 +113,8 @@ function PaymentsPage() {
 - 변경 취약: "환불 내역도 보여달라"는 요구사항이 오면 useEffect 콜백 내부를 직접 수정해야 한다.
 
 ##### After ✅
+
+- 편의상 에러처리는 생략되어 있어요.
 
 ```tsx
 // ━━ Types ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -165,7 +167,7 @@ function usePaidPayments() {
 
 // ━━ UI: 데이터를 받아서 그리기만 ━━━━━━━━━━━
 
-function PaymentsPage() {
+function PaymentPage() {
   const { payments, loading } = usePaidPayments();
 
   if (loading) return <div>Loading...</div>;
@@ -182,7 +184,7 @@ function PaymentsPage() {
 
 **개선 포인트**
 
-- API(fetchPayments), 도메인 로직(filterByStatus, sortByLatest), 조합(usePaidPayments), UI(PaymentsPage)가 각각 독립적.
+- API(fetchPayments), 도메인 로직(filterByStatus, sortByLatest), 조합(usePaidPayments), UI(PaymentPage)가 각각 독립적.
 - filterByStatus와 sortByLatest는 순수 함수라 mock 없이 바로 단위 테스트 가능.
 - "환불 내역도 보여달라" → filterByStatus(list, "refunded")를 추가하거나, 필터 조건을 파라미터로 바꾸면 됨. 기존 함수는 건드리지 않음.
 
@@ -209,12 +211,12 @@ function PaymentsPage() {
 
 <Verdict
   rating="🟡 변형"
-  rationale={`한 줄 근거: ADT·추상화·캡슐화·응집도·결합도의 원칙은 전부 살아있지만, FE에서 "클래스"의 자리를 커스텀 훅과 컴포넌트가 대체했기 때문에 적용 단위가 class에서 hook/component로 번역되어야 유효해요.`}
+  rationale={`한 줄 근거: ADT·추상화·캡슐화·응집도·결합도의 원칙은 전부 살아있지만, FE에서 "클래스"의 자리를 커스텀 훅과 컴포넌트가 대체했기 때문에 적용 단위가 class에서 component/hook으로 번역되어야 유효해요.`}
 />
 
 ### ✅ 체크리스트
 
-- [ ] 훅/컴포넌트의 인터페이스(props, 반환값)가 하나의 일관된 추상화를 제공하나요? 도메인 수준과 UI 구현 수준이 섞여있지는 않나요?
+- [ ] 컴포넌트/훅의 인터페이스(props, 반환값)가 하나의 일관된 추상화를 제공하나요? 도메인 수준과 UI 구현 수준이 섞여있지는 않나요?
   - 관련 ESLint: [`@typescript-eslint/explicit-module-boundary-types`](https://typescript-eslint.io/rules/explicit-module-boundary-types/)
 - [ ] 훅의 반환값들 사이에 논리적 연결이 있나요? 연결이 없다면 여러 개의 ADT가 하나에 뒤섞인 건 아닌지 봤나요?
 - [ ] 컴포넌트가 다른 컴포넌트/훅의 내부 구현을 알아야만 동작하는 곳은 없나요? (의미적 결합)
